@@ -1,5 +1,5 @@
 import os
-import mongoengine
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ── CORE ─────────────────────────────────────────────────────
 SECRET_KEY = os.environ.get('SECRET_KEY', 'change-this-in-production')
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -26,6 +26,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 # ── APPS ─────────────────────────────────────────────────────
 INSTALLED_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -43,6 +44,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'accounts.middleware.MongoAuthMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -59,6 +61,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -67,10 +70,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'barbershop.wsgi.application'
 
-# ── DATABASE ─────────────────────────────────────────────────
+# ── DATABASE ──
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.dummy'
+        'ENGINE': 'django.db.backends.dummy',
     }
 }
 
@@ -78,18 +81,21 @@ DATABASES = {
 MONGODB_URI = os.environ.get('MONGODB_URI', '')
 
 if MONGODB_URI:
-    mongoengine.connect(host=MONGODB_URI, alias='default')
+    try:
+        import mongoengine
+        mongoengine.connect(host=MONGODB_URI, alias='default')
+    except Exception as e:
+        print(f"WARNING: MongoDB connection failed: {e}", file=sys.stderr)
 else:
-    import sys
-    print("WARNING: MONGODB_URI not set", file=sys.stderr)
+    print("WARNING: MONGODB_URI environment variable is not set.", file=sys.stderr)
 
-# ── SESSIONS ─────────────────
+# ── SESSIONS ─────────────────────────────────────────────────
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_AGE = 1209600  # 2 weeks
 SESSION_COOKIE_SECURE = not DEBUG
 
-# ── MESSAGES ─────────────────
+# ── MESSAGES ─────────────────────────────────────────────────
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
 # ── INTERNATIONALISATION ─────────────────────────────────────
@@ -109,7 +115,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ── AUTH REDIRECTS ───────────────────────────────────────────
+# ── AUTH ─────────────────────────────────────────────────────
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
