@@ -1,9 +1,9 @@
 from mongoengine import (
-    Document, EmbeddedDocument,
+    Document,
     StringField, IntField, DecimalField, BooleanField,
-    DateTimeField, DateField, TimeField,
-    ReferenceField, FloatField, ImageField,
-    CASCADE, SET_NULL
+    DateTimeField,
+    ReferenceField,
+    CASCADE,
 )
 from django.utils import timezone
 import datetime
