@@ -56,11 +56,11 @@ class ReservationForm(forms.Form):
         return date
 
 PRICE_TIER_CHOICES = (
-    ('basic',    '₱70–₱100 · Traditional, basic cut'),
-    ('finish',   '₱100–₱200 · Cleaner finish'),
-    ('styled',   '₱200–₱350 · Styled cuts'),
-    ('fade',     '₱350–₱600 · Advanced fades & shaping'),
-    ('premium',  '₱600–₱1,000+ · Premium full service'),
+    ('basic',   '₱70–₱100 · Traditional, basic cut'),
+    ('finish',  '₱100–₱200 · Cleaner finish'),
+    ('styled',  '₱200–₱350 · Styled cuts'),
+    ('fade',    '₱350–₱600 · Advanced fades & shaping'),
+    ('premium', '₱600–₱1,000+ · Premium full service'),
 )
 
 
@@ -69,7 +69,7 @@ class HaircutStyleForm(forms.Form):
         max_length=120,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'e.g. Classic Buzz Cut',
+            'placeholder': 'e.g. Classic Skin Fade',
         })
     )
     category = forms.ChoiceField(
@@ -93,11 +93,12 @@ class HaircutStyleForm(forms.Form):
             'placeholder': '0.00',
         })
     )
-    image = forms.ImageField(
+    image = forms.FileField(
         required=False,
         widget=forms.ClearableFileInput(attrs={
-            'class': 'form-control form-control-file',
+            'class': 'form-control-file',
             'accept': 'image/jpeg,image/png,image/webp',
+            'id': 'id_image',
         })
     )
     is_active = forms.BooleanField(
@@ -113,8 +114,11 @@ class TestimonialForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-control'})
     )
     comment = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4,
-                                     'placeholder': 'Share your experience...'})
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 4,
+            'placeholder': 'Share your experience...',
+        })
     )
     service = forms.ChoiceField(
         required=False,

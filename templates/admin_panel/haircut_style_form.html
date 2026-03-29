@@ -5,54 +5,51 @@
 {% block extra_css %}
 <style>
 /* ── TIER SELECT ─────────────────────────────────────────── */
-.tier-select-wrap {
-    position: relative;
-}
-.tier-select-wrap select.form-control-tier {
+.tier-select-wrap { position: relative; }
+
+select.form-control-tier {
     appearance: none;
     -webkit-appearance: none;
     padding-right: 36px;
     cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23c8a03c' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23c8a03c' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 12px center;
+    background-position: right 13px center;
 }
-/* Coloured left accent per tier */
-.tier-badge {
-    display: none;
-}
+
 .tier-preview {
-    margin-top: 10px;
-    display: flex;
+    display: none;
     align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
+    gap: 10px;
+    margin-top: 9px;
+    padding: 9px 14px;
     border-radius: 4px;
     font-size: 0.82rem;
     font-weight: 700;
-    letter-spacing: 0.04em;
-    transition: 0.25s ease;
+    letter-spacing: 0.03em;
     border-left: 3px solid transparent;
+    transition: background 0.2s, border-color 0.2s;
 }
-.tier-preview[data-tier="basic"]   { background: rgba(120,180,100,0.1); border-color: #78b464; color: #78b464; }
-.tier-preview[data-tier="finish"]  { background: rgba(74,144,200,0.1);  border-color: #4a90c8; color: #4a90c8; }
-.tier-preview[data-tier="styled"]  { background: rgba(160,100,200,0.1); border-color: #a064c8; color: #a064c8; }
-.tier-preview[data-tier="fade"]    { background: rgba(200,140,60,0.1);  border-color: #dc8c3c; color: #dc8c3c; }
-.tier-preview[data-tier="premium"] { background: rgba(200,160,60,0.12); border-color: #c8a03c; color: #c8a03c; }
-.tier-preview .tier-icon { font-size: 1rem; flex-shrink: 0; }
-.tier-preview .tier-range { font-size: 1rem; font-family: 'Playfair Display', serif; }
-.tier-preview .tier-label { opacity: 0.8; font-weight: 400; font-size: 0.75rem; }
+.tier-preview[data-tier="basic"]   { background: rgba(100,190,100,0.09); border-color: #64be64; color: #64be64; }
+.tier-preview[data-tier="finish"]  { background: rgba(74,144,210,0.09);  border-color: #4a90d2; color: #4a90d2; }
+.tier-preview[data-tier="styled"]  { background: rgba(160,100,210,0.09); border-color: #a064d2; color: #a064d2; }
+.tier-preview[data-tier="fade"]    { background: rgba(210,140,60,0.09);  border-color: #d28c3c; color: #d28c3c; }
+.tier-preview[data-tier="premium"] { background: rgba(200,160,60,0.11);  border-color: #c8a03c; color: #c8a03c; }
+.tier-preview i { font-size: 0.95rem; flex-shrink: 0; }
+.tier-preview-range  { font-family: 'Playfair Display', serif; font-size: 0.95rem; }
+.tier-preview-label  { opacity: 0.75; font-weight: 400; font-size: 0.74rem; margin-left: 4px; }
 
-/* ── IMAGE UPLOAD ────────────────────────────────────────── */
+/* ── IMAGE UPLOAD ZONE ───────────────────────────────────── */
 .upload-zone {
     position: relative;
     border: 2px dashed rgba(200,160,60,0.3);
     border-radius: 6px;
-    padding: 28px 20px;
+    padding: 26px 20px 22px;
     text-align: center;
     cursor: pointer;
-    transition: 0.25s ease;
+    transition: border-color 0.2s, background 0.2s;
     background: rgba(200,160,60,0.03);
+    overflow: hidden;
 }
 .upload-zone:hover,
 .upload-zone.drag-over {
@@ -66,81 +63,52 @@
     height: 100%;
     opacity: 0;
     cursor: pointer;
-    font-size: 0;
+    z-index: 2;
 }
-.upload-icon { font-size: 2rem; color: #c8a03c; opacity: 0.6; margin-bottom: 10px; }
-.upload-text strong { display: block; color: #f0ebe0; font-size: 0.88rem; margin-bottom: 4px; }
-.upload-text span { font-size: 0.75rem; color: #6a6050; }
-.upload-preview-wrap {
-    display: none;
-    position: relative;
-    margin-top: 12px;
-}
-.upload-preview-img {
-    width: 100%;
-    max-width: 220px;
-    height: 165px;
-    object-fit: cover;
-    border-radius: 4px;
+.upload-zone-icon  { font-size: 2rem; color: #c8a03c; opacity: 0.55; margin-bottom: 8px; pointer-events: none; }
+.upload-zone-title { display: block; font-size: 0.87rem; color: #f0ebe0; margin-bottom: 3px; font-weight: 600; pointer-events: none; }
+.upload-zone-hint  { display: block; font-size: 0.73rem; color: #6a6050; pointer-events: none; }
+
+.upload-preview-wrap { display: none; margin-top: 12px; text-align: center; position: relative; }
+.upload-preview-img  {
+    max-width: 200px; width: 100%; height: 150px;
+    object-fit: cover; border-radius: 4px;
     border: 1px solid rgba(200,160,60,0.3);
+    display: inline-block;
 }
 .upload-preview-clear {
-    position: absolute;
-    top: 4px; right: calc(50% - 114px);
-    background: rgba(14,14,14,0.85);
-    color: #e05555;
-    border: 1px solid rgba(224,85,85,0.4);
-    border-radius: 50%;
-    width: 26px; height: 26px;
+    position: absolute; top: 0; right: calc(50% - 108px);
+    background: rgba(14,14,14,0.85); color: #e05555;
+    border: 1px solid rgba(224,85,85,0.4); border-radius: 50%;
+    width: 24px; height: 24px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.7rem;
-    cursor: pointer;
-    transition: 0.2s;
+    font-size: 0.65rem; cursor: pointer; transition: 0.2s;
+    z-index: 3;
 }
 .upload-preview-clear:hover { background: #e05555; color: #fff; }
-.upload-filename {
-    margin-top: 6px;
-    font-size: 0.72rem;
-    color: #6a6050;
-}
+.upload-preview-name { display: block; font-size: 0.71rem; color: #6a6050; margin-top: 6px; }
 
 .current-photo-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 12px 14px;
-    background: rgba(200,160,60,0.06);
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 14px; margin-bottom: 10px;
+    background: rgba(200,160,60,0.05);
     border: 1px solid rgba(200,160,60,0.15);
-    border-radius: 4px;
-    margin-bottom: 12px;
+    border-radius: 5px;
 }
 .current-photo-row img {
-    width: 80px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 4px;
-    border: 1px solid rgba(200,160,60,0.2);
+    width: 72px; height: 54px; object-fit: cover;
+    border-radius: 3px; border: 1px solid rgba(200,160,60,0.2);
     flex-shrink: 0;
 }
-.current-photo-meta strong { display: block; font-size: 0.78rem; color: #c8a03c; margin-bottom: 2px; }
-.current-photo-meta span { font-size: 0.72rem; color: #6a6050; }
+.current-photo-meta strong { display: block; font-size: 0.78rem; color: #c8a03c; }
+.current-photo-meta span   { font-size: 0.71rem; color: #6a6050; }
 
-/* ── RESPONSIVE FORM GRID ────────────────────────────────── */
-@media (max-width: 700px) {
-    .form-row-2 {
-        grid-template-columns: 1fr !important;
-    }
-    .form-card {
-        padding: 18px 14px !important;
-    }
-    .admin-page-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    .upload-preview-clear {
-        right: 4px;
-    }
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 720px) {
+    .form-row-2 { grid-template-columns: 1fr !important; }
+    .form-card  { padding: 16px 12px !important; }
+    .admin-page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .upload-preview-clear { right: calc(50% - 100px); }
 }
 </style>
 {% endblock %}
@@ -149,7 +117,9 @@
 
 <div class="admin-page-header">
     <h2>{{ action }} Haircut Style</h2>
-    <a href="{% url 'admin_haircut_styles' %}" class="btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Back to Styles</a>
+    <a href="{% url 'admin_haircut_styles' %}" class="btn-outline btn-sm">
+        <i class="fas fa-arrow-left"></i> Back to Styles
+    </a>
 </div>
 
 <div class="admin-section">
@@ -157,74 +127,82 @@
         <form method="post" enctype="multipart/form-data" id="styleForm">
             {% csrf_token %}
 
-            <!-- Row 1: Name + Category -->
+            <!-- Row 1 · Name + Price Tier -->
             <div class="form-row-2">
                 <div class="form-group">
                     <label class="form-label">Style Name *</label>
                     {{ form.name }}
-                    {% if form.name.errors %}<div class="form-error">{{ form.name.errors.0 }}</div>{% endif %}
+                    {% if form.name.errors %}
+                        <div class="form-error">{{ form.name.errors.0 }}</div>
+                    {% endif %}
                 </div>
+
                 <div class="form-group">
                     <label class="form-label">Price Tier *</label>
                     <div class="tier-select-wrap">
                         {{ form.category }}
-                        <!-- Live tier preview badge -->
-                        <div class="tier-preview" id="tierPreview" style="display:none;" data-tier="">
-                            <span class="tier-icon"><i class="fas fa-tag"></i></span>
-                            <span>
-                                <span class="tier-range" id="tierRange"></span>
-                                <span class="tier-label" id="tierLabel"></span>
-                            </span>
+                        <div class="tier-preview" id="tierPreview" data-tier="">
+                            <i class="fas fa-tag"></i>
+                            <span class="tier-preview-range" id="tierRange"></span>
+                            <span class="tier-preview-label" id="tierLabel"></span>
                         </div>
                     </div>
-                    {% if form.category.errors %}<div class="form-error">{{ form.category.errors.0 }}</div>{% endif %}
+                    {% if form.category.errors %}
+                        <div class="form-error">{{ form.category.errors.0 }}</div>
+                    {% endif %}
                 </div>
             </div>
 
-            <!-- Row 2: Price + Photo -->
+            <!-- Row 2 · Price + Photo -->
             <div class="form-row-2">
                 <div class="form-group">
                     <label class="form-label">Price (₱) *</label>
                     {{ form.price }}
                     <small class="form-hint">
-                        ₱70–100 Basic &nbsp;·&nbsp; ₱100–200 Finish &nbsp;·&nbsp; ₱200–350 Styled &nbsp;·&nbsp; ₱350–600 Fade &nbsp;·&nbsp; ₱600+ Premium
+                        ₱70–100 Basic &nbsp;·&nbsp;
+                        ₱100–200 Finish &nbsp;·&nbsp;
+                        ₱200–350 Styled &nbsp;·&nbsp;
+                        ₱350–600 Fade &nbsp;·&nbsp;
+                        ₱600+ Premium
                     </small>
-                    {% if form.price.errors %}<div class="form-error">{{ form.price.errors.0 }}</div>{% endif %}
+                    {% if form.price.errors %}
+                        <div class="form-error">{{ form.price.errors.0 }}</div>
+                    {% endif %}
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Style Photo</label>
 
                     {% if style and style.image %}
-                    <div class="current-photo-row" id="currentPhotoRow">
-                        <img src="{{ style.image }}" alt="{{ style.name }}" id="currentPhotoImg">
+                    <div class="current-photo-row">
+                        <img src="{{ style.image }}" alt="{{ style.name }}">
                         <div class="current-photo-meta">
                             <strong>Current photo</strong>
-                            <span>Upload a new image below to replace it.</span>
+                            <span>Upload a new image to replace it.</span>
                         </div>
                     </div>
                     {% endif %}
 
-                    <!-- Custom drop-zone -->
+                    <!-- Drag-and-drop / click upload zone -->
                     <div class="upload-zone" id="uploadZone">
                         {{ form.image }}
-                        <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                        <div class="upload-text">
-                            <strong>Click to upload or drag & drop</strong>
-                            <span>JPG, PNG, WEBP · Recommended 600 × 450 px</span>
-                        </div>
+                        <div class="upload-zone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                        <strong class="upload-zone-title">Click to upload or drag & drop</strong>
+                        <span class="upload-zone-hint">JPG, PNG, WEBP &nbsp;·&nbsp; Recommended 600 × 450 px</span>
                     </div>
 
-                    <!-- Preview after selection -->
-                    <div class="upload-preview-wrap" id="uploadPreviewWrap">
-                        <img src="" alt="Preview" class="upload-preview-img" id="uploadPreviewImg">
-                        <button type="button" class="upload-preview-clear" id="clearUpload" title="Remove">
+                    <!-- Live preview after selection -->
+                    <div class="upload-preview-wrap" id="previewWrap">
+                        <button type="button" class="upload-preview-clear" id="clearBtn" title="Remove">
                             <i class="fas fa-times"></i>
                         </button>
-                        <div class="upload-filename" id="uploadFilename"></div>
+                        <img src="" alt="Preview" class="upload-preview-img" id="previewImg">
+                        <span class="upload-preview-name" id="previewName"></span>
                     </div>
 
-                    {% if form.image.errors %}<div class="form-error">{{ form.image.errors.0 }}</div>{% endif %}
+                    {% if form.image.errors %}
+                        <div class="form-error">{{ form.image.errors.0 }}</div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -232,16 +210,18 @@
             <div class="form-group">
                 <label class="form-label">Description</label>
                 {{ form.description }}
-                {% if form.description.errors %}<div class="form-error">{{ form.description.errors.0 }}</div>{% endif %}
+                {% if form.description.errors %}
+                    <div class="form-error">{{ form.description.errors.0 }}</div>
+                {% endif %}
             </div>
 
-            <!-- Active toggle -->
+            <!-- Active -->
             <div class="form-group form-check-group">
                 {{ form.is_active }}
                 <label class="form-check-label">Active (show on services page)</label>
             </div>
 
-            <!-- Actions -->
+            <!-- Submit -->
             <div class="form-actions">
                 <button type="submit" class="btn-gold">
                     <i class="fas fa-save"></i> Save Style
@@ -256,89 +236,86 @@
 
 {% block extra_js %}
 <script>
-/* ── TIER PREVIEW ─────────────────────────────────────── */
-const tierMeta = {
-    basic:   { range: '₱70 – ₱100',      label: 'Traditional, basic cut',     icon: 'fas fa-scissors' },
-    finish:  { range: '₱100 – ₱200',     label: 'Cleaner finish',              icon: 'fas fa-cut' },
-    styled:  { range: '₱200 – ₱350',     label: 'Styled cuts',                 icon: 'fas fa-magic' },
-    fade:    { range: '₱350 – ₱600',     label: 'Advanced fades & shaping',    icon: 'fas fa-layer-group' },
-    premium: { range: '₱600 – ₱1,000+',  label: 'Premium full service',        icon: 'fas fa-crown' },
+/* ── PRICE TIER LIVE PREVIEW ─────────────────────────── */
+const TIERS = {
+    basic:   { range: '₱70 – ₱100',     label: 'Traditional, basic cut',   icon: 'fas fa-scissors' },
+    finish:  { range: '₱100 – ₱200',    label: 'Cleaner finish',            icon: 'fas fa-cut' },
+    styled:  { range: '₱200 – ₱350',    label: 'Styled cuts',               icon: 'fas fa-magic' },
+    fade:    { range: '₱350 – ₱600',    label: 'Advanced fades & shaping',  icon: 'fas fa-layer-group' },
+    premium: { range: '₱600 – ₱1,000+', label: 'Premium full service',      icon: 'fas fa-crown' },
 };
 
-const catSelect  = document.querySelector('select.form-control-tier');
-const tierPreview = document.getElementById('tierPreview');
-const tierRange   = document.getElementById('tierRange');
-const tierLabel   = document.getElementById('tierLabel');
+const catSel     = document.querySelector('select.form-control-tier');
+const tierBar    = document.getElementById('tierPreview');
+const tierRange  = document.getElementById('tierRange');
+const tierLabel  = document.getElementById('tierLabel');
 
-function updateTierPreview() {
-    const val = catSelect.value;
-    const meta = tierMeta[val];
-    if (!meta) { tierPreview.style.display = 'none'; return; }
-    tierPreview.setAttribute('data-tier', val);
-    tierPreview.querySelector('.tier-icon i').className = meta.icon;
-    tierRange.textContent = meta.range + ' · ';
-    tierLabel.textContent = meta.label;
-    tierPreview.style.display = 'flex';
+function refreshTier() {
+    const t = TIERS[catSel.value];
+    if (!t) { tierBar.style.display = 'none'; return; }
+    tierBar.setAttribute('data-tier', catSel.value);
+    tierBar.querySelector('i').className = t.icon;
+    tierRange.textContent = t.range;
+    tierLabel.textContent = '· ' + t.label;
+    tierBar.style.display = 'flex';
 }
 
-if (catSelect) {
-    catSelect.addEventListener('change', updateTierPreview);
-    updateTierPreview();
+if (catSel) {
+    catSel.addEventListener('change', refreshTier);
+    refreshTier();
 }
 
-/* ── IMAGE UPLOAD PREVIEW ─────────────────────────────── */
-const fileInput      = document.querySelector('input[type="file"]');
-const uploadZone     = document.getElementById('uploadZone');
-const previewWrap    = document.getElementById('uploadPreviewWrap');
-const previewImg     = document.getElementById('uploadPreviewImg');
-const previewClear   = document.getElementById('clearUpload');
-const previewFilename = document.getElementById('uploadFilename');
+/* ── IMAGE UPLOAD PREVIEW ────────────────────────────── */
+const fileInput  = document.getElementById('id_image');
+const uploadZone = document.getElementById('uploadZone');
+const previewWrap = document.getElementById('previewWrap');
+const previewImg  = document.getElementById('previewImg');
+const previewName = document.getElementById('previewName');
+const clearBtn    = document.getElementById('clearBtn');
 
 function showPreview(file) {
     if (!file || !file.type.startsWith('image/')) return;
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = e => {
         previewImg.src = e.target.result;
-        previewFilename.textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+        previewName.textContent = file.name + ' · ' + (file.size / 1024).toFixed(0) + ' KB';
         previewWrap.style.display = 'block';
         uploadZone.style.borderColor = '#c8a03c';
-        uploadZone.style.background  = 'rgba(200,160,60,0.06)';
     };
     reader.readAsDataURL(file);
 }
 
 if (fileInput) {
     fileInput.addEventListener('change', () => {
-        if (fileInput.files && fileInput.files[0]) {
-            showPreview(fileInput.files[0]);
-        }
+        if (fileInput.files[0]) showPreview(fileInput.files[0]);
     });
 }
 
-if (previewClear) {
-    previewClear.addEventListener('click', () => {
+if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
         fileInput.value = '';
+        previewImg.src  = '';
         previewWrap.style.display = 'none';
-        previewImg.src = '';
         uploadZone.style.borderColor = '';
-        uploadZone.style.background  = '';
     });
 }
 
 if (uploadZone) {
-    uploadZone.addEventListener('dragover', (e) => {
+    uploadZone.addEventListener('dragover', e => {
         e.preventDefault();
         uploadZone.classList.add('drag-over');
     });
     uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
-    uploadZone.addEventListener('drop', (e) => {
+    uploadZone.addEventListener('drop', e => {
         e.preventDefault();
         uploadZone.classList.remove('drag-over');
         const file = e.dataTransfer.files[0];
         if (file) {
-            const dt = new DataTransfer();
-            dt.items.add(file);
-            fileInput.files = dt.files;
+            try {
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                fileInput.files = dt.files;
+            } catch(_) {}
             showPreview(file);
         }
     });
