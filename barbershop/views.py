@@ -5,8 +5,8 @@ from collections import defaultdict
 
 
 def home(request):
-    services = Service.objects.filter(is_active=True)[:6]
-    barbers = Barber.objects.filter(is_active=True)[:3]
+    services = Service.objects(is_active=True)[:6]
+    barbers = Barber.objects(is_active=True)[:3]
     context = {
         'services': services,
         'barbers': barbers,
@@ -18,7 +18,7 @@ def home(request):
 
 
 def about(request):
-    barbers = Barber.objects.filter(is_active=True)
+    barbers = Barber.objects(is_active=True)
     context = {
         'barbers': barbers,
         'shop_name': settings.BARBERSHOP_NAME,
@@ -30,8 +30,8 @@ def about(request):
 
 
 def services(request):
-    all_services = Service.objects.filter(is_active=True)
-    all_styles = HaircutStyle.objects.filter(is_active=True)
+    all_services = Service.objects(is_active=True)
+    all_styles = HaircutStyle.objects(is_active=True)
 
     styles_by_category = defaultdict(list)
     for style in all_styles:
@@ -41,7 +41,7 @@ def services(request):
     context = {
         'services': all_services,
         'styles_by_category': styles_by_category,
-        'has_styles': all_styles.exists(),
+        'has_styles': all_styles.count() > 0,
         'shop_name': settings.BARBERSHOP_NAME,
     }
     return render(request, 'home/services.html', context)

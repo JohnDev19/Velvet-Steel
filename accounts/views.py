@@ -34,6 +34,15 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
 
 
+def _get_or_create_profile(user):
+    """Get or create a MongoEngine UserProfile for a Django auth user."""
+    profile = UserProfile.objects(user_id=user.pk).first()
+    if not profile:
+        profile = UserProfile(user_id=user.pk)
+        profile.save()
+    return profile
+
+
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('home')
@@ -47,7 +56,11 @@ def register_view(request):
                 first_name=form.cleaned_data['first_name'],
                 last_name=form.cleaned_data['last_name'],
             )
-            UserProfile.objects.create(user=user, phone=form.cleaned_data.get('phone', ''))
+            profile = UserProfile(
+                user_id=user.pk,
+                phone=form.cleaned_data.get('phone', ''),
+            )
+            profile.save()
             login(request, user)
             messages.success(request, f'Welcome, {user.first_name}! Your account has been created.')
             return redirect('home')
@@ -86,7 +99,7 @@ def logout_view(request):
 
 @login_required
 def profile_view(request):
-    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    profile = _get_or_create_profile(request.user)
     if request.method == 'POST':
         request.user.first_name = request.POST.get('first_name', '')
         request.user.last_name = request.POST.get('last_name', '')
@@ -94,8 +107,6 @@ def profile_view(request):
         request.user.save()
         profile.phone = request.POST.get('phone', '')
         profile.city = request.POST.get('city', '')
-        if request.FILES.get('photo'):
-            profile.photo = request.FILES['photo']
         profile.save()
         messages.success(request, 'Profile updated successfully!')
         return redirect('profile')

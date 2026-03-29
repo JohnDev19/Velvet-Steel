@@ -1,136 +1,164 @@
-from django.db import models
-from django.contrib.auth.models import User
+from mongoengine import (
+    Document, EmbeddedDocument,
+    StringField, IntField, DecimalField, BooleanField,
+    DateTimeField, DateField, TimeField,
+    ReferenceField, FloatField, ImageField,
+    CASCADE, SET_NULL
+)
 from django.utils import timezone
+import datetime
+import random
+import string
 
 
-class Service(models.Model):
-    CATEGORY_CHOICES = [
+class Service(Document):
+    CATEGORY_CHOICES = (
         ('haircut', 'Haircut'),
         ('shave', 'Shave & Beard'),
         ('treatment', 'Hair Treatment'),
         ('combo', 'Combo Package'),
         ('kids', "Kids' Cut"),
-    ]
-    name = models.CharField(max_length=100)
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='haircut')
-    description = models.TextField()
-    price = models.DecimalField(max_digits=8, decimal_places=2)
-    duration_minutes = models.IntegerField(default=30)
-    is_active = models.BooleanField(default=True)
-    icon = models.CharField(max_length=50, default='scissors')
-    created_at = models.DateTimeField(auto_now_add=True)
+    )
 
-    class Meta:
-        ordering = ['category', 'price']
+    name = StringField(max_length=100, required=True)
+    category = StringField(max_length=20, choices=CATEGORY_CHOICES, default='haircut')
+    description = StringField()
+    price = DecimalField(precision=2)
+    duration_minutes = IntField(default=30)
+    is_active = BooleanField(default=True)
+    icon = StringField(max_length=50, default='scissors')
+    created_at = DateTimeField(default=timezone.now)
+
+    meta = {
+        'collection': 'reservations_service',
+        'ordering': ['category', 'price'],
+    }
 
     def __str__(self):
         return f"{self.name} - ₱{self.price}"
 
+    def get_category_display(self):
+        return dict(self.CATEGORY_CHOICES).get(self.category, self.category)
 
-class Barber(models.Model):
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
-    name = models.CharField(max_length=100)
-    specialty = models.CharField(max_length=200)
-    bio = models.TextField()
-    experience_years = models.IntegerField(default=1)
-    photo = models.ImageField(upload_to='barbers/', null=True, blank=True)
-    is_active = models.BooleanField(default=True)
-    rating = models.DecimalField(max_digits=3, decimal_places=1, default=5.0)
-    instagram = models.CharField(max_length=100, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        ordering = ['name']
+class Barber(Document):
+    name = StringField(max_length=100, required=True)
+    specialty = StringField(max_length=200)
+    bio = StringField()
+    experience_years = IntField(default=1)
+    photo = StringField()  # store path/URL as string
+    is_active = BooleanField(default=True)
+    rating = DecimalField(precision=1, default=5.0)
+    instagram = StringField(max_length=100)
+    created_at = DateTimeField(default=timezone.now)
+
+    meta = {
+        'collection': 'reservations_barber',
+        'ordering': ['name'],
+    }
 
     def __str__(self):
         return self.name
 
 
-class TimeSlot(models.Model):
-    DAY_CHOICES = [
-        (0, 'Monday'), (1, 'Tuesday'), (2, 'Wednesday'),
-        (3, 'Thursday'), (4, 'Friday'), (5, 'Saturday'), (6, 'Sunday'),
-    ]
-    barber = models.ForeignKey(Barber, on_delete=models.CASCADE, related_name='time_slots')
-    day_of_week = models.IntegerField(choices=DAY_CHOICES)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    is_available = models.BooleanField(default=True)
-
-    class Meta:
-        ordering = ['day_of_week', 'start_time']
-
-    def __str__(self):
-        return f"{self.barber.name} - {self.get_day_of_week_display()} {self.start_time}"
-
-
-class Reservation(models.Model):
-    STATUS_CHOICES = [
+class Reservation(Document):
+    STATUS_CHOICES = (
         ('pending', 'Pending'),
         ('confirmed', 'Confirmed'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
         ('no_show', 'No Show'),
-    ]
-    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservations')
-    barber = models.ForeignKey(Barber, on_delete=models.CASCADE, related_name='reservations')
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    appointment_date = models.DateField()
-    appointment_time = models.TimeField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    notes = models.TextField(blank=True)
-    total_price = models.DecimalField(max_digits=8, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    confirmation_code = models.CharField(max_length=10, unique=True)
+    )
 
-    class Meta:
-        ordering = ['-appointment_date', '-appointment_time']
+    # Store user id (int) from Django auth
+    customer_id = IntField(required=True)
+    customer_username = StringField(max_length=150)
+    customer_name = StringField(max_length=200)
+
+    barber = ReferenceField(Barber, reverse_delete_rule=CASCADE)
+    service = ReferenceField(Service, reverse_delete_rule=CASCADE)
+
+    appointment_date = StringField()   # stored as 'YYYY-MM-DD'
+    appointment_time = StringField()   # stored as 'HH:MM'
+    status = StringField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    notes = StringField()
+    total_price = DecimalField(precision=2)
+    created_at = DateTimeField(default=timezone.now)
+    updated_at = DateTimeField(default=timezone.now)
+    confirmation_code = StringField(max_length=10, unique=True)
+
+    meta = {
+        'collection': 'reservations_reservation',
+        'ordering': ['-appointment_date', '-appointment_time'],
+    }
 
     def __str__(self):
-        return f"{self.customer.get_full_name()} - {self.appointment_date} {self.appointment_time}"
+        return f"{self.customer_name} - {self.appointment_date} {self.appointment_time}"
+
+    def get_status_display(self):
+        return dict(self.STATUS_CHOICES).get(self.status, self.status)
+
+    @property
+    def appointment_date_obj(self):
+        try:
+            return datetime.date.fromisoformat(self.appointment_date)
+        except Exception:
+            return None
+
+    @property
+    def appointment_time_obj(self):
+        try:
+            return datetime.time.fromisoformat(self.appointment_time)
+        except Exception:
+            return None
 
     def save(self, *args, **kwargs):
         if not self.confirmation_code:
-            import random, string
-            self.confirmation_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-        if not self.total_price:
+            self.confirmation_code = ''.join(
+                random.choices(string.ascii_uppercase + string.digits, k=8)
+            )
+        if not self.total_price and self.service:
             self.total_price = self.service.price
+        self.updated_at = timezone.now()
         super().save(*args, **kwargs)
 
 
-class Testimonial(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    customer_name = models.CharField(max_length=100)
-    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)], default=5)
-    comment = models.TextField()
-    service = models.ForeignKey(Service, on_delete=models.SET_NULL, null=True, blank=True)
-    is_approved = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+class Testimonial(Document):
+    customer_id = IntField(null=True)
+    customer_name = StringField(max_length=100)
+    rating = IntField(min_value=1, max_value=5, default=5)
+    comment = StringField()
+    service = ReferenceField(Service, null=True)
+    is_approved = BooleanField(default=False)
+    created_at = DateTimeField(default=timezone.now)
 
-    class Meta:
-        ordering = ['-created_at']
+    meta = {
+        'collection': 'reservations_testimonial',
+        'ordering': ['-created_at'],
+    }
 
     def __str__(self):
         return f"{self.customer_name} - {self.rating}★"
 
 
-class GalleryImage(models.Model):
-    title = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='gallery/')
-    barber = models.ForeignKey(Barber, on_delete=models.SET_NULL, null=True, blank=True)
-    is_featured = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+class GalleryImage(Document):
+    title = StringField(max_length=100)
+    image = StringField()  # store path/URL
+    barber = ReferenceField(Barber, null=True)
+    is_featured = BooleanField(default=False)
+    created_at = DateTimeField(default=timezone.now)
 
-    class Meta:
-        ordering = ['-created_at']
+    meta = {
+        'collection': 'reservations_galleryimage',
+        'ordering': ['-created_at'],
+    }
 
     def __str__(self):
         return self.title
 
 
-class HaircutStyle(models.Model):
-    CATEGORY_CHOICES = [
+class HaircutStyle(Document):
+    CATEGORY_CHOICES = (
         ('buzz_cut', 'Buzz Cut'),
         ('modern_mullet', 'Modern Mullet'),
         ('burst_fade', 'Burst Fade'),
@@ -141,18 +169,23 @@ class HaircutStyle(models.Model):
         ('pompadour', 'Pompadour'),
         ('quiff', 'Quiff'),
         ('french_crop', 'French Crop'),
-    ]
-    name = models.CharField(max_length=120)
-    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
-    description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
-    image = models.ImageField(upload_to='haircuts/', null=True, blank=True,
-                              help_text='Upload a photo of this haircut style.')
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    )
 
-    class Meta:
-        ordering = ['category', 'price']
+    name = StringField(max_length=120, required=True)
+    category = StringField(max_length=30, choices=CATEGORY_CHOICES)
+    description = StringField()
+    price = DecimalField(precision=2)
+    image = StringField()  # store path/URL
+    is_active = BooleanField(default=True)
+    created_at = DateTimeField(default=timezone.now)
+
+    meta = {
+        'collection': 'reservations_haircutstyle',
+        'ordering': ['category', 'price'],
+    }
 
     def __str__(self):
         return f"{self.get_category_display()} – {self.name}"
+
+    def get_category_display(self):
+        return dict(self.CATEGORY_CHOICES).get(self.category, self.category)
