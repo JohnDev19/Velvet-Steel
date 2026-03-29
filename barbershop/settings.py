@@ -26,7 +26,6 @@ CSRF_TRUSTED_ORIGINS = [
 
 # ── APPS ─────────────────────────────────────────────────────
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -76,10 +75,13 @@ DATABASES = {
 }
 
 # ── MONGODB via MongoEngine ──────────────────────────────────
-mongoengine.connect(
-    host=os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/velvetsteel'),
-    alias='default',
-)
+MONGODB_URI = os.environ.get('MONGODB_URI', '')
+
+if MONGODB_URI:
+    mongoengine.connect(host=MONGODB_URI, alias='default')
+else:
+    import sys
+    print("WARNING: MONGODB_URI not set", file=sys.stderr)
 
 # ── SESSIONS ─────────────────
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
