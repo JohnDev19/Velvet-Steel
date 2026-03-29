@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils import timezone
-from django.http import JsonResponse
 from functools import wraps
 from .models import Reservation, Service, Barber, Testimonial, GalleryImage, HaircutStyle
 import datetime
@@ -27,13 +26,13 @@ def admin_dashboard(request):
 
     total_reservations = Reservation.objects.count()
     today_reservations = Reservation.objects(appointment_date=today).count()
-    pending = Reservation.objects(status='pending').count()
+    pending   = Reservation.objects(status='pending').count()
     confirmed = Reservation.objects(status='confirmed').count()
     completed = Reservation.objects(status='completed').count()
     cancelled = Reservation.objects(status='cancelled').count()
 
     completed_today = Reservation.objects(appointment_date=today, status='completed')
-    revenue_today = sum(float(r.total_price or 0) for r in completed_today)
+    revenue_today   = sum(float(r.total_price or 0) for r in completed_today)
 
     month_start = today_obj.replace(day=1).isoformat()
     completed_month = Reservation.objects(
@@ -43,40 +42,37 @@ def admin_dashboard(request):
     )
     revenue_month = sum(float(r.total_price or 0) for r in completed_month)
 
-    recent_reservations = Reservation.objects.order_by('-created_at')[:10]
+    recent_reservations  = Reservation.objects.order_by('-created_at')[:10]
     pending_testimonials = Testimonial.objects(is_approved=False).count()
 
-    context = {
-        'total_reservations': total_reservations,
-        'today_reservations': today_reservations,
-        'pending': pending,
+    return render(request, 'admin_panel/dashboard.html', {
+        'total_reservations':  total_reservations,
+        'today_reservations':  today_reservations,
+        'pending':   pending,
         'confirmed': confirmed,
         'completed': completed,
         'cancelled': cancelled,
-        'revenue_today': revenue_today,
-        'revenue_month': revenue_month,
-        'recent_reservations': recent_reservations,
+        'revenue_today':  revenue_today,
+        'revenue_month':  revenue_month,
+        'recent_reservations':  recent_reservations,
         'pending_testimonials': pending_testimonials,
         'today': today_obj,
-    }
-    return render(request, 'admin_panel/dashboard.html', context)
+    })
 
 
 @admin_required
 def admin_reservations(request):
     status_filter = request.GET.get('status', '')
-    date_filter = request.GET.get('date', '')
-
+    date_filter   = request.GET.get('date', '')
     qs = Reservation.objects.order_by('-created_at')
     if status_filter:
         qs = qs.filter(status=status_filter)
     if date_filter:
         qs = qs.filter(appointment_date=date_filter)
-
     return render(request, 'admin_panel/reservations.html', {
-        'reservations': qs,
+        'reservations':  qs,
         'status_filter': status_filter,
-        'date_filter': date_filter,
+        'date_filter':   date_filter,
     })
 
 
@@ -98,20 +94,23 @@ def admin_update_reservation(request, pk):
 
 @admin_required
 def admin_services(request):
-    services = Service.objects.all()
-    return render(request, 'admin_panel/services.html', {'services': services})
+    return render(request, 'admin_panel/services.html', {
+        'services': Service.objects.all()
+    })
 
 
 @admin_required
 def admin_barbers(request):
-    barbers = Barber.objects.all()
-    return render(request, 'admin_panel/barbers.html', {'barbers': barbers})
+    return render(request, 'admin_panel/barbers.html', {
+        'barbers': Barber.objects.all()
+    })
 
 
 @admin_required
 def admin_testimonials(request):
-    testimonials = Testimonial.objects.order_by('-created_at')
-    return render(request, 'admin_panel/testimonials.html', {'testimonials': testimonials})
+    return render(request, 'admin_panel/testimonials.html', {
+        'testimonials': Testimonial.objects.order_by('-created_at')
+    })
 
 
 @admin_required
@@ -128,21 +127,21 @@ def admin_analytics(request):
     today = timezone.now().date()
     days_data = []
     for i in range(6, -1, -1):
-        day = today - datetime.timedelta(days=i)
+        day     = today - datetime.timedelta(days=i)
         day_str = day.isoformat()
-        count = Reservation.objects(appointment_date=day_str).count()
-        completed = Reservation.objects(appointment_date=day_str, status='completed')
-        revenue = sum(float(r.total_price or 0) for r in completed)
+        count   = Reservation.objects(appointment_date=day_str).count()
+        done    = Reservation.objects(appointment_date=day_str, status='completed')
+        revenue = sum(float(r.total_price or 0) for r in done)
         days_data.append({'date': day.strftime('%b %d'), 'count': count, 'revenue': revenue})
 
     from collections import Counter
-    service_counter = Counter()
+    svc_counter = Counter()
     for r in Reservation.objects.only('service'):
         if r.service:
-            service_counter[str(r.service.id)] += 1
+            svc_counter[str(r.service.id)] += 1
 
     service_stats = []
-    for svc_id, count in service_counter.most_common(5):
+    for svc_id, count in svc_counter.most_common(5):
         svc = Service.objects(id=svc_id).first()
         if svc:
             svc.booking_count = count
@@ -160,9 +159,9 @@ def admin_analytics(request):
     barber_stats.sort(key=lambda b: b.booking_count, reverse=True)
 
     return render(request, 'admin_panel/analytics.html', {
-        'days_data': days_data,
+        'days_data':    days_data,
         'service_stats': service_stats,
-        'barber_stats': barber_stats,
+        'barber_stats':  barber_stats,
     })
 
 
@@ -172,22 +171,19 @@ def admin_haircut_styles(request):
     styles = HaircutStyle.objects.all()
     if category_filter:
         styles = styles.filter(category=category_filter)
-
-    categories = HaircutStyle.CATEGORY_CHOICES
-
     return render(request, 'admin_panel/haircut_styles.html', {
-        'styles': styles,
-        'categories': categories,
+        'styles':          styles,
+        'categories':      HaircutStyle.CATEGORY_CHOICES,
         'category_filter': category_filter,
     })
 
 
 def _image_to_data_uri(image_file):
+    """Encode upload as base64 data-URI for MongoDB StringField storage."""
     if not image_file:
         return None
     mime = getattr(image_file, 'content_type', None) or 'image/jpeg'
-    raw = image_file.read()
-    b64 = base64.b64encode(raw).decode('utf-8')
+    b64  = base64.b64encode(image_file.read()).decode('utf-8')
     return f"data:{mime};base64,{b64}"
 
 
@@ -197,22 +193,18 @@ def admin_haircut_style_add(request):
     if request.method == 'POST':
         form = HaircutStyleForm(request.POST, request.FILES)
         if form.is_valid():
-            data = form.cleaned_data.copy()
+            data       = form.cleaned_data.copy()
             image_file = data.pop('image', None)
-
-            style = HaircutStyle(**data)
+            style      = HaircutStyle(**data)
             if image_file:
                 style.image = _image_to_data_uri(image_file)
-
             style.save()
             messages.success(request, f'"{style.name}" added successfully.')
             return redirect('admin_haircut_styles')
     else:
         form = HaircutStyleForm()
-
     return render(request, 'admin_panel/haircut_style_form.html', {
-        'form': form,
-        'action': 'Add',
+        'form': form, 'action': 'Add',
     })
 
 
@@ -227,15 +219,12 @@ def admin_haircut_style_edit(request, pk):
     if request.method == 'POST':
         form = HaircutStyleForm(request.POST, request.FILES)
         if form.is_valid():
-            data = form.cleaned_data.copy()
+            data       = form.cleaned_data.copy()
             image_file = data.pop('image', None)
-
             for k, v in data.items():
                 setattr(style, k, v)
-
             if image_file:
                 style.image = _image_to_data_uri(image_file)
-
             style.save()
             messages.success(request, f'"{style.name}" updated successfully.')
             return redirect('admin_haircut_styles')
@@ -247,11 +236,8 @@ def admin_haircut_style_edit(request, pk):
             'price':       style.price,
             'is_active':   style.is_active,
         })
-
     return render(request, 'admin_panel/haircut_style_form.html', {
-        'form': form,
-        'action': 'Edit',
-        'style': style,
+        'form': form, 'action': 'Edit', 'style': style,
     })
 
 

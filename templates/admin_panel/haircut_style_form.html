@@ -1,205 +1,73 @@
 {% extends 'admin_panel/base_admin.html' %}
-{% block title %}{{ action }} Haircut Style{% endblock %}
-{% block page_title %}{{ action }} Haircut Style{% endblock %}
-
+{% block title %}Haircut Styles{% endblock %}
+{% block page_title %}Haircut Styles{% endblock %}
 {% block content %}
 
 <div class="admin-page-header">
-    <h2>{{ action }} Haircut Style</h2>
-    <a href="{% url 'admin_haircut_styles' %}" class="btn-outline btn-sm">
-        <i class="fas fa-arrow-left"></i> Back to Styles
-    </a>
+    <h2>Haircut Styles <span class="count-badge">{{ styles.count }}</span></h2>
+    <a href="{% url 'admin_haircut_style_add' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> Add Style</a>
 </div>
 
 <div class="admin-section">
-    <div class="form-card">
-        <form method="post" enctype="multipart/form-data" id="styleForm">
-            {% csrf_token %}
-
-            <!-- Row 1 · Name + Price Tier -->
-            <div class="form-row-2">
-                <div class="form-group">
-                    <label class="form-label">Style Name *</label>
-                    {{ form.name }}
-                    {% if form.name.errors %}
-                        <div class="form-error">{{ form.name.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Price Tier *</label>
-                    <div class="tier-select-wrap">
-                        {{ form.category }}
-                        <div class="tier-preview" id="tierPreview" data-tier="">
-                            <i class="fas fa-tag"></i>
-                            <span class="tier-preview-range" id="tierRange"></span>
-                            <span class="tier-preview-label" id="tierLabel"></span>
-                        </div>
-                    </div>
-                    {% if form.category.errors %}
-                        <div class="form-error">{{ form.category.errors.0 }}</div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Row 2 · Price + Photo -->
-            <div class="form-row-2">
-                <div class="form-group">
-                    <label class="form-label">Price (₱) *</label>
-                    {{ form.price }}
-                    <small class="form-hint">
-                        ₱70–100 Basic &nbsp;·&nbsp;
-                        ₱100–200 Finish &nbsp;·&nbsp;
-                        ₱200–350 Styled &nbsp;·&nbsp;
-                        ₱350–600 Fade &nbsp;·&nbsp;
-                        ₱600+ Premium
-                    </small>
-                    {% if form.price.errors %}
-                        <div class="form-error">{{ form.price.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Style Photo</label>
-
-                    {% if style and style.image %}
-                    <div class="current-photo-row">
-                        <img src="{{ style.image }}" alt="{{ style.name }}">
-                        <div class="current-photo-meta">
-                            <strong>Current photo</strong>
-                            <span>Upload a new image to replace it.</span>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    <label class="upload-zone" id="uploadZone" for="id_image">
-                        <div class="upload-zone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                        <strong class="upload-zone-title">Click to upload or drag & drop</strong>
-                        <span class="upload-zone-hint">JPG, PNG, WEBP &nbsp;·&nbsp; Recommended 600 × 450 px</span>
-                        {{ form.image }}
-                    </label>
-
-                    <div class="upload-preview-wrap" id="previewWrap">
-                        <button type="button" class="upload-preview-clear" id="clearBtn" title="Remove">
-                            <i class="fas fa-times"></i>
-                        </button>
-                        <img src="" alt="Preview" class="upload-preview-img" id="previewImg">
-                        <span class="upload-preview-name" id="previewName"></span>
-                    </div>
-
-                    {% if form.image.errors %}
-                        <div class="form-error">{{ form.image.errors.0 }}</div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Description -->
-            <div class="form-group">
-                <label class="form-label">Description</label>
-                {{ form.description }}
-                {% if form.description.errors %}
-                    <div class="form-error">{{ form.description.errors.0 }}</div>
-                {% endif %}
-            </div>
-
-            <!-- Active -->
-            <div class="form-group form-check-group">
-                {{ form.is_active }}
-                <label class="form-check-label">Active (show on services page)</label>
-            </div>
-
-            <!-- Submit -->
-            <div class="form-actions">
-                <button type="submit" class="btn-gold">
-                    <i class="fas fa-save"></i> Save Style
-                </button>
-                <a href="{% url 'admin_haircut_styles' %}" class="btn-outline">Cancel</a>
-            </div>
+    <div class="filter-row">
+        <form method="get" class="filter-form">
+            <select name="category" class="form-control form-control-sm" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for value, label in categories %}
+                <option value="{{ value }}" {% if category_filter == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            {% if category_filter %}
+            <a href="{% url 'admin_haircut_styles' %}" class="btn-outline btn-sm">Clear</a>
+            {% endif %}
         </form>
     </div>
 </div>
 
-{% endblock %}
+<div class="admin-section">
+    {% if styles %}
+    <div class="haircut-styles-grid">
+        {% for style in styles %}
+        <div class="style-card-admin">
+            <div class="style-card-img">
+                {% if style.image %}
+                <img src="{{ style.image }}" alt="{{ style.name }}">
+                {% else %}
+                <div class="style-img-placeholder"><i class="fas fa-cut"></i></div>
+                {% endif %}
+                <div class="style-card-overlay">
+                    <a href="{% url 'admin_haircut_style_edit' style.id %}" class="btn-gold btn-sm">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <form method="post" action="{% url 'admin_haircut_style_delete' style.id %}"
+                          onsubmit="return confirm('Delete {{ style.name }}?')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</button>
+                    </form>
+                </div>
+            </div>
+            <div class="style-card-body">
+                <span class="style-category-tag">{{ style.get_category_display }}</span>
+                <h4 class="style-name">{{ style.name }}</h4>
+                <div class="style-meta">
+                    <span class="style-price">₱{{ style.price }}</span>
+                    <span class="qs-dot {% if style.is_active %}dot-completed{% else %}dot-cancelled{% endif %}"></span>
+                </div>
+                {% if style.description %}
+                <p class="style-desc-small">{{ style.description|truncatechars:70 }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state-admin">
+        <div class="empty-icon"><i class="fas fa-cut"></i></div>
+        <h3>No haircut styles yet</h3>
+        <p>Add your first haircut style to display them on the services page.</p>
+        <a href="{% url 'admin_haircut_style_add' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> Add First Style</a>
+    </div>
+    {% endif %}
+</div>
 
-{% block extra_js %}
-<script>
-/* ── PRICE TIER LIVE PREVIEW ─────────────────────────── */
-const TIERS = {
-    basic:   { range: '₱70 – ₱100',     label: 'Traditional, basic cut',  icon: 'fas fa-scissors' },
-    finish:  { range: '₱100 – ₱200',    label: 'Cleaner finish',           icon: 'fas fa-cut' },
-    styled:  { range: '₱200 – ₱350',    label: 'Styled cuts',              icon: 'fas fa-magic' },
-    fade:    { range: '₱350 – ₱600',    label: 'Advanced fades & shaping', icon: 'fas fa-layer-group' },
-    premium: { range: '₱600 – ₱1,000+', label: 'Premium full service',     icon: 'fas fa-crown' },
-};
-
-const catSel    = document.querySelector('select.form-control-tier');
-const tierBar   = document.getElementById('tierPreview');
-const tierRange = document.getElementById('tierRange');
-const tierLabel = document.getElementById('tierLabel');
-
-function refreshTier() {
-    const t = TIERS[catSel ? catSel.value : ''];
-    if (!t) { if (tierBar) tierBar.style.display = 'none'; return; }
-    tierBar.setAttribute('data-tier', catSel.value);
-    tierBar.querySelector('i').className = t.icon;
-    tierRange.textContent = t.range;
-    tierLabel.textContent = '· ' + t.label;
-    tierBar.style.display = 'flex';
-}
-
-if (catSel) {
-    catSel.addEventListener('change', refreshTier);
-    refreshTier();
-}
-
-/* ── IMAGE UPLOAD PREVIEW ────────────────────────────── */
-const fileInput   = document.getElementById('id_image');
-const uploadZone  = document.getElementById('uploadZone');
-const previewWrap = document.getElementById('previewWrap');
-const previewImg  = document.getElementById('previewImg');
-const previewName = document.getElementById('previewName');
-const clearBtn    = document.getElementById('clearBtn');
-
-function showPreview(file) {
-    if (!file || !file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-        previewImg.src = e.target.result;
-        previewName.textContent = file.name + ' · ' + (file.size / 1024).toFixed(0) + ' KB';
-        previewWrap.style.display = 'block';
-        uploadZone.classList.add('upload-zone-active');
-    };
-    reader.readAsDataURL(file);
-}
-
-if (fileInput) {
-    fileInput.addEventListener('change', () => {
-        if (fileInput.files[0]) showPreview(fileInput.files[0]);
-    });
-}
-
-if (clearBtn) {
-    clearBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        fileInput.value = '';
-        previewImg.src  = '';
-        previewWrap.style.display = 'none';
-        uploadZone.classList.remove('upload-zone-active');
-    });
-}
-
-if (uploadZone) {
-    uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('upload-zone-drag'); });
-    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('upload-zone-drag'));
-    uploadZone.addEventListener('drop', e => {
-        e.preventDefault();
-        uploadZone.classList.remove('upload-zone-drag');
-        const file = e.dataTransfer.files[0];
-        if (file) {
-            try { const dt = new DataTransfer(); dt.items.add(file); fileInput.files = dt.files; } catch(_) {}
-            showPreview(file);
-        }
-    });
-}
-</script>
 {% endblock %}
