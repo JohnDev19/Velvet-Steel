@@ -5,7 +5,7 @@ from collections import defaultdict
 
 
 def home(request):
-    barbers = Barber.objects(is_active=True)[:3]
+    barbers = Barber.objects(is_active=True)
     context = {
         'barbers': barbers,
         'shop_name': settings.BARBERSHOP_NAME,
