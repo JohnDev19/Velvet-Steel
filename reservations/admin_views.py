@@ -93,13 +93,6 @@ def admin_update_reservation(request, pk):
 
 
 @admin_required
-def admin_services(request):
-    return render(request, 'admin_panel/services.html', {
-        'services': Service.objects.all()
-    })
-
-
-@admin_required
 def admin_barbers(request):
     return render(request, 'admin_panel/barbers.html', {
         'barbers': Barber.objects.all()

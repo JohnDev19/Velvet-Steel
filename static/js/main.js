@@ -11,24 +11,43 @@ if (navbar) {
 // ===================== MOBILE NAV TOGGLE
 const navToggle = document.getElementById('navToggle');
 const navLinks = document.getElementById('navLinks');
+
+function closeNav() {
+  if (!navLinks || !navToggle) return;
+  navLinks.classList.remove('open');
+  navToggle.classList.remove('active');
+  navToggle.querySelectorAll('span').forEach(s => {
+    s.style.transform = '';
+    s.style.opacity = '';
+  });
+}
+
 if (navToggle && navLinks) {
-  navToggle.addEventListener('click', () => {
-    navLinks.classList.toggle('open');
-    // animate hamburger
-    const spans = navToggle.querySelectorAll('span');
-    navToggle.classList.toggle('active');
-    if (navToggle.classList.contains('active')) {
+  navToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = navLinks.classList.contains('open');
+    if (isOpen) {
+      closeNav();
+    } else {
+      navLinks.classList.add('open');
+      navToggle.classList.add('active');
+      const spans = navToggle.querySelectorAll('span');
       spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
       spans[1].style.opacity = '0';
       spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
-    } else {
-      spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
     }
   });
+
+  // Close when clicking outside the navbar
   document.addEventListener('click', (e) => {
-    if (!navbar.contains(e.target)) {
-      navLinks.classList.remove('open');
+    if (navbar && !navbar.contains(e.target)) {
+      closeNav();
     }
+  });
+
+  // Close when a nav link is tapped on mobile
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => closeNav());
   });
 }
 
