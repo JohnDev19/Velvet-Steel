@@ -70,10 +70,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'barbershop.wsgi.application'
 
-# ── DATABASE ──
+# ── DATABASE ──────────────────────────────────────────────────
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.dummy',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '/tmp/velvetsteel.db',
     }
 }
 
