@@ -65,7 +65,7 @@ class HaircutStyleForm(forms.Form):
         })
     )
     category = forms.ChoiceField(
-        choices=HaircutStyle.CATEGORY_CHOICES,
+        choices=[('', '— Select a tier —')] + list(HaircutStyle.CATEGORY_CHOICES),
         widget=forms.Select(attrs={'class': 'form-control form-control-tier'}),
     )
     description = forms.CharField(
