@@ -1,4 +1,5 @@
 import os
+import mongoengine
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -19,15 +20,12 @@ ALLOWED_HOSTS = [
 ] + [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h.strip()]
 
 CSRF_TRUSTED_ORIGINS = [
-    o.strip() for o in os.environ.get(
-        'CSRF_TRUSTED_ORIGINS', 'https://*.vercel.app'
-    ).split(',') if o.strip()
-]
+    'https://*.vercel.app',
+    'https://velvet-steel-ph.vercel.app',
+] + [o.strip() for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
 
 # ── APPS ─────────────────────────────────────────────────────
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -43,7 +41,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'accounts.middleware.MongoAuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -60,7 +58,6 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -69,28 +66,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'barbershop.wsgi.application'
 
-# ── DATABASE ────────────────────────────
+# ── DATABASE ─────────────────────────────────────────────────
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': os.environ.get('MONGODB_NAME', 'velvetsteelph'),
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': os.environ.get('MONGODB_URI', 'mongodb://localhost:27017'),
-            'serverSelectionTimeoutMS': 5000,
-        },
+        'ENGINE': 'django.db.backends.dummy'
     }
 }
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+# ── MONGODB via MongoEngine ──────────────────────────────────
+mongoengine.connect(
+    host=os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/velvetsteel'),
+    alias='default',
+)
 
-# ── AUTH PASSWORD VALIDATORS ─────────────────────────────────
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
+# ── SESSIONS ─────────────────
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 1209600  # 2 weeks
+SESSION_COOKIE_SECURE = not DEBUG
+
+# ── MESSAGES ─────────────────
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
 # ── INTERNATIONALISATION ─────────────────────────────────────
 LANGUAGE_CODE = 'en-us'
@@ -124,16 +120,10 @@ EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL = os.environ.get(
-    'DEFAULT_FROM_EMAIL',
-    'noreply@velvetsteel.ph'
-)
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@velvetsteel.ph')
 
 # ── BARBERSHOP INFO ──────────────────────────────────────────
 BARBERSHOP_NAME = os.environ.get('BARBERSHOP_NAME', 'Velvet Steel Barbershop')
 BARBERSHOP_PHONE = os.environ.get('BARBERSHOP_PHONE', '+63 912 345 6789')
-BARBERSHOP_ADDRESS = os.environ.get(
-    'BARBERSHOP_ADDRESS',
-    '123 Rizal Avenue, Quezon City, Metro Manila'
-)
+BARBERSHOP_ADDRESS = os.environ.get('BARBERSHOP_ADDRESS', '123 Rizal Avenue, Quezon City, Metro Manila')
 BARBERSHOP_EMAIL = os.environ.get('BARBERSHOP_EMAIL', 'info@velvetsteel.ph')
