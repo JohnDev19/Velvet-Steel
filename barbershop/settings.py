@@ -15,13 +15,15 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '.vercel.app',
-    'velvet-steel-ph.vercel.app',
+    '.replit.dev',
+    '.replit.app',
+    '.repl.co',
 ] + [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h.strip()]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.vercel.app',
-    'https://velvet-steel-ph.vercel.app',
+    'https://*.replit.dev',
+    'https://*.replit.app',
+    'https://*.repl.co',
 ] + [o.strip() for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
 
 # ── APPS ─────────────────────────────────────────────────────
@@ -81,14 +83,17 @@ DATABASES = {
 # ── MONGODB via MongoEngine ──────────────────────────────────
 MONGODB_URI = os.environ.get('MONGODB_URI', '')
 
-if MONGODB_URI:
-    try:
-        import mongoengine
-        mongoengine.connect(host=MONGODB_URI, alias='default')
-    except Exception as e:
-        print(f"WARNING: MongoDB connection failed: {e}", file=sys.stderr)
-else:
-    print("WARNING: MONGODB_URI environment variable is not set.", file=sys.stderr)
+try:
+    import mongoengine
+    if MONGODB_URI:
+        mongoengine.connect(host=MONGODB_URI, alias='default', serverSelectionTimeoutMS=5000)
+        print("INFO: MongoDB connected.", file=sys.stderr)
+    else:
+        print("WARNING: MONGODB_URI is not set. MongoDB features will not work.", file=sys.stderr)
+        mongoengine.connect('velvetsteel_dev', host='localhost', port=27017, alias='default',
+                            serverSelectionTimeoutMS=1000)
+except Exception as e:
+    print(f"WARNING: MongoDB connection error: {e}", file=sys.stderr)
 
 # ── SESSIONS ─────────────────────────────────────────────────
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'

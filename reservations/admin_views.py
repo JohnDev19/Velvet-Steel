@@ -198,9 +198,12 @@ def admin_haircut_style_add(request):
             style      = HaircutStyle(**data)
             if image_file:
                 style.image = _image_to_data_uri(image_file)
-            style.save()
-            messages.success(request, f'"{style.name}" added successfully.')
-            return redirect('admin_haircut_styles')
+            try:
+                style.save()
+                messages.success(request, f'"{style.name}" added successfully.')
+                return redirect('admin_haircut_styles')
+            except Exception as e:
+                messages.error(request, f'Could not save: {e}. Make sure MONGODB_URI is configured.')
     else:
         form = HaircutStyleForm()
     return render(request, 'admin_panel/haircut_style_form.html', {
@@ -225,9 +228,12 @@ def admin_haircut_style_edit(request, pk):
                 setattr(style, k, v)
             if image_file:
                 style.image = _image_to_data_uri(image_file)
-            style.save()
-            messages.success(request, f'"{style.name}" updated successfully.')
-            return redirect('admin_haircut_styles')
+            try:
+                style.save()
+                messages.success(request, f'"{style.name}" updated successfully.')
+                return redirect('admin_haircut_styles')
+            except Exception as e:
+                messages.error(request, f'Could not save: {e}. Make sure MONGODB_URI is configured.')
     else:
         form = HaircutStyleForm(initial={
             'name':        style.name,
