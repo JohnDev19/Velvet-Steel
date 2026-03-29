@@ -6,16 +6,20 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-change-in-production')
+# ── CORE ─────────────────────────────────────────────────────
+SECRET_KEY = os.environ.get('SECRET_KEY', 'change-this-in-production')
 
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '*').split(',')]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.vercel.app",
+    o.strip() for o in os.environ.get(
+        'CSRF_TRUSTED_ORIGINS', 'https://*.vercel.app'
+    ).split(',') if o.strip()
 ]
 
+# ── APPS ─────────────────────────────────────────────────────
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -27,6 +31,7 @@ INSTALLED_APPS = [
     'accounts',
 ]
 
+# ── MIDDLEWARE ───────────────────────────────────────────────
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -40,6 +45,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'barbershop.urls'
 
+# ── TEMPLATES ────────────────────────────────────────────────
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -58,33 +64,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'barbershop.wsgi.application'
 
-_database_url = os.environ.get('DATABASE_URL')
-
-if _database_url:
-    from urllib.parse import urlparse as _urlparse
-    _db = _urlparse(_database_url)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': _db.path.lstrip('/'),
-            'USER': _db.username,
-            'PASSWORD': _db.password,
-            'HOST': _db.hostname,
-            'PORT': _db.port or 5432,
-        }
+# ── DATABASE (MongoDB via djongo) ────────────────────────────
+DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': os.environ.get('MONGODB_NAME', 'velvetsteel'),
+        'CLIENT': {
+            'host': os.environ.get('MONGODB_URI', 'mongodb://localhost:27017'),
+        },
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('PGDATABASE', 'barbershop_db'),
-            'USER': os.environ.get('PGUSER', ''),
-            'PASSWORD': os.environ.get('PGPASSWORD', ''),
-            'HOST': os.environ.get('PGHOST', 'localhost'),
-            'PORT': os.environ.get('PGPORT', '5432'),
-        }
-    }
+}
 
+# ── AUTH PASSWORD VALIDATORS ─────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -92,11 +83,13 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# ── INTERNATIONALISATION ─────────────────────────────────────
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Manila'
 USE_I18N = True
 USE_TZ = True
 
+# ── STATIC & MEDIA ───────────────────────────────────────────
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -107,19 +100,31 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# ── AUTH REDIRECTS ───────────────────────────────────────────
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+# ── EMAIL ────────────────────────────────────────────────────
+EMAIL_BACKEND = os.environ.get(
+    'EMAIL_BACKEND',
+    'django.core.mail.backends.console.EmailBackend'
+)
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@barbershop.ph')
+DEFAULT_FROM_EMAIL = os.environ.get(
+    'DEFAULT_FROM_EMAIL',
+    'noreply@velvetsteel.ph'
+)
 
+# ── BARBERSHOP INFO ──────────────────────────────────────────
 BARBERSHOP_NAME = os.environ.get('BARBERSHOP_NAME', 'Velvet Steel Barbershop')
 BARBERSHOP_PHONE = os.environ.get('BARBERSHOP_PHONE', '+63 912 345 6789')
-BARBERSHOP_ADDRESS = os.environ.get('BARBERSHOP_ADDRESS', '123 Rizal Avenue, Quezon City, Metro Manila')
+BARBERSHOP_ADDRESS = os.environ.get(
+    'BARBERSHOP_ADDRESS',
+    '123 Rizal Avenue, Quezon City, Metro Manila'
+)
 BARBERSHOP_EMAIL = os.environ.get('BARBERSHOP_EMAIL', 'info@velvetsteel.ph')
