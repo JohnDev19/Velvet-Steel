@@ -127,3 +127,32 @@ class GalleryImage(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class HaircutStyle(models.Model):
+    CATEGORY_CHOICES = [
+        ('buzz_cut', 'Buzz Cut'),
+        ('modern_mullet', 'Modern Mullet'),
+        ('burst_fade', 'Burst Fade'),
+        ('curtain_bangs', 'Curtain Bangs'),
+        ('skin_fade', 'Skin Fade'),
+        ('undercut', 'Undercut'),
+        ('textured_crop', 'Textured Crop'),
+        ('pompadour', 'Pompadour'),
+        ('quiff', 'Quiff'),
+        ('french_crop', 'French Crop'),
+    ]
+    name = models.CharField(max_length=120)
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
+    description = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    image = models.ImageField(upload_to='haircuts/', null=True, blank=True,
+                              help_text='Upload a photo of this haircut style.')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['category', 'price']
+
+    def __str__(self):
+        return f"{self.get_category_display()} – {self.name}"

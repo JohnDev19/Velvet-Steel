@@ -1,0 +1,71 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}{{ action }} Haircut Style{% endblock %}
+{% block page_title %}{{ action }} Haircut Style{% endblock %}
+{% block content %}
+
+<div class="admin-page-header">
+    <h2>{{ action }} Haircut Style</h2>
+    <a href="{% url 'admin_haircut_styles' %}" class="btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Back to Styles</a>
+</div>
+
+<div class="admin-section">
+    <div class="form-card">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label">Style Name *</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<div class="form-error">{{ form.name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category *</label>
+                    {{ form.category }}
+                    {% if form.category.errors %}<div class="form-error">{{ form.category.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label">Price (₱) *</label>
+                    {{ form.price }}
+                    <small class="form-hint">₱70–₱100 Basic &nbsp;|&nbsp; ₱100–₱200 Finish &nbsp;|&nbsp; ₱200–₱350 Styled &nbsp;|&nbsp; ₱350–₱600 Fade &nbsp;|&nbsp; ₱600+ Premium</small>
+                    {% if form.price.errors %}<div class="form-error">{{ form.price.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Photo</label>
+                    {% if style and style.image %}
+                    <div class="current-img-preview">
+                        <img src="{{ style.image.url }}" alt="{{ style.name }}">
+                        <small>Current photo — upload a new one to replace it</small>
+                    </div>
+                    {% endif %}
+                    {{ form.image }}
+                    <small class="form-hint">Accepted: JPG, PNG, WEBP. Recommended: 600×450 px.</small>
+                    {% if form.image.errors %}<div class="form-error">{{ form.image.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                {{ form.description }}
+                {% if form.description.errors %}<div class="form-error">{{ form.description.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="form-group form-check-group">
+                {{ form.is_active }}
+                <label class="form-check-label">Active (show on services page)</label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-gold">
+                    <i class="fas fa-save"></i> Save Style
+                </button>
+                <a href="{% url 'admin_haircut_styles' %}" class="btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

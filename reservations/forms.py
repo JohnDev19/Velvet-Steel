@@ -1,6 +1,6 @@
 from django import forms
 from django.utils import timezone
-from .models import Reservation, Service, Barber, Testimonial
+from .models import Reservation, Service, Barber, Testimonial, HaircutStyle
 import datetime
 
 
@@ -73,4 +73,19 @@ class TestimonialForm(forms.ModelForm):
             'comment': forms.Textarea(attrs={'class': 'form-control', 'rows': 4,
                                              'placeholder': 'Share your experience...'}),
             'service': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+
+class HaircutStyleForm(forms.ModelForm):
+    class Meta:
+        model = HaircutStyle
+        fields = ['name', 'category', 'description', 'price', 'image', 'is_active']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Classic Buzz Cut'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3,
+                                                 'placeholder': 'Brief description of this style...'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01',
+                                              'placeholder': '0.00'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }

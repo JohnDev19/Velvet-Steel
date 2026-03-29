@@ -1,0 +1,75 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Haircut Styles{% endblock %}
+{% block page_title %}Haircut Styles{% endblock %}
+{% block content %}
+
+<div class="admin-page-header">
+    <h2>Haircut Styles <span class="count-badge">{{ styles.count }}</span></h2>
+    <a href="{% url 'admin_haircut_style_add' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> Add Style</a>
+</div>
+
+<div class="admin-section">
+    <div class="filter-row">
+        <form method="get" class="filter-form">
+            <select name="category" class="form-control form-control-sm" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for value, label in categories %}
+                <option value="{{ value }}" {% if category_filter == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            {% if category_filter %}
+            <a href="{% url 'admin_haircut_styles' %}" class="btn-outline btn-sm">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<div class="admin-section">
+    {% if styles %}
+    <div class="haircut-styles-grid">
+        {% for style in styles %}
+        <div class="style-card-admin">
+            <div class="style-card-img">
+                {% if style.image %}
+                <img src="{{ style.image.url }}" alt="{{ style.name }}">
+                {% else %}
+                <div class="style-img-placeholder"><i class="fas fa-cut"></i></div>
+                {% endif %}
+                <div class="style-card-overlay">
+                    <a href="{% url 'admin_haircut_style_edit' style.pk %}" class="btn-gold btn-sm">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <form method="post" action="{% url 'admin_haircut_style_delete' style.pk %}"
+                          onsubmit="return confirm('Delete {{ style.name }}? This cannot be undone.')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</button>
+                    </form>
+                </div>
+            </div>
+            <div class="style-card-body">
+                <span class="style-category-tag">{{ style.get_category_display }}</span>
+                <h4 class="style-name">{{ style.name }}</h4>
+                <div class="style-meta">
+                    <span class="style-price">₱{{ style.price }}</span>
+                    <span class="style-status {% if style.is_active %}dot-completed{% else %}dot-cancelled{% endif %} qs-dot">
+                        {% if style.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                </div>
+                {% if style.description %}
+                <p class="style-desc-small">{{ style.description|truncatechars:70 }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state-admin">
+        <div class="empty-icon"><i class="fas fa-cut"></i></div>
+        <h3>No haircut styles yet</h3>
+        <p>Add your first haircut style to display them on the services page.</p>
+        <a href="{% url 'admin_haircut_style_add' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> Add First Style</a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

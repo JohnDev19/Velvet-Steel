@@ -4,7 +4,8 @@ from django.contrib import messages
 from django.db.models import Count, Sum, Q
 from django.utils import timezone
 from django.http import JsonResponse
-from .models import Reservation, Service, Barber, Testimonial, GalleryImage
+from .models import Reservation, Service, Barber, Testimonial, GalleryImage, HaircutStyle
+from .forms import HaircutStyleForm
 import datetime
 
 
@@ -103,7 +104,6 @@ def approve_testimonial(request, pk):
 @staff_member_required
 def admin_analytics(request):
     today = timezone.now().date()
-    # Last 7 days data
     days_data = []
     for i in range(6, -1, -1):
         day = today - datetime.timedelta(days=i)
@@ -127,3 +127,54 @@ def admin_analytics(request):
         'barber_stats': barber_stats,
     }
     return render(request, 'admin_panel/analytics.html', context)
+
+
+@staff_member_required
+def admin_haircut_styles(request):
+    category_filter = request.GET.get('category', '')
+    styles = HaircutStyle.objects.all()
+    if category_filter:
+        styles = styles.filter(category=category_filter)
+    categories = HaircutStyle.CATEGORY_CHOICES
+    return render(request, 'admin_panel/haircut_styles.html', {
+        'styles': styles,
+        'categories': categories,
+        'category_filter': category_filter,
+    })
+
+
+@staff_member_required
+def admin_haircut_style_add(request):
+    if request.method == 'POST':
+        form = HaircutStyleForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Haircut style added successfully.')
+            return redirect('admin_haircut_styles')
+    else:
+        form = HaircutStyleForm()
+    return render(request, 'admin_panel/haircut_style_form.html', {'form': form, 'action': 'Add'})
+
+
+@staff_member_required
+def admin_haircut_style_edit(request, pk):
+    style = get_object_or_404(HaircutStyle, pk=pk)
+    if request.method == 'POST':
+        form = HaircutStyleForm(request.POST, request.FILES, instance=style)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'"{style.name}" updated successfully.')
+            return redirect('admin_haircut_styles')
+    else:
+        form = HaircutStyleForm(instance=style)
+    return render(request, 'admin_panel/haircut_style_form.html', {'form': form, 'action': 'Edit', 'style': style})
+
+
+@staff_member_required
+def admin_haircut_style_delete(request, pk):
+    style = get_object_or_404(HaircutStyle, pk=pk)
+    if request.method == 'POST':
+        name = style.name
+        style.delete()
+        messages.success(request, f'"{name}" deleted.')
+    return redirect('admin_haircut_styles')

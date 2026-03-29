@@ -14,6 +14,20 @@
 
 <section class="section">
     <div class="container">
+        <div class="section-header">
+            <div class="section-badge">GROOMING MENU</div>
+            <h2 class="section-title">Services &amp; <em>Pricing</em></h2>
+            <p class="section-subtitle">Every service follows our quality tiers — from traditional basics to full premium experiences.</p>
+        </div>
+
+        <div class="price-tiers-row">
+            <div class="price-tier"><span class="pt-range">₱70–₱100</span><span class="pt-label">Traditional, basic cut</span></div>
+            <div class="price-tier"><span class="pt-range">₱100–₱200</span><span class="pt-label">Cleaner finish</span></div>
+            <div class="price-tier"><span class="pt-range">₱200–₱350</span><span class="pt-label">Styled cuts</span></div>
+            <div class="price-tier"><span class="pt-range">₱350–₱600</span><span class="pt-label">Advanced fades &amp; shaping</span></div>
+            <div class="price-tier pt-premium"><span class="pt-range">₱600–₱1,000+</span><span class="pt-label">Premium full service</span></div>
+        </div>
+
         <div class="services-full-grid">
             {% for service in services %}
             <div class="service-full-card">
@@ -34,18 +48,62 @@
                 </div>
             </div>
             {% empty %}
-            {% for svc in "123456"|make_list %}
-            <div class="service-full-card">
-                <div class="sfc-icon"><i class="fas fa-cut"></i></div>
-                <div class="sfc-body">
-                    <div class="sfc-header"><div><span class="service-category">Haircut</span><h3>Classic Haircut</h3></div><div class="sfc-price">₱250</div></div>
-                    <p>Traditional Filipino barbershop cut with modern finishing techniques.</p>
-                    <div class="sfc-footer"><span class="service-duration"><i class="fas fa-clock"></i> 30 minutes</span><a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a></div>
+            <div class="empty-state-section">
+                <div class="empty-icon"><i class="fas fa-cut"></i></div>
+                <h3>No services available at the moment</h3>
+                <p>Please check back soon or contact us directly.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- HAIRCUT STYLES SHOWCASE -->
+<section class="section haircut-styles-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">STYLE GALLERY</div>
+            <h2 class="section-title">Haircut <em>Styles</em></h2>
+            <p class="section-subtitle">Browse our full catalogue of haircut styles by category. See something you like? Book and show it to your barber.</p>
+        </div>
+
+        {% if has_styles %}
+            {% for category_name, styles in styles_by_category.items %}
+            <div class="haircut-category-block">
+                <div class="haircut-category-header">
+                    <h3 class="haircut-category-title"><span>{{ category_name }}</span></h3>
+                </div>
+                <div class="haircut-styles-grid">
+                    {% for style in styles %}
+                    <div class="haircut-style-card">
+                        <div class="hs-image-wrap">
+                            {% if style.image %}
+                            <img src="{{ style.image.url }}" alt="{{ style.name }}" class="hs-image">
+                            {% else %}
+                            <div class="hs-image-placeholder"><i class="fas fa-cut"></i></div>
+                            {% endif %}
+                            <div class="hs-price-tag">₱{{ style.price }}</div>
+                        </div>
+                        <div class="hs-info">
+                            <h4 class="hs-name">{{ style.name }}</h4>
+                            {% if style.description %}<p class="hs-desc">{{ style.description }}</p>{% endif %}
+                            <a href="{% url 'book_reservation' %}" class="hs-book-btn">Book This Style</a>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
             {% endfor %}
-            {% endfor %}
+        {% else %}
+        <div class="empty-state-section">
+            <div class="empty-icon"><i class="fas fa-images"></i></div>
+            <h3>No haircut styles available yet</h3>
+            <p>Our style gallery is being updated. Check back soon — or ask your barber to show you the look book during your visit.</p>
+            <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm" style="margin-top: 1rem;">
+                <i class="fas fa-calendar-alt"></i> Book an Appointment
+            </a>
         </div>
+        {% endif %}
     </div>
 </section>
 

@@ -10,4 +10,8 @@ urlpatterns = [
     path('testimonials/', admin_views.admin_testimonials, name='admin_testimonials'),
     path('testimonials/<int:pk>/approve/', admin_views.approve_testimonial, name='approve_testimonial'),
     path('analytics/', admin_views.admin_analytics, name='admin_analytics'),
+    path('haircut-styles/', admin_views.admin_haircut_styles, name='admin_haircut_styles'),
+    path('haircut-styles/add/', admin_views.admin_haircut_style_add, name='admin_haircut_style_add'),
+    path('haircut-styles/<int:pk>/edit/', admin_views.admin_haircut_style_edit, name='admin_haircut_style_edit'),
+    path('haircut-styles/<int:pk>/delete/', admin_views.admin_haircut_style_delete, name='admin_haircut_style_delete'),
 ]

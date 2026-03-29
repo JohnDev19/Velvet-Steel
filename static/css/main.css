@@ -682,7 +682,6 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 @media (max-width: 900px) {
   .services-grid { grid-template-columns: repeat(2, 1fr); }
   .barbers-grid { grid-template-columns: repeat(2, 1fr); }
-  .testimonials-grid { grid-template-columns: 1fr; }
   .cta-content { flex-direction: column; text-align: center; }
   .cta-text { text-align: center; }
   .about-grid { grid-template-columns: 1fr; }
@@ -695,6 +694,11 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .nav-toggle { display: flex; }
   .hero-stats { flex-direction: column; gap: 0; }
   .stat-divider { width: 80px; height: 1px; }
+  .service-full-card { padding: 20px; gap: 16px; }
+  .sfc-price { font-size: 1.5rem; }
+  .price-tiers-row { gap: 8px; }
+  .price-tier { min-width: 140px; padding: 10px 14px; }
+  .haircut-styles-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 }
 
 @media (max-width: 640px) {
@@ -713,4 +717,121 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .detail-grid { grid-template-columns: 1fr; }
   .detail-item:nth-child(odd) { border-right: none; }
   .hero-stats { display: none; }
+  .service-full-card { flex-direction: column; gap: 16px; padding: 20px; }
+  .sfc-icon { width: 48px; height: 48px; font-size: 1.2rem; }
+  .sfc-header { flex-direction: column; gap: 6px; align-items: flex-start; }
+  .sfc-price { font-size: 1.4rem; }
+  .sfc-footer { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .sfc-footer .btn-gold { width: 100%; text-align: center; }
+  .price-tiers-row { flex-direction: column; align-items: stretch; }
+  .price-tier { flex-direction: row; justify-content: space-between; min-width: unset; text-align: left; }
+  .haircut-styles-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
+
+/* ============================================
+   PRICE TIERS
+   ============================================ */
+.price-tiers-row {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin: 0 0 48px;
+  justify-content: center;
+}
+.price-tier {
+  display: flex; flex-direction: column; align-items: center;
+  background: var(--dark-3); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 12px 20px;
+  min-width: 160px; text-align: center;
+}
+.price-tier.pt-premium { border-color: var(--gold); background: rgba(200,160,60,0.06); }
+.pt-range {
+  font-family: var(--font-display); color: var(--gold); font-size: 1rem; font-weight: 700; line-height: 1;
+}
+.pt-label {
+  font-size: 0.72rem; color: var(--text-secondary); letter-spacing: 0.05em;
+  text-transform: uppercase; margin-top: 5px;
+}
+
+/* ============================================
+   HAIRCUT STYLES SECTION
+   ============================================ */
+.haircut-styles-section { background: var(--dark-2); }
+
+.haircut-category-block { margin-bottom: 60px; }
+.haircut-category-header { margin-bottom: 24px; }
+.haircut-category-title {
+  font-family: var(--font-display); font-size: 1.4rem; color: var(--text-primary);
+  display: flex; align-items: center; gap: 16px;
+}
+.haircut-category-title span { position: relative; }
+.haircut-category-title::before {
+  content: ''; display: block; width: 3px; height: 24px;
+  background: var(--gold); flex-shrink: 0; border-radius: 2px;
+}
+
+.haircut-styles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.haircut-style-card {
+  background: var(--dark-3); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  transition: var(--transition);
+}
+.haircut-style-card:hover {
+  border-color: var(--gold); transform: translateY(-3px);
+  box-shadow: var(--shadow-gold);
+}
+
+.hs-image-wrap { position: relative; aspect-ratio: 4/3; overflow: hidden; }
+.hs-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+.haircut-style-card:hover .hs-image { transform: scale(1.05); }
+.hs-image-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--dark-4); color: var(--gold); font-size: 2rem;
+}
+
+.hs-price-tag {
+  position: absolute; bottom: 10px; right: 10px;
+  background: rgba(14,14,14,0.85); color: var(--gold);
+  font-family: var(--font-display); font-size: 0.9rem; font-weight: 700;
+  padding: 4px 10px; border-radius: 3px;
+  backdrop-filter: blur(4px);
+}
+
+.hs-info { padding: 14px 16px 16px; }
+.hs-name {
+  font-family: var(--font-display); font-size: 0.95rem; font-weight: 700;
+  color: var(--text-primary); margin-bottom: 6px; line-height: 1.3;
+}
+.hs-desc { font-size: 0.77rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px; }
+.hs-book-btn {
+  display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--gold); border: 1px solid var(--gold);
+  padding: 6px 14px; border-radius: var(--radius); transition: var(--transition);
+}
+.hs-book-btn:hover { background: var(--gold); color: var(--dark); }
+
+.empty-state-section {
+  text-align: center; padding: 72px 24px;
+  border: 1px dashed var(--border); border-radius: var(--radius-lg);
+  background: var(--dark-3);
+}
+.empty-state-section .empty-icon {
+  font-size: 3rem; color: var(--gold); opacity: 0.4; margin-bottom: 20px;
+}
+.empty-state-section h3 {
+  font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 10px; color: var(--text-primary);
+}
+.empty-state-section p { color: var(--text-secondary); max-width: 440px; margin: 0 auto; }
+
+.services-empty {
+  grid-column: 1 / -1; text-align: center; padding: 60px 24px;
+  border: 1px dashed var(--border); border-radius: var(--radius-lg);
+  background: var(--dark-3); color: var(--text-secondary);
+}
+.services-empty i { font-size: 2.5rem; color: var(--gold); opacity: 0.4; display: block; margin-bottom: 16px; }
+.services-empty p { font-size: 0.95rem; }
+
