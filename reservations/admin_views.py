@@ -122,6 +122,7 @@ def admin_analytics(request):
         revenue = sum(float(r.total_price or 0) for r in completed)
         days_data.append({'date': day.strftime('%b %d'), 'count': count, 'revenue': revenue})
 
+    # Top services by booking count
     from collections import Counter
     all_res = Reservation.objects.only('service')
     service_counter = Counter()
@@ -136,6 +137,7 @@ def admin_analytics(request):
             svc.booking_count = count
             service_stats.append(svc)
 
+    # Barber stats
     barber_counter = Counter()
     for r in Reservation.objects.only('barber'):
         if r.barber:
