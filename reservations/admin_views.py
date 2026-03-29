@@ -100,6 +100,78 @@ def admin_barbers(request):
 
 
 @admin_required
+def admin_barber_add(request):
+    from .forms import BarberForm
+    if request.method == 'POST':
+        form = BarberForm(request.POST, request.FILES)
+        if form.is_valid():
+            data       = form.cleaned_data.copy()
+            photo_file = data.pop('photo', None)
+            barber     = Barber(**data)
+            if photo_file:
+                barber.photo = _image_to_data_uri(photo_file)
+            try:
+                barber.save()
+                messages.success(request, f'"{barber.name}" added successfully.')
+                return redirect('admin_barbers')
+            except Exception as e:
+                messages.error(request, f'Could not save: {e}')
+    else:
+        form = BarberForm()
+    return render(request, 'admin_panel/barber_form.html', {
+        'form': form, 'action': 'Add',
+    })
+
+
+@admin_required
+def admin_barber_edit(request, pk):
+    from .forms import BarberForm
+    barber = Barber.objects(id=pk).first()
+    if not barber:
+        messages.error(request, 'Barber not found.')
+        return redirect('admin_barbers')
+
+    if request.method == 'POST':
+        form = BarberForm(request.POST, request.FILES)
+        if form.is_valid():
+            data       = form.cleaned_data.copy()
+            photo_file = data.pop('photo', None)
+            for k, v in data.items():
+                setattr(barber, k, v)
+            if photo_file:
+                barber.photo = _image_to_data_uri(photo_file)
+            try:
+                barber.save()
+                messages.success(request, f'"{barber.name}" updated successfully.')
+                return redirect('admin_barbers')
+            except Exception as e:
+                messages.error(request, f'Could not save: {e}')
+    else:
+        form = BarberForm(initial={
+            'name':             barber.name,
+            'specialty':        barber.specialty,
+            'bio':              barber.bio,
+            'experience_years': barber.experience_years,
+            'rating':           barber.rating,
+            'instagram':        barber.instagram,
+            'is_active':        barber.is_active,
+        })
+    return render(request, 'admin_panel/barber_form.html', {
+        'form': form, 'action': 'Edit', 'barber': barber,
+    })
+
+
+@admin_required
+def admin_barber_delete(request, pk):
+    barber = Barber.objects(id=pk).first()
+    if barber and request.method == 'POST':
+        name = barber.name
+        barber.delete()
+        messages.success(request, f'"{name}" deleted.')
+    return redirect('admin_barbers')
+
+
+@admin_required
 def admin_testimonials(request):
     return render(request, 'admin_panel/testimonials.html', {
         'testimonials': Testimonial.objects.order_by('-created_at')
@@ -172,7 +244,6 @@ def admin_haircut_styles(request):
 
 
 def _image_to_data_uri(image_file):
-    """Encode upload as base64 data-URI for MongoDB StringField storage."""
     if not image_file:
         return None
     mime = getattr(image_file, 'content_type', None) or 'image/jpeg'

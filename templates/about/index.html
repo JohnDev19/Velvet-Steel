@@ -59,7 +59,7 @@
             <div class="barber-card">
                 <div class="barber-photo-wrap">
                     {% if barber.photo %}
-                    <img src="{{ barber.photo.url }}" alt="{{ barber.name }}" class="barber-photo">
+                    <img src="{{ barber.photo }}" alt="{{ barber.name }}" class="barber-photo">
                     {% else %}
                     <div class="barber-photo-placeholder"><i class="fas fa-user-tie"></i></div>
                     {% endif %}

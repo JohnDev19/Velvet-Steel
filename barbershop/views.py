@@ -1,14 +1,12 @@
 from django.shortcuts import render
 from django.conf import settings
-from reservations.models import Service, Barber, HaircutStyle
+from reservations.models import Barber, HaircutStyle
 from collections import defaultdict
 
 
 def home(request):
-    services = Service.objects(is_active=True)[:6]
     barbers = Barber.objects(is_active=True)[:3]
     context = {
-        'services': services,
         'barbers': barbers,
         'shop_name': settings.BARBERSHOP_NAME,
         'shop_phone': settings.BARBERSHOP_PHONE,
@@ -30,7 +28,6 @@ def about(request):
 
 
 def services(request):
-    all_services = Service.objects(is_active=True)
     all_styles = HaircutStyle.objects(is_active=True)
 
     styles_by_category = defaultdict(list)
@@ -39,7 +36,6 @@ def services(request):
     styles_by_category = dict(styles_by_category)
 
     context = {
-        'services': all_services,
         'styles_by_category': styles_by_category,
         'has_styles': all_styles.count() > 0,
         'shop_name': settings.BARBERSHOP_NAME,

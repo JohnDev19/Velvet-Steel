@@ -2,32 +2,55 @@
 {% block title %}Barbers{% endblock %}
 {% block page_title %}Barbers{% endblock %}
 {% block content %}
+
 <div class="admin-page-header">
     <h2>Barbers <span class="count-badge">{{ barbers.count }}</span></h2>
+    <a href="{% url 'admin_barber_add' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> Add Barber</a>
 </div>
-<div class="barbers-admin-grid">
-    {% for barber in barbers %}
-    <div class="barber-admin-card">
-        <div class="bac-photo">
-            {% if barber.photo %}<img src="{{ barber.photo }}" alt="{{ barber.name }}">
-            {% else %}<div class="bac-placeholder"><i class="fas fa-user-tie"></i></div>{% endif %}
-        </div>
-        <div class="bac-info">
-            <h4>{{ barber.name }}</h4>
-            <p>{{ barber.specialty }}</p>
-            <div class="bac-meta">
-                <span><i class="fas fa-award"></i> {{ barber.experience_years }} yrs</span>
-                <span><i class="fas fa-star"></i> {{ barber.rating }}</span>
-                <span class="{% if barber.is_active %}dot-completed{% else %}dot-cancelled{% endif %} qs-dot"></span>
+
+<div class="admin-section">
+    {% if barbers %}
+    <div class="haircut-styles-grid">
+        {% for barber in barbers %}
+        <div class="style-card-admin">
+            <div class="style-card-img">
+                {% if barber.photo %}
+                <img src="{{ barber.photo }}" alt="{{ barber.name }}">
+                {% else %}
+                <div class="style-img-placeholder"><i class="fas fa-user-tie"></i></div>
+                {% endif %}
+                <div class="style-card-overlay">
+                    <a href="{% url 'admin_barber_edit' barber.id %}" class="btn-gold btn-sm">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <form method="post" action="{% url 'admin_barber_delete' barber.id %}"
+                          onsubmit="return confirm('Delete {{ barber.name }}? This cannot be undone.')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</button>
+                    </form>
+                </div>
+            </div>
+            <div class="style-card-body">
+                <h4 class="style-name">{{ barber.name }}</h4>
+                {% if barber.specialty %}<p class="style-desc-small">{{ barber.specialty }}</p>{% endif %}
+                <div class="style-meta">
+                    <span class="style-price"><i class="fas fa-award"></i> {{ barber.experience_years }} yrs &nbsp; <i class="fas fa-star"></i> {{ barber.rating }}</span>
+                    <span class="style-status {% if barber.is_active %}dot-completed{% else %}dot-cancelled{% endif %} qs-dot">
+                        {% if barber.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% empty %}
-    <div class="empty-state">
+    {% else %}
+    <div class="empty-state-admin">
         <div class="empty-icon"><i class="fas fa-user-tie"></i></div>
         <h3>No barbers yet</h3>
-        <p>Run <code>python manage.py seed_data</code> to populate barbers.</p>
+        <p>Add your first barber to show them on the home and about pages.</p>
+        <a href="{% url 'admin_barber_add' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> Add First Barber</a>
     </div>
-    {% endfor %}
+    {% endif %}
 </div>
+
 {% endblock %}

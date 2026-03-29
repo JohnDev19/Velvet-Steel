@@ -29,31 +29,95 @@
         </div>
 
         <div class="services-full-grid">
-            {% for service in services %}
             <div class="service-full-card">
-                <div class="sfc-icon"><i class="fas fa-{{ service.icon }}"></i></div>
+                <div class="sfc-icon"><i class="fas fa-cut"></i></div>
                 <div class="sfc-body">
                     <div class="sfc-header">
-                        <div>
-                            <span class="service-category">{{ service.get_category_display }}</span>
-                            <h3>{{ service.name }}</h3>
-                        </div>
-                        <div class="sfc-price">₱{{ service.price }}</div>
+                        <div><span class="service-category">Haircut</span><h3>Classic Haircut</h3></div>
+                        <div class="sfc-price">₱70–150</div>
                     </div>
-                    <p>{{ service.description }}</p>
+                    <p>Traditional scissor and clipper cut with a clean finish. Timeless, precise, and built on old-world technique. Includes neck cleanup and styling finish.</p>
                     <div class="sfc-footer">
-                        <span class="service-duration"><i class="fas fa-clock"></i> {{ service.duration_minutes }} minutes</span>
+                        <span class="service-duration"><i class="fas fa-clock"></i> 30 minutes</span>
                         <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
                     </div>
                 </div>
             </div>
-            {% empty %}
-            <div class="empty-state-section">
-                <div class="empty-icon"><i class="fas fa-cut"></i></div>
-                <h3>No services available at the moment</h3>
-                <p>Please check back soon or contact us directly.</p>
+
+            <div class="service-full-card">
+                <div class="sfc-icon"><i class="fas fa-magic"></i></div>
+                <div class="sfc-body">
+                    <div class="sfc-header">
+                        <div><span class="service-category">Haircut</span><h3>Skin Fade</h3></div>
+                        <div class="sfc-price">₱350–600</div>
+                    </div>
+                    <p>Advanced fade with razor-sharp taper and seamless blend from skin to length. From low to bald — each fade is a signature of our craft and precision.</p>
+                    <div class="sfc-footer">
+                        <span class="service-duration"><i class="fas fa-clock"></i> 45 minutes</span>
+                        <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
+                    </div>
+                </div>
             </div>
-            {% endfor %}
+
+            <div class="service-full-card">
+                <div class="sfc-icon"><i class="fas fa-user-ninja"></i></div>
+                <div class="sfc-body">
+                    <div class="sfc-header">
+                        <div><span class="service-category">Shave &amp; Beard</span><h3>Straight Razor Shave</h3></div>
+                        <div class="sfc-price">₱150–250</div>
+                    </div>
+                    <p>Hot towel prep, professional lather, and a straight razor shave for the smoothest, closest finish possible. A ritual, not just a shave. Aftershave balm included.</p>
+                    <div class="sfc-footer">
+                        <span class="service-duration"><i class="fas fa-clock"></i> 30 minutes</span>
+                        <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-full-card">
+                <div class="sfc-icon"><i class="fas fa-spa"></i></div>
+                <div class="sfc-body">
+                    <div class="sfc-header">
+                        <div><span class="service-category">Hair Treatment</span><h3>Hair Treatment</h3></div>
+                        <div class="sfc-price">₱250–400</div>
+                    </div>
+                    <p>Deep conditioning scalp treatment using imported professional-grade products. Restores moisture, reduces breakage, and leaves your hair with visible health and shine.</p>
+                    <div class="sfc-footer">
+                        <span class="service-duration"><i class="fas fa-clock"></i> 45 minutes</span>
+                        <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-full-card">
+                <div class="sfc-icon"><i class="fas fa-crown"></i></div>
+                <div class="sfc-body">
+                    <div class="sfc-header">
+                        <div><span class="service-category">Combo Package</span><h3>Combo Package</h3></div>
+                        <div class="sfc-price">₱500–800</div>
+                    </div>
+                    <p>Our signature full-service package: haircut, hot towel straight razor shave, and scalp treatment in one session. The complete Velvet Steel experience, start to finish.</p>
+                    <div class="sfc-footer">
+                        <span class="service-duration"><i class="fas fa-clock"></i> 75 minutes</span>
+                        <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-full-card">
+                <div class="sfc-icon"><i class="fas fa-child"></i></div>
+                <div class="sfc-body">
+                    <div class="sfc-header">
+                        <div><span class="service-category">Kids&#39; Cut</span><h3>Kids&#39; Cut</h3></div>
+                        <div class="sfc-price">₱70–120</div>
+                    </div>
+                    <p>A gentle, patient haircut experience for boys ages 2–12. Clean, tidy, and stress-free — for kids and parents alike. Our barbers are experienced with young clients.</p>
+                    <div class="sfc-footer">
+                        <span class="service-duration"><i class="fas fa-clock"></i> 20 minutes</span>
+                        <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>

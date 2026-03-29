@@ -83,29 +83,90 @@
       <p class="section-subtitle">From signature fades to full grooming rituals. Every service is a deliberate act of craft, not a transaction.</p>
     </div>
     <div class="services-grid">
-      {% for service in services %}
-      <div class="service-card {% if forloop.counter == 3 %}featured-service{% endif %}">
-        {% if forloop.counter == 3 %}<div class="featured-badge">Popular</div>{% endif %}
-        <div class="service-icon-wrap">
-          <i class="fas fa-{{ service.icon }}"></i>
-        </div>
+      <div class="service-card">
+        <div class="service-icon-wrap"><i class="fas fa-cut"></i></div>
         <div class="service-info">
-          <span class="service-category">{{ service.get_category_display }}</span>
-          <h3 class="service-name">{{ service.name }}</h3>
-          <p class="service-desc">{{ service.description }}</p>
+          <span class="service-category">Haircut</span>
+          <h3 class="service-name">Classic Haircut</h3>
+          <p class="service-desc">Traditional scissor and clipper cut with a clean finish. Timeless, precise, and built on old-world technique.</p>
           <div class="service-meta">
-            <span class="service-price">&#8369;{{ service.price }}</span>
-            <span class="service-duration"><i class="fas fa-clock"></i> {{ service.duration_minutes }} min</span>
+            <span class="service-price">&#8369;70–150</span>
+            <span class="service-duration"><i class="fas fa-clock"></i> 30 min</span>
           </div>
         </div>
         <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
       </div>
-      {% empty %}
-      <div class="services-empty">
-        <i class="fas fa-cut"></i>
-        <p>No services available at the moment. Please check back soon.</p>
+
+      <div class="service-card">
+        <div class="service-icon-wrap"><i class="fas fa-magic"></i></div>
+        <div class="service-info">
+          <span class="service-category">Haircut</span>
+          <h3 class="service-name">Skin Fade</h3>
+          <p class="service-desc">Advanced fade with razor-sharp taper and seamless blend. From low to bald — each fade is a signature.</p>
+          <div class="service-meta">
+            <span class="service-price">&#8369;350–600</span>
+            <span class="service-duration"><i class="fas fa-clock"></i> 45 min</span>
+          </div>
+        </div>
+        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
       </div>
-      {% endfor %}
+
+      <div class="service-card featured-service">
+        <div class="featured-badge">Popular</div>
+        <div class="service-icon-wrap"><i class="fas fa-crown"></i></div>
+        <div class="service-info">
+          <span class="service-category">Combo Package</span>
+          <h3 class="service-name">Combo Package</h3>
+          <p class="service-desc">Full haircut, hot towel straight razor shave, and scalp treatment in one session. The complete Velvet Steel experience.</p>
+          <div class="service-meta">
+            <span class="service-price">&#8369;500–800</span>
+            <span class="service-duration"><i class="fas fa-clock"></i> 75 min</span>
+          </div>
+        </div>
+        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon-wrap"><i class="fas fa-user-ninja"></i></div>
+        <div class="service-info">
+          <span class="service-category">Shave &amp; Beard</span>
+          <h3 class="service-name">Straight Razor Shave</h3>
+          <p class="service-desc">Hot towel prep, lather, and a straight razor shave for the smoothest finish possible. A ritual, not just a shave.</p>
+          <div class="service-meta">
+            <span class="service-price">&#8369;150–250</span>
+            <span class="service-duration"><i class="fas fa-clock"></i> 30 min</span>
+          </div>
+        </div>
+        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon-wrap"><i class="fas fa-spa"></i></div>
+        <div class="service-info">
+          <span class="service-category">Hair Treatment</span>
+          <h3 class="service-name">Hair Treatment</h3>
+          <p class="service-desc">Deep conditioning, scalp massage, and professional-grade treatment to restore health and shine to your hair.</p>
+          <div class="service-meta">
+            <span class="service-price">&#8369;250–400</span>
+            <span class="service-duration"><i class="fas fa-clock"></i> 45 min</span>
+          </div>
+        </div>
+        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon-wrap"><i class="fas fa-child"></i></div>
+        <div class="service-info">
+          <span class="service-category">Kids&#39; Cut</span>
+          <h3 class="service-name">Kids&#39; Cut</h3>
+          <p class="service-desc">A gentle, patient haircut experience for boys ages 2–12. Clean, tidy, and stress-free — for kids and parents alike.</p>
+          <div class="service-meta">
+            <span class="service-price">&#8369;70–120</span>
+            <span class="service-duration"><i class="fas fa-clock"></i> 20 min</span>
+          </div>
+        </div>
+        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
+      </div>
     </div>
     <div class="section-cta">
       <a href="{% url 'services' %}" class="btn-outline">See Full Service Menu <i class="fas fa-arrow-right"></i></a>
@@ -125,7 +186,7 @@
       <div class="barber-card">
         <div class="barber-photo-wrap">
           {% if barber.photo %}
-          <img src="{{ barber.photo.url }}" alt="{{ barber.name }}" class="barber-photo">
+          <img src="{{ barber.photo }}" alt="{{ barber.name }}" class="barber-photo">
           {% else %}
           <div class="barber-photo-placeholder"><i class="fas fa-user-tie"></i></div>
           {% endif %}

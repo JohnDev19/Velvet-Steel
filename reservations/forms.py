@@ -100,6 +100,73 @@ class HaircutStyleForm(forms.Form):
     )
 
 
+class BarberForm(forms.Form):
+    name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'e.g. Rico Villanueva',
+        })
+    )
+    specialty = forms.CharField(
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'e.g. Skin Fades & Classic Cuts',
+        })
+    )
+    bio = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Short bio about the barber...',
+        })
+    )
+    experience_years = forms.IntegerField(
+        min_value=0,
+        initial=1,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': '5',
+        })
+    )
+    rating = forms.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        min_value=1,
+        max_value=5,
+        initial=5.0,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'step': '0.1',
+            'placeholder': '5.0',
+        })
+    )
+    instagram = forms.CharField(
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': '@username',
+        })
+    )
+    photo = forms.FileField(
+        required=False,
+        widget=forms.ClearableFileInput(attrs={
+            'class': 'form-control-file',
+            'accept': 'image/jpeg,image/png,image/webp',
+            'id': 'id_photo',
+        })
+    )
+    is_active = forms.BooleanField(
+        required=False,
+        initial=True,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+
+
 class TestimonialForm(forms.Form):
     rating = forms.ChoiceField(
         choices=[(i, i) for i in range(1, 6)],

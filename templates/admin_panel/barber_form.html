@@ -1,0 +1,170 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}{{ action }} Barber{% endblock %}
+{% block page_title %}{{ action }} Barber{% endblock %}
+{% block content %}
+
+<div class="admin-page-header">
+    <h2>{{ action }} Barber</h2>
+    <a href="{% url 'admin_barbers' %}" class="btn-outline btn-sm">
+        <i class="fas fa-arrow-left"></i> Back to Barbers
+    </a>
+</div>
+
+<div class="admin-section">
+    <div class="form-card">
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-error">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="form-group">
+                <label class="form-label" for="{{ form.name.id_for_label }}">Full Name</label>
+                {{ form.name }}
+                {% if form.name.errors %}<small class="field-error">{{ form.name.errors|join:", " }}</small>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="{{ form.specialty.id_for_label }}">Specialty</label>
+                {{ form.specialty }}
+                {% if form.specialty.errors %}<small class="field-error">{{ form.specialty.errors|join:", " }}</small>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="{{ form.bio.id_for_label }}">Bio</label>
+                {{ form.bio }}
+                {% if form.bio.errors %}<small class="field-error">{{ form.bio.errors|join:", " }}</small>{% endif %}
+            </div>
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.experience_years.id_for_label }}">Years of Experience</label>
+                    {{ form.experience_years }}
+                    {% if form.experience_years.errors %}<small class="field-error">{{ form.experience_years.errors|join:", " }}</small>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.rating.id_for_label }}">Rating (1.0 – 5.0)</label>
+                    {{ form.rating }}
+                    {% if form.rating.errors %}<small class="field-error">{{ form.rating.errors|join:", " }}</small>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="{{ form.instagram.id_for_label }}">Instagram Handle</label>
+                {{ form.instagram }}
+                {% if form.instagram.errors %}<small class="field-error">{{ form.instagram.errors|join:", " }}</small>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Photo</label>
+
+                {% if action == 'Edit' and barber.photo %}
+                <div class="current-photo-row" id="currentPhotoRow">
+                    <img src="{{ barber.photo }}" alt="Current photo">
+                    <div class="current-photo-meta">
+                        <strong>Current Photo</strong>
+                        <span>Upload a new image below to replace it.</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="upload-zone" id="uploadZone">
+                    {{ form.photo }}
+                    <div class="upload-zone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <span class="upload-zone-title">Click or drag to upload</span>
+                    <span class="upload-zone-hint">JPG, PNG or WebP — max 5 MB</span>
+                </div>
+
+                <div class="upload-preview-wrap" id="uploadPreviewWrap">
+                    <img class="upload-preview-img" id="uploadPreviewImg" src="" alt="Preview">
+                    <button type="button" class="upload-preview-clear" id="uploadPreviewClear" title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <span class="upload-preview-name" id="uploadPreviewName"></span>
+                </div>
+
+                {% if form.photo.errors %}<small class="field-error">{{ form.photo.errors|join:", " }}</small>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" style="display:flex;align-items:center;gap:10px;text-transform:none;font-size:0.85rem;">
+                    {{ form.is_active }}
+                    <span style="color:#f0ebe0;font-weight:600;">Active (visible on site)</span>
+                </label>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:8px;">
+                <button type="submit" class="btn-gold">
+                    <i class="fas fa-save"></i> {{ action }} Barber
+                </button>
+                <a href="{% url 'admin_barbers' %}" class="btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    const fileInput   = document.getElementById('id_photo');
+    const zone        = document.getElementById('uploadZone');
+    const previewWrap = document.getElementById('uploadPreviewWrap');
+    const previewImg  = document.getElementById('uploadPreviewImg');
+    const previewName = document.getElementById('uploadPreviewName');
+    const clearBtn    = document.getElementById('uploadPreviewClear');
+
+    if (zone && fileInput) {
+        zone.addEventListener('click', function (e) {
+            if (e.target !== fileInput) fileInput.click();
+        });
+
+        ['dragover', 'dragenter'].forEach(function (evt) {
+            zone.addEventListener(evt, function (e) {
+                e.preventDefault();
+                zone.classList.add('upload-zone-drag');
+            });
+        });
+        ['dragleave', 'drop'].forEach(function (evt) {
+            zone.addEventListener(evt, function (e) {
+                e.preventDefault();
+                zone.classList.remove('upload-zone-drag');
+                if (e.type === 'drop' && e.dataTransfer.files.length) {
+                    const dt = new DataTransfer();
+                    dt.items.add(e.dataTransfer.files[0]);
+                    fileInput.files = dt.files;
+                    showPreview(e.dataTransfer.files[0]);
+                }
+            });
+        });
+
+        fileInput.addEventListener('change', function () {
+            if (fileInput.files && fileInput.files[0]) showPreview(fileInput.files[0]);
+        });
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function () {
+                fileInput.value = '';
+                previewWrap.style.display = 'none';
+                previewImg.src = '';
+                previewName.textContent = '';
+                zone.classList.remove('upload-zone-active');
+            });
+        }
+    }
+
+    function showPreview(file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            previewImg.src = e.target.result;
+            previewName.textContent = file.name;
+            previewWrap.style.display = 'block';
+            zone.classList.add('upload-zone-active');
+        };
+        reader.readAsDataURL(file);
+    }
+}());
+</script>
+{% endblock %}
