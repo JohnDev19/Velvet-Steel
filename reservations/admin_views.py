@@ -1,13 +1,30 @@
 from django.shortcuts import render, redirect
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.utils import timezone
 from django.http import JsonResponse
+from functools import wraps
 from .models import Reservation, Service, Barber, Testimonial, GalleryImage, HaircutStyle
 import datetime
 
 
-@staff_member_required
+def admin_required(view_func):
+    """
+    Custom decorator replacing @staff_member_required.
+    Checks Django auth (request.user.is_staff) and redirects to
+    our custom login at /accounts/login/ instead of django-admin.
+    """
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(f'/accounts/login/?next={request.path}')
+        if not request.user.is_staff:
+            messages.error(request, 'You do not have permission to access the admin panel.')
+            return redirect('home')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+@admin_required
 def admin_dashboard(request):
     today = timezone.now().date().isoformat()
     today_obj = timezone.now().date()
@@ -49,7 +66,7 @@ def admin_dashboard(request):
     return render(request, 'admin_panel/dashboard.html', context)
 
 
-@staff_member_required
+@admin_required
 def admin_reservations(request):
     status_filter = request.GET.get('status', '')
     date_filter = request.GET.get('date', '')
@@ -67,7 +84,7 @@ def admin_reservations(request):
     })
 
 
-@staff_member_required
+@admin_required
 def admin_update_reservation(request, pk):
     reservation = Reservation.objects(id=pk).first()
     if not reservation:
@@ -83,25 +100,25 @@ def admin_update_reservation(request, pk):
     return redirect('admin_reservations')
 
 
-@staff_member_required
+@admin_required
 def admin_services(request):
     services = Service.objects.all()
     return render(request, 'admin_panel/services.html', {'services': services})
 
 
-@staff_member_required
+@admin_required
 def admin_barbers(request):
     barbers = Barber.objects.all()
     return render(request, 'admin_panel/barbers.html', {'barbers': barbers})
 
 
-@staff_member_required
+@admin_required
 def admin_testimonials(request):
     testimonials = Testimonial.objects.order_by('-created_at')
     return render(request, 'admin_panel/testimonials.html', {'testimonials': testimonials})
 
 
-@staff_member_required
+@admin_required
 def approve_testimonial(request, pk):
     testimonial = Testimonial.objects(id=pk).first()
     if testimonial:
@@ -110,7 +127,7 @@ def approve_testimonial(request, pk):
     return redirect('admin_testimonials')
 
 
-@staff_member_required
+@admin_required
 def admin_analytics(request):
     today = timezone.now().date()
     days_data = []
@@ -122,11 +139,9 @@ def admin_analytics(request):
         revenue = sum(float(r.total_price or 0) for r in completed)
         days_data.append({'date': day.strftime('%b %d'), 'count': count, 'revenue': revenue})
 
-    # Top services by booking count
     from collections import Counter
-    all_res = Reservation.objects.only('service')
     service_counter = Counter()
-    for r in all_res:
+    for r in Reservation.objects.only('service'):
         if r.service:
             service_counter[str(r.service.id)] += 1
 
@@ -137,7 +152,6 @@ def admin_analytics(request):
             svc.booking_count = count
             service_stats.append(svc)
 
-    # Barber stats
     barber_counter = Counter()
     for r in Reservation.objects.only('barber'):
         if r.barber:
@@ -156,7 +170,7 @@ def admin_analytics(request):
     })
 
 
-@staff_member_required
+@admin_required
 def admin_haircut_styles(request):
     category_filter = request.GET.get('category', '')
     styles = HaircutStyle.objects.all()
@@ -170,7 +184,7 @@ def admin_haircut_styles(request):
     })
 
 
-@staff_member_required
+@admin_required
 def admin_haircut_style_add(request):
     from .forms import HaircutStyleForm
     if request.method == 'POST':
@@ -185,7 +199,7 @@ def admin_haircut_style_add(request):
     return render(request, 'admin_panel/haircut_style_form.html', {'form': form, 'action': 'Add'})
 
 
-@staff_member_required
+@admin_required
 def admin_haircut_style_edit(request, pk):
     from .forms import HaircutStyleForm
     style = HaircutStyle.objects(id=pk).first()
@@ -213,7 +227,7 @@ def admin_haircut_style_edit(request, pk):
     })
 
 
-@staff_member_required
+@admin_required
 def admin_haircut_style_delete(request, pk):
     style = HaircutStyle.objects(id=pk).first()
     if style and request.method == 'POST':

@@ -4,13 +4,12 @@
 {% block content %}
 <div class="admin-page-header">
     <h2>Barbers <span class="count-badge">{{ barbers.count }}</span></h2>
-    <a href="{% url 'django-admin:reservations_barber_add' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> Add Barber</a>
 </div>
 <div class="barbers-admin-grid">
     {% for barber in barbers %}
     <div class="barber-admin-card">
         <div class="bac-photo">
-            {% if barber.photo %}<img src="{{ barber.photo.url }}" alt="{{ barber.name }}">
+            {% if barber.photo %}<img src="{{ barber.photo }}" alt="{{ barber.name }}">
             {% else %}<div class="bac-placeholder"><i class="fas fa-user-tie"></i></div>{% endif %}
         </div>
         <div class="bac-info">
@@ -22,10 +21,13 @@
                 <span class="{% if barber.is_active %}dot-completed{% else %}dot-cancelled{% endif %} qs-dot"></span>
             </div>
         </div>
-        <a href="{% url 'django-admin:reservations_barber_change' barber.pk %}" class="btn-outline btn-sm">Edit</a>
     </div>
     {% empty %}
-    <div class="empty-state"><div class="empty-icon"><i class="fas fa-user-tie"></i></div><h3>No barbers yet</h3><a href="{% url 'django-admin:reservations_barber_add' %}" class="btn-gold">Add Barber</a></div>
+    <div class="empty-state">
+        <div class="empty-icon"><i class="fas fa-user-tie"></i></div>
+        <h3>No barbers yet</h3>
+        <p>Run <code>python manage.py seed_data</code> to populate barbers.</p>
+    </div>
     {% endfor %}
 </div>
 {% endblock %}
