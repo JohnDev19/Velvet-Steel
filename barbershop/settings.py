@@ -69,16 +69,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'barbershop.wsgi.application'
 
-# ── DATABASE (MongoDB via djongo) ────────────────────────────
+# ── DATABASE ────────────────────────────
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': os.environ.get('MONGODB_NAME', 'velvetsteel'),
+        'NAME': os.environ.get('MONGODB_NAME', 'velvetsteelph'),
+        'ENFORCE_SCHEMA': False,
         'CLIENT': {
             'host': os.environ.get('MONGODB_URI', 'mongodb://localhost:27017'),
+            'serverSelectionTimeoutMS': 5000,
         },
     }
 }
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 # ── AUTH PASSWORD VALIDATORS ─────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
