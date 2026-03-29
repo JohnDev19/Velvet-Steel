@@ -1,6 +1,150 @@
 {% extends 'admin_panel/base_admin.html' %}
 {% block title %}{{ action }} Haircut Style{% endblock %}
 {% block page_title %}{{ action }} Haircut Style{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ── TIER SELECT ─────────────────────────────────────────── */
+.tier-select-wrap {
+    position: relative;
+}
+.tier-select-wrap select.form-control-tier {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 36px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23c8a03c' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+/* Coloured left accent per tier */
+.tier-badge {
+    display: none;
+}
+.tier-preview {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: 0.25s ease;
+    border-left: 3px solid transparent;
+}
+.tier-preview[data-tier="basic"]   { background: rgba(120,180,100,0.1); border-color: #78b464; color: #78b464; }
+.tier-preview[data-tier="finish"]  { background: rgba(74,144,200,0.1);  border-color: #4a90c8; color: #4a90c8; }
+.tier-preview[data-tier="styled"]  { background: rgba(160,100,200,0.1); border-color: #a064c8; color: #a064c8; }
+.tier-preview[data-tier="fade"]    { background: rgba(200,140,60,0.1);  border-color: #dc8c3c; color: #dc8c3c; }
+.tier-preview[data-tier="premium"] { background: rgba(200,160,60,0.12); border-color: #c8a03c; color: #c8a03c; }
+.tier-preview .tier-icon { font-size: 1rem; flex-shrink: 0; }
+.tier-preview .tier-range { font-size: 1rem; font-family: 'Playfair Display', serif; }
+.tier-preview .tier-label { opacity: 0.8; font-weight: 400; font-size: 0.75rem; }
+
+/* ── IMAGE UPLOAD ────────────────────────────────────────── */
+.upload-zone {
+    position: relative;
+    border: 2px dashed rgba(200,160,60,0.3);
+    border-radius: 6px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.25s ease;
+    background: rgba(200,160,60,0.03);
+}
+.upload-zone:hover,
+.upload-zone.drag-over {
+    border-color: #c8a03c;
+    background: rgba(200,160,60,0.07);
+}
+.upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 0;
+}
+.upload-icon { font-size: 2rem; color: #c8a03c; opacity: 0.6; margin-bottom: 10px; }
+.upload-text strong { display: block; color: #f0ebe0; font-size: 0.88rem; margin-bottom: 4px; }
+.upload-text span { font-size: 0.75rem; color: #6a6050; }
+.upload-preview-wrap {
+    display: none;
+    position: relative;
+    margin-top: 12px;
+}
+.upload-preview-img {
+    width: 100%;
+    max-width: 220px;
+    height: 165px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid rgba(200,160,60,0.3);
+}
+.upload-preview-clear {
+    position: absolute;
+    top: 4px; right: calc(50% - 114px);
+    background: rgba(14,14,14,0.85);
+    color: #e05555;
+    border: 1px solid rgba(224,85,85,0.4);
+    border-radius: 50%;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.upload-preview-clear:hover { background: #e05555; color: #fff; }
+.upload-filename {
+    margin-top: 6px;
+    font-size: 0.72rem;
+    color: #6a6050;
+}
+
+.current-photo-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 14px;
+    background: rgba(200,160,60,0.06);
+    border: 1px solid rgba(200,160,60,0.15);
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+.current-photo-row img {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid rgba(200,160,60,0.2);
+    flex-shrink: 0;
+}
+.current-photo-meta strong { display: block; font-size: 0.78rem; color: #c8a03c; margin-bottom: 2px; }
+.current-photo-meta span { font-size: 0.72rem; color: #6a6050; }
+
+/* ── RESPONSIVE FORM GRID ────────────────────────────────── */
+@media (max-width: 700px) {
+    .form-row-2 {
+        grid-template-columns: 1fr !important;
+    }
+    .form-card {
+        padding: 18px 14px !important;
+    }
+    .admin-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .upload-preview-clear {
+        right: 4px;
+    }
+}
+</style>
+{% endblock %}
+
 {% block content %}
 
 <div class="admin-page-header">
@@ -10,9 +154,10 @@
 
 <div class="admin-section">
     <div class="form-card">
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" id="styleForm">
             {% csrf_token %}
 
+            <!-- Row 1: Name + Category -->
             <div class="form-row-2">
                 <div class="form-group">
                     <label class="form-label">Style Name *</label>
@@ -20,44 +165,83 @@
                     {% if form.name.errors %}<div class="form-error">{{ form.name.errors.0 }}</div>{% endif %}
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Category *</label>
-                    {{ form.category }}
+                    <label class="form-label">Price Tier *</label>
+                    <div class="tier-select-wrap">
+                        {{ form.category }}
+                        <!-- Live tier preview badge -->
+                        <div class="tier-preview" id="tierPreview" style="display:none;" data-tier="">
+                            <span class="tier-icon"><i class="fas fa-tag"></i></span>
+                            <span>
+                                <span class="tier-range" id="tierRange"></span>
+                                <span class="tier-label" id="tierLabel"></span>
+                            </span>
+                        </div>
+                    </div>
                     {% if form.category.errors %}<div class="form-error">{{ form.category.errors.0 }}</div>{% endif %}
                 </div>
             </div>
 
+            <!-- Row 2: Price + Photo -->
             <div class="form-row-2">
                 <div class="form-group">
                     <label class="form-label">Price (₱) *</label>
                     {{ form.price }}
-                    <small class="form-hint">₱70–₱100 Basic &nbsp;|&nbsp; ₱100–₱200 Finish &nbsp;|&nbsp; ₱200–₱350 Styled &nbsp;|&nbsp; ₱350–₱600 Fade &nbsp;|&nbsp; ₱600+ Premium</small>
+                    <small class="form-hint">
+                        ₱70–100 Basic &nbsp;·&nbsp; ₱100–200 Finish &nbsp;·&nbsp; ₱200–350 Styled &nbsp;·&nbsp; ₱350–600 Fade &nbsp;·&nbsp; ₱600+ Premium
+                    </small>
                     {% if form.price.errors %}<div class="form-error">{{ form.price.errors.0 }}</div>{% endif %}
                 </div>
+
                 <div class="form-group">
-                    <label class="form-label">Photo</label>
+                    <label class="form-label">Style Photo</label>
+
                     {% if style and style.image %}
-                    <div class="current-img-preview">
-                        <img src="{{ style.image.url }}" alt="{{ style.name }}">
-                        <small>Current photo — upload a new one to replace it</small>
+                    <div class="current-photo-row" id="currentPhotoRow">
+                        <img src="{{ style.image }}" alt="{{ style.name }}" id="currentPhotoImg">
+                        <div class="current-photo-meta">
+                            <strong>Current photo</strong>
+                            <span>Upload a new image below to replace it.</span>
+                        </div>
                     </div>
                     {% endif %}
-                    {{ form.image }}
-                    <small class="form-hint">Accepted: JPG, PNG, WEBP. Recommended: 600×450 px.</small>
+
+                    <!-- Custom drop-zone -->
+                    <div class="upload-zone" id="uploadZone">
+                        {{ form.image }}
+                        <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                        <div class="upload-text">
+                            <strong>Click to upload or drag & drop</strong>
+                            <span>JPG, PNG, WEBP · Recommended 600 × 450 px</span>
+                        </div>
+                    </div>
+
+                    <!-- Preview after selection -->
+                    <div class="upload-preview-wrap" id="uploadPreviewWrap">
+                        <img src="" alt="Preview" class="upload-preview-img" id="uploadPreviewImg">
+                        <button type="button" class="upload-preview-clear" id="clearUpload" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="upload-filename" id="uploadFilename"></div>
+                    </div>
+
                     {% if form.image.errors %}<div class="form-error">{{ form.image.errors.0 }}</div>{% endif %}
                 </div>
             </div>
 
+            <!-- Description -->
             <div class="form-group">
                 <label class="form-label">Description</label>
                 {{ form.description }}
                 {% if form.description.errors %}<div class="form-error">{{ form.description.errors.0 }}</div>{% endif %}
             </div>
 
+            <!-- Active toggle -->
             <div class="form-group form-check-group">
                 {{ form.is_active }}
                 <label class="form-check-label">Active (show on services page)</label>
             </div>
 
+            <!-- Actions -->
             <div class="form-actions">
                 <button type="submit" class="btn-gold">
                     <i class="fas fa-save"></i> Save Style
@@ -68,4 +252,96 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* ── TIER PREVIEW ─────────────────────────────────────── */
+const tierMeta = {
+    basic:   { range: '₱70 – ₱100',      label: 'Traditional, basic cut',     icon: 'fas fa-scissors' },
+    finish:  { range: '₱100 – ₱200',     label: 'Cleaner finish',              icon: 'fas fa-cut' },
+    styled:  { range: '₱200 – ₱350',     label: 'Styled cuts',                 icon: 'fas fa-magic' },
+    fade:    { range: '₱350 – ₱600',     label: 'Advanced fades & shaping',    icon: 'fas fa-layer-group' },
+    premium: { range: '₱600 – ₱1,000+',  label: 'Premium full service',        icon: 'fas fa-crown' },
+};
+
+const catSelect  = document.querySelector('select.form-control-tier');
+const tierPreview = document.getElementById('tierPreview');
+const tierRange   = document.getElementById('tierRange');
+const tierLabel   = document.getElementById('tierLabel');
+
+function updateTierPreview() {
+    const val = catSelect.value;
+    const meta = tierMeta[val];
+    if (!meta) { tierPreview.style.display = 'none'; return; }
+    tierPreview.setAttribute('data-tier', val);
+    tierPreview.querySelector('.tier-icon i').className = meta.icon;
+    tierRange.textContent = meta.range + ' · ';
+    tierLabel.textContent = meta.label;
+    tierPreview.style.display = 'flex';
+}
+
+if (catSelect) {
+    catSelect.addEventListener('change', updateTierPreview);
+    updateTierPreview();
+}
+
+/* ── IMAGE UPLOAD PREVIEW ─────────────────────────────── */
+const fileInput      = document.querySelector('input[type="file"]');
+const uploadZone     = document.getElementById('uploadZone');
+const previewWrap    = document.getElementById('uploadPreviewWrap');
+const previewImg     = document.getElementById('uploadPreviewImg');
+const previewClear   = document.getElementById('clearUpload');
+const previewFilename = document.getElementById('uploadFilename');
+
+function showPreview(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        previewImg.src = e.target.result;
+        previewFilename.textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+        previewWrap.style.display = 'block';
+        uploadZone.style.borderColor = '#c8a03c';
+        uploadZone.style.background  = 'rgba(200,160,60,0.06)';
+    };
+    reader.readAsDataURL(file);
+}
+
+if (fileInput) {
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files && fileInput.files[0]) {
+            showPreview(fileInput.files[0]);
+        }
+    });
+}
+
+if (previewClear) {
+    previewClear.addEventListener('click', () => {
+        fileInput.value = '';
+        previewWrap.style.display = 'none';
+        previewImg.src = '';
+        uploadZone.style.borderColor = '';
+        uploadZone.style.background  = '';
+    });
+}
+
+if (uploadZone) {
+    uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadZone.classList.add('drag-over');
+    });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+    uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            fileInput.files = dt.files;
+            showPreview(file);
+        }
+    });
+}
+</script>
 {% endblock %}

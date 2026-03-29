@@ -55,24 +55,50 @@ class ReservationForm(forms.Form):
             raise forms.ValidationError('Please select a future date.')
         return date
 
+PRICE_TIER_CHOICES = (
+    ('basic',    '₱70–₱100 · Traditional, basic cut'),
+    ('finish',   '₱100–₱200 · Cleaner finish'),
+    ('styled',   '₱200–₱350 · Styled cuts'),
+    ('fade',     '₱350–₱600 · Advanced fades & shaping'),
+    ('premium',  '₱600–₱1,000+ · Premium full service'),
+)
+
 
 class HaircutStyleForm(forms.Form):
     name = forms.CharField(
         max_length=120,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Classic Buzz Cut'})
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'e.g. Classic Buzz Cut',
+        })
     )
     category = forms.ChoiceField(
-        choices=HaircutStyle.CATEGORY_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-control'})
+        choices=PRICE_TIER_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control form-control-tier'}),
     )
     description = forms.CharField(
         required=False,
-        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3,
-                                     'placeholder': 'Brief description of this style...'})
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Brief description of this style...',
+        })
     )
     price = forms.DecimalField(
-        max_digits=8, decimal_places=2,
-        widget=forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': '0.00'})
+        max_digits=8,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'step': '0.01',
+            'placeholder': '0.00',
+        })
+    )
+    image = forms.ImageField(
+        required=False,
+        widget=forms.ClearableFileInput(attrs={
+            'class': 'form-control form-control-file',
+            'accept': 'image/jpeg,image/png,image/webp',
+        })
     )
     is_active = forms.BooleanField(
         required=False,
