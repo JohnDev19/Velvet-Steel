@@ -55,14 +55,6 @@ class ReservationForm(forms.Form):
             raise forms.ValidationError('Please select a future date.')
         return date
 
-PRICE_TIER_CHOICES = (
-    ('basic',   '₱70–₱100 · Traditional, basic cut'),
-    ('finish',  '₱100–₱200 · Cleaner finish'),
-    ('styled',  '₱200–₱350 · Styled cuts'),
-    ('fade',    '₱350–₱600 · Advanced fades & shaping'),
-    ('premium', '₱600–₱1,000+ · Premium full service'),
-)
-
 
 class HaircutStyleForm(forms.Form):
     name = forms.CharField(
@@ -73,7 +65,7 @@ class HaircutStyleForm(forms.Form):
         })
     )
     category = forms.ChoiceField(
-        choices=PRICE_TIER_CHOICES,
+        choices=HaircutStyle.CATEGORY_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control form-control-tier'}),
     )
     description = forms.CharField(

@@ -46,7 +46,7 @@ class Barber(Document):
     specialty = StringField(max_length=200)
     bio = StringField()
     experience_years = IntField(default=1)
-    photo = StringField()  # store path/URL as string
+    photo = StringField()
     is_active = BooleanField(default=True)
     rating = DecimalField(precision=1, default=5.0)
     instagram = StringField(max_length=100)
@@ -70,7 +70,6 @@ class Reservation(Document):
         ('no_show', 'No Show'),
     )
 
-    # Store user id (int) from Django auth
     customer_id = IntField(required=True)
     customer_username = StringField(max_length=150)
     customer_name = StringField(max_length=200)
@@ -78,8 +77,8 @@ class Reservation(Document):
     barber = ReferenceField(Barber, reverse_delete_rule=CASCADE)
     service = ReferenceField(Service, reverse_delete_rule=CASCADE)
 
-    appointment_date = StringField()   # stored as 'YYYY-MM-DD'
-    appointment_time = StringField()   # stored as 'HH:MM'
+    appointment_date = StringField()
+    appointment_time = StringField()
     status = StringField(max_length=20, choices=STATUS_CHOICES, default='pending')
     notes = StringField()
     total_price = DecimalField(precision=2)
@@ -143,7 +142,7 @@ class Testimonial(Document):
 
 class GalleryImage(Document):
     title = StringField(max_length=100)
-    image = StringField()  # store path/URL
+    image = StringField()
     barber = ReferenceField(Barber, null=True)
     is_featured = BooleanField(default=False)
     created_at = DateTimeField(default=timezone.now)
@@ -159,23 +158,18 @@ class GalleryImage(Document):
 
 class HaircutStyle(Document):
     CATEGORY_CHOICES = (
-        ('buzz_cut', 'Buzz Cut'),
-        ('modern_mullet', 'Modern Mullet'),
-        ('burst_fade', 'Burst Fade'),
-        ('curtain_bangs', 'Curtain Bangs'),
-        ('skin_fade', 'Skin Fade'),
-        ('undercut', 'Undercut'),
-        ('textured_crop', 'Textured Crop'),
-        ('pompadour', 'Pompadour'),
-        ('quiff', 'Quiff'),
-        ('french_crop', 'French Crop'),
+        ('basic',   '₱70–₱100 · Traditional, basic cut'),
+        ('finish',  '₱100–₱200 · Cleaner finish'),
+        ('styled',  '₱200–₱350 · Styled cuts'),
+        ('fade',    '₱350–₱600 · Advanced fades & shaping'),
+        ('premium', '₱600–₱1,000+ · Premium full service'),
     )
 
     name = StringField(max_length=120, required=True)
     category = StringField(max_length=30, choices=CATEGORY_CHOICES)
     description = StringField()
     price = DecimalField(precision=2)
-    image = StringField()  # store path/URL
+    image = StringField()
     is_active = BooleanField(default=True)
     created_at = DateTimeField(default=timezone.now)
 

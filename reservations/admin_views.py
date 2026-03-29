@@ -172,8 +172,9 @@ def admin_haircut_styles(request):
     styles = HaircutStyle.objects.all()
     if category_filter:
         styles = styles.filter(category=category_filter)
-    from .forms import PRICE_TIER_CHOICES
-    categories = PRICE_TIER_CHOICES
+
+    categories = HaircutStyle.CATEGORY_CHOICES
+
     return render(request, 'admin_panel/haircut_styles.html', {
         'styles': styles,
         'categories': categories,
@@ -181,10 +182,10 @@ def admin_haircut_styles(request):
     })
 
 
-def _save_image_to_mongo(image_file):
+def _image_to_data_uri(image_file):
     if not image_file:
         return None
-    mime = image_file.content_type or 'image/jpeg'
+    mime = getattr(image_file, 'content_type', None) or 'image/jpeg'
     raw = image_file.read()
     b64 = base64.b64encode(raw).decode('utf-8')
     return f"data:{mime};base64,{b64}"
@@ -200,15 +201,15 @@ def admin_haircut_style_add(request):
             image_file = data.pop('image', None)
 
             style = HaircutStyle(**data)
-
             if image_file:
-                style.image = _save_image_to_mongo(image_file)
+                style.image = _image_to_data_uri(image_file)
 
             style.save()
             messages.success(request, f'"{style.name}" added successfully.')
             return redirect('admin_haircut_styles')
     else:
         form = HaircutStyleForm()
+
     return render(request, 'admin_panel/haircut_style_form.html', {
         'form': form,
         'action': 'Add',
@@ -233,7 +234,7 @@ def admin_haircut_style_edit(request, pk):
                 setattr(style, k, v)
 
             if image_file:
-                style.image = _save_image_to_mongo(image_file)
+                style.image = _image_to_data_uri(image_file)
 
             style.save()
             messages.success(request, f'"{style.name}" updated successfully.')
