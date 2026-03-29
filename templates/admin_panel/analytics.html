@@ -1,0 +1,95 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Analytics{% endblock %}
+{% block page_title %}Analytics{% endblock %}
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+    <h2>Analytics Overview</h2>
+</div>
+
+<div class="analytics-grid">
+    <div class="analytics-card analytics-chart-card">
+        <h4>Bookings – Last 7 Days</h4>
+        <canvas id="bookingsChart" height="220"></canvas>
+    </div>
+    <div class="analytics-card analytics-chart-card">
+        <h4>Revenue – Last 7 Days (₱)</h4>
+        <canvas id="revenueChart" height="220"></canvas>
+    </div>
+</div>
+
+<div class="analytics-grid analytics-grid-2">
+    <div class="analytics-card">
+        <h4><i class="fas fa-cut"></i> Top Services</h4>
+        <table class="admin-table">
+            <thead><tr><th>Service</th><th>Bookings</th></tr></thead>
+            <tbody>
+                {% for s in service_stats %}
+                <tr>
+                    <td>{{ s.name }}</td>
+                    <td><span class="count-badge">{{ s.booking_count }}</span></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="2" class="empty-row">No data yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="analytics-card">
+        <h4><i class="fas fa-user-tie"></i> Barber Performance</h4>
+        <table class="admin-table">
+            <thead><tr><th>Barber</th><th>Bookings</th><th>Rating</th></tr></thead>
+            <tbody>
+                {% for b in barber_stats %}
+                <tr>
+                    <td>{{ b.name }}</td>
+                    <td><span class="count-badge">{{ b.booking_count }}</span></td>
+                    <td><i class="fas fa-star star-active"></i> {{ b.rating }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" class="empty-row">No data yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const daysData = {{ days_data|safe }};
+const labels = daysData.map(d => d.date);
+const counts = daysData.map(d => d.count);
+const revenues = daysData.map(d => d.revenue);
+
+const chartDefaults = {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+        x: { grid: { color: 'rgba(200,160,80,0.1)' }, ticks: { color: '#b89a5a' } },
+        y: { grid: { color: 'rgba(200,160,80,0.1)' }, ticks: { color: '#b89a5a' }, beginAtZero: true }
+    }
+};
+
+new Chart(document.getElementById('bookingsChart'), {
+    type: 'bar',
+    data: {
+        labels,
+        datasets: [{ data: counts, backgroundColor: 'rgba(200,160,60,0.7)', borderColor: '#c8a03c', borderWidth: 2, borderRadius: 6 }]
+    },
+    options: chartDefaults
+});
+
+new Chart(document.getElementById('revenueChart'), {
+    type: 'line',
+    data: {
+        labels,
+        datasets: [{ data: revenues, borderColor: '#c8a03c', backgroundColor: 'rgba(200,160,60,0.15)', fill: true, tension: 0.4, pointBackgroundColor: '#c8a03c' }]
+    },
+    options: chartDefaults
+});
+</script>
+{% endblock %}

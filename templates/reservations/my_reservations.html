@@ -1,0 +1,68 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}My Reservations | Velvet Steel{% endblock %}
+{% block content %}
+
+<section class="page-hero page-hero-sm">
+    <div class="page-hero-bg"></div>
+    <div class="container page-hero-content">
+        <div class="section-badge">MY ACCOUNT</div>
+        <h1 class="page-hero-title">My <em>Reservations</em></h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="reservations-wrap">
+            <div class="res-header">
+                <h3>Your Bookings <span class="res-count">{{ reservations.count }}</span></h3>
+                <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> New Booking</a>
+            </div>
+
+            {% if reservations %}
+            <div class="res-list">
+                {% for res in reservations %}
+                <div class="res-card status-{{ res.status }}">
+                    <div class="res-card-left">
+                        <div class="res-date-block">
+                            <span class="res-month">{{ res.appointment_date|date:"M" }}</span>
+                            <span class="res-day">{{ res.appointment_date|date:"d" }}</span>
+                            <span class="res-year">{{ res.appointment_date|date:"Y" }}</span>
+                        </div>
+                    </div>
+                    <div class="res-card-body">
+                        <div class="res-top">
+                            <h4>{{ res.service.name }}</h4>
+                            <span class="res-status status-badge-{{ res.status }}">{{ res.get_status_display }}</span>
+                        </div>
+                        <div class="res-details">
+                            <span><i class="fas fa-user-tie"></i> {{ res.barber.name }}</span>
+                            <span><i class="fas fa-clock"></i> {{ res.appointment_time|time:"g:i A" }}</span>
+                            <span><i class="fas fa-tag"></i> ₱{{ res.total_price }}</span>
+                        </div>
+                        <div class="res-code">Code: <strong>{{ res.confirmation_code }}</strong></div>
+                    </div>
+                    <div class="res-card-actions">
+                        <a href="{% url 'reservation_detail' res.pk %}" class="btn-outline btn-sm">View</a>
+                        {% if res.status == 'pending' or res.status == 'confirmed' %}
+                        <form method="post" action="{% url 'cancel_reservation' res.pk %}" onsubmit="return confirm('Cancel this reservation?')">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-danger btn-sm">Cancel</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fas fa-calendar-times"></i></div>
+                <h3>No reservations yet</h3>
+                <p>You haven't made any bookings. Book your first appointment now!</p>
+                <a href="{% url 'book_reservation' %}" class="btn-gold">Book Appointment</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

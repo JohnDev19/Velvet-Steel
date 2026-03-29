@@ -1,0 +1,31 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Barbers{% endblock %}
+{% block page_title %}Barbers{% endblock %}
+{% block content %}
+<div class="admin-page-header">
+    <h2>Barbers <span class="count-badge">{{ barbers.count }}</span></h2>
+    <a href="{% url 'django-admin:reservations_barber_add' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> Add Barber</a>
+</div>
+<div class="barbers-admin-grid">
+    {% for barber in barbers %}
+    <div class="barber-admin-card">
+        <div class="bac-photo">
+            {% if barber.photo %}<img src="{{ barber.photo.url }}" alt="{{ barber.name }}">
+            {% else %}<div class="bac-placeholder"><i class="fas fa-user-tie"></i></div>{% endif %}
+        </div>
+        <div class="bac-info">
+            <h4>{{ barber.name }}</h4>
+            <p>{{ barber.specialty }}</p>
+            <div class="bac-meta">
+                <span><i class="fas fa-award"></i> {{ barber.experience_years }} yrs</span>
+                <span><i class="fas fa-star"></i> {{ barber.rating }}</span>
+                <span class="{% if barber.is_active %}dot-completed{% else %}dot-cancelled{% endif %} qs-dot"></span>
+            </div>
+        </div>
+        <a href="{% url 'django-admin:reservations_barber_change' barber.pk %}" class="btn-outline btn-sm">Edit</a>
+    </div>
+    {% empty %}
+    <div class="empty-state"><div class="empty-icon"><i class="fas fa-user-tie"></i></div><h3>No barbers yet</h3><a href="{% url 'django-admin:reservations_barber_add' %}" class="btn-gold">Add Barber</a></div>
+    {% endfor %}
+</div>
+{% endblock %}

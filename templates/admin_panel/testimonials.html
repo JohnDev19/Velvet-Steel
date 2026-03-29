@@ -1,0 +1,35 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Reviews{% endblock %}
+{% block page_title %}Customer Reviews{% endblock %}
+{% block content %}
+<div class="admin-page-header">
+    <h2>Reviews <span class="count-badge">{{ testimonials.count }}</span></h2>
+</div>
+<div class="admin-section">
+    <div class="reviews-admin-list">
+        {% for t in testimonials %}
+        <div class="review-admin-card {% if not t.is_approved %}review-pending{% endif %}">
+            <div class="rac-header">
+                <div class="rac-stars">
+                    {% for i in "12345" %}
+                    <i class="fas fa-star {% if forloop.counter <= t.rating %}star-active{% endif %}"></i>
+                    {% endfor %}
+                </div>
+                <span class="rac-date">{{ t.created_at|date:"M d, Y" }}</span>
+                <span class="{% if t.is_approved %}status-badge-confirmed{% else %}status-badge-pending{% endif %}">{% if t.is_approved %}Approved{% else %}Pending{% endif %}</span>
+            </div>
+            <p class="rac-comment">"{{ t.comment }}"</p>
+            <div class="rac-footer">
+                <strong>{{ t.customer_name }}</strong>
+                {% if t.service %}<span>· {{ t.service.name }}</span>{% endif %}
+                <a href="{% url 'approve_testimonial' t.pk %}" class="btn-outline btn-sm ml-auto">
+                    {% if t.is_approved %}Unapprove{% else %}Approve{% endif %}
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state"><div class="empty-icon"><i class="fas fa-star"></i></div><h3>No reviews yet</h3></div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

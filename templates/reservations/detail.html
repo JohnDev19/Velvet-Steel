@@ -1,0 +1,62 @@
+{% extends 'base/base.html' %}
+{% block title %}Reservation #{{ reservation.confirmation_code }} | Velvet Steel{% endblock %}
+{% block content %}
+<section class="page-hero page-hero-sm">
+    <div class="page-hero-bg"></div>
+    <div class="container page-hero-content">
+        <div class="section-badge">RESERVATION</div>
+        <h1 class="page-hero-title">Booking <em>#{{ reservation.confirmation_code }}</em></h1>
+    </div>
+</section>
+<section class="section">
+    <div class="container container-sm">
+        <div class="detail-card">
+            <div class="detail-status detail-status-{{ reservation.status }}">
+                <i class="fas fa-{% if reservation.status == 'confirmed' %}check-circle{% elif reservation.status == 'completed' %}star{% elif reservation.status == 'cancelled' %}times-circle{% else %}hourglass-half{% endif %}"></i>
+                {{ reservation.get_status_display }}
+            </div>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Service</label>
+                    <strong>{{ reservation.service.name }}</strong>
+                </div>
+                <div class="detail-item">
+                    <label>Barber</label>
+                    <strong>{{ reservation.barber.name }}</strong>
+                </div>
+                <div class="detail-item">
+                    <label>Date</label>
+                    <strong>{{ reservation.appointment_date|date:"F d, Y" }}</strong>
+                </div>
+                <div class="detail-item">
+                    <label>Time</label>
+                    <strong>{{ reservation.appointment_time|time:"g:i A" }}</strong>
+                </div>
+                <div class="detail-item">
+                    <label>Duration</label>
+                    <strong>{{ reservation.service.duration_minutes }} minutes</strong>
+                </div>
+                <div class="detail-item">
+                    <label>Total Price</label>
+                    <strong class="price-highlight">₱{{ reservation.total_price }}</strong>
+                </div>
+            </div>
+            {% if reservation.notes %}
+            <div class="detail-notes">
+                <label>Notes</label>
+                <p>{{ reservation.notes }}</p>
+            </div>
+            {% endif %}
+            <div class="detail-footer">
+                <a href="{% url 'my_reservations' %}" class="btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
+                {% if reservation.status in 'pending,confirmed' %}
+                <form method="post" action="{% url 'cancel_reservation' reservation.pk %}" onsubmit="return confirm('Cancel this reservation?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-danger">Cancel Reservation</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

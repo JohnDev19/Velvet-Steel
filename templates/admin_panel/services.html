@@ -1,0 +1,32 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Services{% endblock %}
+{% block page_title %}Services{% endblock %}
+{% block content %}
+<div class="admin-page-header">
+    <h2>Services <span class="count-badge">{{ services.count }}</span></h2>
+    <a href="{% url 'django-admin:reservations_service_add' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> Add Service</a>
+</div>
+<div class="admin-section">
+    <div class="table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr><th>Name</th><th>Category</th><th>Price</th><th>Duration</th><th>Status</th><th>Edit</th></tr>
+            </thead>
+            <tbody>
+                {% for svc in services %}
+                <tr>
+                    <td><strong>{{ svc.name }}</strong></td>
+                    <td>{{ svc.get_category_display }}</td>
+                    <td>₱{{ svc.price }}</td>
+                    <td>{{ svc.duration_minutes }} min</td>
+                    <td><span class="{% if svc.is_active %}dot-completed{% else %}dot-cancelled{% endif %} qs-dot"></span> {% if svc.is_active %}Active{% else %}Inactive{% endif %}</td>
+                    <td><a href="{% url 'django-admin:reservations_service_change' svc.pk %}" class="btn-outline btn-sm">Edit</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="empty-row">No services yet. <a href="{% url 'django-admin:reservations_service_add' %}">Add one</a></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

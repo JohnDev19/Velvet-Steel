@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin{% endblock %} | Velvet Steel Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon-sm"><i class="fas fa-cut"></i></div>
+            <div>
+                <span class="sidebar-name">Velvet Steel</span>
+                <span class="sidebar-sub">Admin Panel</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Main</div>
+            <a href="{% url 'admin_dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="{% url 'admin_reservations' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_reservations' %}active{% endif %}">
+                <i class="fas fa-calendar-check"></i> Reservations
+            </a>
+            <a href="{% url 'admin_analytics' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_analytics' %}active{% endif %}">
+                <i class="fas fa-chart-bar"></i> Analytics
+            </a>
+            <div class="nav-section-label">Manage</div>
+            <a href="{% url 'admin_services' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_services' %}active{% endif %}">
+                <i class="fas fa-cut"></i> Services
+            </a>
+            <a href="{% url 'admin_barbers' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_barbers' %}active{% endif %}">
+                <i class="fas fa-user-tie"></i> Barbers
+            </a>
+            <a href="{% url 'admin_testimonials' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_testimonials' %}active{% endif %}">
+                <i class="fas fa-star"></i> Reviews
+                {% if pending_testimonials %}<span class="badge-count">{{ pending_testimonials }}</span>{% endif %}
+            </a>
+            <div class="nav-section-label">System</div>
+            <a href="{% url 'django-admin:index' %}" class="sidebar-link">
+                <i class="fas fa-cog"></i> Django Admin
+            </a>
+            <a href="{% url 'home' %}" class="sidebar-link">
+                <i class="fas fa-store"></i> View Site
+            </a>
+            <a href="{% url 'logout' %}" class="sidebar-link sidebar-logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main content -->
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <button class="sidebar-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('open')">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="topbar-title">{% block page_title %}Dashboard{% endblock %}</div>
+            <div class="topbar-user">
+                <i class="fas fa-user-circle"></i>
+                {{ request.user.get_full_name|default:request.user.username }}
+            </div>
+        </header>
+
+        {% if messages %}
+        <div class="admin-messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible">
+                {{ message }}
+                <button onclick="this.parentElement.remove()" class="alert-close"><i class="fas fa-times"></i></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="admin-content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

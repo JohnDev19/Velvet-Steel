@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Velvet Steel Barbershop{% endblock %} | Premium Cuts, Quezon City</title>
+    <meta name="description" content="Velvet Steel Barbershop — Premium grooming in Quezon City, Metro Manila. Fades, straight razor shaves, and full styling packages. Book online.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Josefin+Sans:wght@300;400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="{% url 'home' %}" class="nav-brand">
+            <div class="brand-icon"><i class="fas fa-cut"></i></div>
+            <div class="brand-text">
+                <span class="brand-name">Velvet Steel</span>
+                <span class="brand-sub">BARBERSHOP</span>
+            </div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
+            <li><a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a></li>
+            <li><a href="{% url 'services' %}" class="nav-link {% if request.resolver_match.url_name == 'services' %}active{% endif %}">Services</a></li>
+            <li><a href="{% url 'book_reservation' %}" class="nav-link nav-book">Book Now</a></li>
+            {% if user.is_authenticated %}
+            <li class="nav-dropdown">
+                <a href="#" class="nav-link nav-user">
+                    <i class="fas fa-user-circle"></i> {{ user.first_name|default:user.username }}
+                </a>
+                <div class="dropdown-menu">
+                    <a href="{% url 'my_reservations' %}"><i class="fas fa-calendar-check"></i> My Reservations</a>
+                    <a href="{% url 'profile' %}"><i class="fas fa-user-cog"></i> Profile</a>
+                    {% if user.is_staff %}
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'admin_dashboard' %}" class="admin-link"><i class="fas fa-tachometer-alt"></i> Admin Panel</a>
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </li>
+            {% else %}
+            <li><a href="{% url 'login' %}" class="nav-link">Login</a></li>
+            <li><a href="{% url 'register' %}" class="nav-link nav-register">Sign Up</a></li>
+            {% endif %}
+        </ul>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- FLASH MESSAGES -->
+{% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible">
+        <span>{{ message }}</span>
+        <button class="alert-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- MAIN -->
+<main>{% block content %}{% endblock %}</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-top">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <div class="brand-icon"><i class="fas fa-cut"></i></div>
+                    <div class="brand-text">
+                        <span class="brand-name">Velvet Steel</span>
+                        <span class="brand-sub">BARBERSHOP</span>
+                    </div>
+                </div>
+                <p class="footer-tagline">Premium grooming. Deliberate craft.<br>Quezon City's finest since 2010.</p>
+                <div class="footer-socials">
+                    <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-btn" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'about' %}">About Us</a></li>
+                    <li><a href="{% url 'services' %}">Services</a></li>
+                    <li><a href="{% url 'book_reservation' %}">Book Appointment</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Account</h4>
+                <ul>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'my_reservations' %}">My Reservations</a></li>
+                    <li><a href="{% url 'profile' %}">My Profile</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'register' %}">Create Account</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Visit Us</h4>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> 123 Rizal Avenue, Quezon City, Metro Manila</li>
+                    <li><i class="fas fa-phone"></i> +63 912 345 6789</li>
+                    <li><i class="fas fa-envelope"></i> info@velvetsteel.ph</li>
+                    <li><i class="fas fa-clock"></i> Mon&ndash;Sat: 8:00 AM &ndash; 8:00 PM</li>
+                    <li><i class="fas fa-clock"></i> Sunday: 9:00 AM &ndash; 6:00 PM</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Velvet Steel Barbershop. All rights reserved. Quezon City, Philippines.</p>
+    </div>
+</footer>
+
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,134 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}About Us | Velvet Steel Barbershop{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="container page-hero-content">
+        <div class="section-badge">OUR STORY</div>
+        <h1 class="page-hero-title">About <em>Velvet Steel</em></h1>
+        <p>Fifteen years of craftsmanship, passion, and Filipino pride</p>
+    </div>
+</section>
+
+<section class="section about-story">
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-visual">
+                <div class="about-img-frame">
+                    <div class="about-img-placeholder"><i class="fas fa-cut"></i></div>
+                    <div class="about-badge-float">
+                        <span class="badge-year">EST.</span>
+                        <span class="badge-num">2010</span>
+                    </div>
+                </div>
+                <div class="about-stats-row">
+                    <div class="about-stat"><span class="astat-n">15+</span><span class="astat-l">Years</span></div>
+                    <div class="about-stat"><span class="astat-n">5K+</span><span class="astat-l">Clients</span></div>
+                    <div class="about-stat"><span class="astat-n">8+</span><span class="astat-l">Barbers</span></div>
+                </div>
+            </div>
+            <div class="about-text">
+                <div class="section-badge">EST. 2010</div>
+                <h2 class="section-title">The <em>Legacy</em> of Velvet Steel</h2>
+                <p class="about-lead">Founded in 2010 by master barber Rico Villanueva in the heart of Quezon City, Velvet Steel was built on a single conviction: that Filipino men deserve a genuinely premium grooming experience.
+                <p>What started as a small, humble shop on Rizal Avenue has grown into Metro Manila's most respected premium barbershop — a place where tradition meets modernity, and where every client is treated like royalty.</p>
+                <p>We believe that a great haircut is more than just a trim — it's an expression of identity, a confidence booster, and a moment of self-care that every man deserves. That's why we pour passion, precision, and artistry into every single appointment.</p>
+                <div class="about-values">
+                    <div class="value-item"><i class="fas fa-check-circle"></i> <span>Certified Master Barbers</span></div>
+                    <div class="value-item"><i class="fas fa-check-circle"></i> <span>Premium Imported Products</span></div>
+                    <div class="value-item"><i class="fas fa-check-circle"></i> <span>Strict Hygiene Standards</span></div>
+                    <div class="value-item"><i class="fas fa-check-circle"></i> <span>100% Filipino-Owned Business</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TEAM -->
+<section class="section barbers-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">THE BARBERS</div>
+            <h2 class="section-title">Our <em>Team</em></h2>
+            <p class="section-subtitle">Meet the skilled artisans behind every perfect cut.</p>
+        </div>
+        <div class="barbers-grid barbers-grid-full">
+            {% for barber in barbers %}
+            <div class="barber-card">
+                <div class="barber-photo-wrap">
+                    {% if barber.photo %}
+                    <img src="{{ barber.photo.url }}" alt="{{ barber.name }}" class="barber-photo">
+                    {% else %}
+                    <div class="barber-photo-placeholder"><i class="fas fa-user-tie"></i></div>
+                    {% endif %}
+                    <div class="barber-overlay">
+                        <a href="{% url 'book_reservation' %}" class="barber-book-btn">Book</a>
+                    </div>
+                </div>
+                <div class="barber-info">
+                    <h3 class="barber-name">{{ barber.name }}</h3>
+                    <p class="barber-specialty">{{ barber.specialty }}</p>
+                    <p class="barber-bio">{{ barber.bio|truncatechars:100 }}</p>
+                    <div class="barber-meta">
+                        <span class="barber-exp"><i class="fas fa-award"></i> {{ barber.experience_years }} yrs</span>
+                        <span class="barber-rating"><i class="fas fa-star"></i> {{ barber.rating }}</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            {% for b in "123"|make_list %}
+            <div class="barber-card">
+                <div class="barber-photo-wrap">
+                    <div class="barber-photo-placeholder"><i class="fas fa-user-tie"></i></div>
+                    <div class="barber-overlay"><a href="{% url 'book_reservation' %}" class="barber-book-btn">Book</a></div>
+                </div>
+                <div class="barber-info">
+                    <h3 class="barber-name">Senior Barber</h3>
+                    <p class="barber-specialty">Classic Cuts & Modern Styles</p>
+                    <div class="barber-meta">
+                        <span class="barber-exp"><i class="fas fa-award"></i> 8 yrs</span>
+                        <span class="barber-rating"><i class="fas fa-star"></i> 4.9</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT INFO -->
+<section class="section contact-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">GET IN TOUCH</div>
+            <h2 class="section-title">Contact <em>Us</em></h2>
+        </div>
+        <div class="contact-grid">
+            <div class="contact-card">
+                <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <h4>Address</h4>
+                <p>123 Rizal Avenue, Quezon City<br>Metro Manila, Philippines 1100</p>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                <h4>Phone</h4>
+                <p>+63 912 345 6789<br>+63 2 8123 4567</p>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                <h4>Email</h4>
+                <p>info@velvetsteel.ph<br>bookings@velvetsteel.ph</p>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon"><i class="fas fa-clock"></i></div>
+                <h4>Hours</h4>
+                <p>Mon–Sat: 8:00 AM – 8:00 PM<br>Sunday: 9:00 AM – 6:00 PM</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

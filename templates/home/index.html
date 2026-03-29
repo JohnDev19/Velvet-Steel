@@ -1,0 +1,357 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Velvet Steel Barbershop | Premium Cuts, Quezon City{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-overlay"></div>
+    <div class="hero-pattern"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge"><span>QUEZON CITY &mdash; METRO MANILA</span></div>
+    <h1 class="hero-title">
+      <span class="hero-title-small">Precision. Craft.</span>
+      <span class="hero-title-large">Velvet Steel</span>
+    </h1>
+    <p class="hero-subtitle">Premium barbershop grooming in the heart of Metro Manila. Old-world technique, uncompromising standards, modern sensibility.</p>
+    <div class="hero-cta">
+      <a href="{% url 'book_reservation' %}" class="btn-gold btn-lg">
+        <i class="fas fa-calendar-alt"></i> Book an Appointment
+      </a>
+      <a href="{% url 'services' %}" class="btn-outline btn-lg">
+        <i class="fas fa-cut"></i> View Services
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-number">15+</span>
+        <span class="stat-label">Years Experience</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">5,000+</span>
+        <span class="stat-label">Clients Served</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">4.9</span>
+        <span class="stat-label">Average Rating</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- WHY VELVET STEEL -->
+<section class="features-section">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-crown"></i></div>
+        <h3>Premium Standard</h3>
+        <p>Every service uses imported professional-grade products. No shortcuts. No compromise on quality from the first cut to the last finish.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-user-tie"></i></div>
+        <h3>Certified Barbers</h3>
+        <p>Our team of master barbers has trained and refined their craft across Manila, Spain, and Japan. Technique is never left to chance.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-calendar-check"></i></div>
+        <h3>Online Booking</h3>
+        <p>Reserve your exact slot in seconds. Real-time availability, instant confirmation, no phone calls required. Your time is valued.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3>Strict Hygiene</h3>
+        <p>Full tool sterilization between every client. A clean, orderly environment is not optional — it is the baseline at Velvet Steel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section services-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">SERVICES &amp; PRICING</div>
+      <h2 class="section-title">What We <em>Offer</em></h2>
+      <p class="section-subtitle">From signature fades to full grooming rituals. Every service is a deliberate act of craft, not a transaction.</p>
+    </div>
+    <div class="services-grid">
+      {% for service in services %}
+      <div class="service-card {% if forloop.counter == 3 %}featured-service{% endif %}">
+        {% if forloop.counter == 3 %}<div class="featured-badge">Popular</div>{% endif %}
+        <div class="service-icon-wrap">
+          <i class="fas fa-{{ service.icon }}"></i>
+        </div>
+        <div class="service-info">
+          <span class="service-category">{{ service.get_category_display }}</span>
+          <h3 class="service-name">{{ service.name }}</h3>
+          <p class="service-desc">{{ service.description }}</p>
+          <div class="service-meta">
+            <span class="service-price">&#8369;{{ service.price }}</span>
+            <span class="service-duration"><i class="fas fa-clock"></i> {{ service.duration_minutes }} min</span>
+          </div>
+        </div>
+        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
+      </div>
+      {% empty %}
+      <div class="service-card">
+        <div class="service-icon-wrap"><i class="fas fa-cut"></i></div>
+        <div class="service-info">
+          <span class="service-category">Haircut</span>
+          <h3 class="service-name">Signature Haircut</h3>
+          <p class="service-desc">Precision scissor work with a tailored consultation, hot towel neck finish, and blowout styling.</p>
+          <div class="service-meta">
+            <span class="service-price">&#8369;600</span>
+            <span class="service-duration"><i class="fas fa-clock"></i> 45 min</span>
+          </div>
+        </div>
+        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon-wrap"><i class="fas fa-cut"></i></div>
+        <div class="service-info">
+          <span class="service-category">Haircut</span>
+          <h3 class="service-name">Precision Fade</h3>
+          <p class="service-desc">Skin-to-full fade with razor-sharp lines, temple and neckline cleanup, styled finish with premium pomade.</p>
+          <div class="service-meta">
+            <span class="service-price">&#8369;750</span>
+            <span class="service-duration"><i class="fas fa-clock"></i> 60 min</span>
+          </div>
+        </div>
+        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
+      </div>
+      <div class="service-card featured-service">
+        <div class="featured-badge">Popular</div>
+        <div class="service-icon-wrap"><i class="fas fa-crown"></i></div>
+        <div class="service-info">
+          <span class="service-category">Combo Package</span>
+          <h3 class="service-name">Velvet Steel Complete</h3>
+          <p class="service-desc">Signature haircut, straight razor shave, beard sculpt, full scalp treatment, hot towel finish. The full ritual.</p>
+          <div class="service-meta">
+            <span class="service-price">&#8369;1,800</span>
+            <span class="service-duration"><i class="fas fa-clock"></i> 120 min</span>
+          </div>
+        </div>
+        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon-wrap"><i class="fas fa-user-tie"></i></div>
+        <div class="service-info">
+          <span class="service-category">Shave &amp; Beard</span>
+          <h3 class="service-name">Classic Straight Razor Shave</h3>
+          <p class="service-desc">Hot-towel prep, pre-shave oil, premium lather, straight razor shave, cold towel close, and aftershave balm.</p>
+          <div class="service-meta">
+            <span class="service-price">&#8369;650</span>
+            <span class="service-duration"><i class="fas fa-clock"></i> 45 min</span>
+          </div>
+        </div>
+        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon-wrap"><i class="fas fa-star"></i></div>
+        <div class="service-info">
+          <span class="service-category">Combo Package</span>
+          <h3 class="service-name">Gentleman Package</h3>
+          <p class="service-desc">Precision fade plus beard sculpture plus scalp treatment. No filler, no rush. The complete mid-week reset.</p>
+          <div class="service-meta">
+            <span class="service-price">&#8369;1,200</span>
+            <span class="service-duration"><i class="fas fa-clock"></i> 90 min</span>
+          </div>
+        </div>
+        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="section-cta">
+      <a href="{% url 'services' %}" class="btn-outline">See Full Service Menu <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- BARBERS -->
+<section class="section barbers-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">THE TEAM</div>
+      <h2 class="section-title">Meet the <em>Barbers</em></h2>
+      <p class="section-subtitle">Specialists, not generalists. Every barber at Velvet Steel has a defined craft and years of deliberate practice behind it.</p>
+    </div>
+    <div class="barbers-grid">
+      {% for barber in barbers %}
+      <div class="barber-card">
+        <div class="barber-photo-wrap">
+          {% if barber.photo %}
+          <img src="{{ barber.photo.url }}" alt="{{ barber.name }}" class="barber-photo">
+          {% else %}
+          <div class="barber-photo-placeholder"><i class="fas fa-user-tie"></i></div>
+          {% endif %}
+          <div class="barber-overlay">
+            <a href="{% url 'book_reservation' %}" class="barber-book-btn">Book with {{ barber.name }}</a>
+          </div>
+        </div>
+        <div class="barber-info">
+          <h3 class="barber-name">{{ barber.name }}</h3>
+          <p class="barber-specialty">{{ barber.specialty }}</p>
+          <div class="barber-meta">
+            <span class="barber-exp"><i class="fas fa-award"></i> {{ barber.experience_years }} yrs</span>
+            <span class="barber-rating"><i class="fas fa-star"></i> {{ barber.rating }}</span>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      {% for n in "123"|make_list %}
+      <div class="barber-card">
+        <div class="barber-photo-wrap">
+          <div class="barber-photo-placeholder"><i class="fas fa-user-tie"></i></div>
+          <div class="barber-overlay"><a href="{% url 'book_reservation' %}" class="barber-book-btn">Book Now</a></div>
+        </div>
+        <div class="barber-info">
+          <h3 class="barber-name">Master Barber</h3>
+          <p class="barber-specialty">Fades, Shaves &amp; Styling</p>
+          <div class="barber-meta">
+            <span class="barber-exp"><i class="fas fa-award"></i> 8 yrs</span>
+            <span class="barber-rating"><i class="fas fa-star"></i> 4.9</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+  <div class="cta-banner-bg"></div>
+  <div class="container cta-content">
+    <div class="cta-text">
+      <h2>Ready to Book Your <em>Appointment?</em></h2>
+      <p>Reserve your slot online in seconds. Real-time availability, confirmed instantly. Walk in ready, walk out sharp.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="{% url 'book_reservation' %}" class="btn-gold btn-lg">
+        <i class="fas fa-calendar-plus"></i> Reserve a Slot
+      </a>
+      <a href="tel:+639123456789" class="btn-white btn-lg">
+        <i class="fas fa-phone"></i> Call Now
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section testimonials-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">CLIENT FEEDBACK</div>
+      <h2 class="section-title">What Clients <em>Say</em></h2>
+    </div>
+    <div class="testimonials-grid">
+      {% for t in testimonials %}
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          {% for i in "12345" %}
+          <i class="fas fa-star {% if forloop.counter <= t.rating %}star-active{% endif %}"></i>
+          {% endfor %}
+        </div>
+        <p class="testimonial-text">"{{ t.comment }}"</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">{{ t.customer_name|first }}</div>
+          <div class="author-info">
+            <strong>{{ t.customer_name }}</strong>
+            {% if t.service %}<span>{{ t.service.name }}</span>{% endif %}
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="testimonial-card">
+        <div class="testimonial-stars"><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i></div>
+        <p class="testimonial-text">"Best barbershop experience I have had in Manila. Rico knows exactly what he is doing — clean fade, precise lines, and the straight razor shave is on another level."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">J</div>
+          <div class="author-info"><strong>Juan dela Cruz</strong><span>Precision Fade</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars"><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i></div>
+        <p class="testimonial-text">"The Velvet Steel Complete package is absolutely worth it. Two hours of full grooming and I walked out looking completely different. The hot towel ritual alone justifies the price."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">M</div>
+          <div class="author-info"><strong>Miguel Santos</strong><span>Velvet Steel Complete</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars"><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i></div>
+        <p class="testimonial-text">"Online booking is seamless. No waiting, no confusion. Marco nailed the skin fade exactly as I described. This is what a premium barbershop should feel like."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">R</div>
+          <div class="author-info"><strong>Ramon Reyes</strong><span>Precision Fade</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars"><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i><i class="fas fa-star star-active"></i></div>
+        <p class="testimonial-text">"Clean shop, serious barbers, zero small talk unless you want it. Jonas gave me the best textured crop I have ever had. I do not go anywhere else now."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">C</div>
+          <div class="author-info"><strong>Carlo Mendoza</strong><span>Textured Crop</span></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section class="section location-section">
+  <div class="container">
+    <div class="location-grid">
+      <div class="location-info">
+        <div class="section-badge">FIND US</div>
+        <h2 class="section-title">Visit the <em>Shop</em></h2>
+        <div class="location-details">
+          <div class="loc-item">
+            <div class="loc-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div>
+              <strong>Address</strong>
+              <p>123 Rizal Avenue, Quezon City<br>Metro Manila, Philippines</p>
+            </div>
+          </div>
+          <div class="loc-item">
+            <div class="loc-icon"><i class="fas fa-clock"></i></div>
+            <div>
+              <strong>Hours</strong>
+              <p>Monday &ndash; Saturday: 8:00 AM &ndash; 8:00 PM<br>Sunday: 9:00 AM &ndash; 6:00 PM</p>
+            </div>
+          </div>
+          <div class="loc-item">
+            <div class="loc-icon"><i class="fas fa-phone"></i></div>
+            <div>
+              <strong>Contact</strong>
+              <p>+63 912 345 6789<br>info@velvetsteel.ph</p>
+            </div>
+          </div>
+        </div>
+        <a href="{% url 'book_reservation' %}" class="btn-gold">Book Your Visit</a>
+      </div>
+      <div class="location-map">
+        <div class="map-placeholder">
+          <i class="fas fa-map-marked-alt"></i>
+          <p>Quezon City, Metro Manila</p>
+          <span>Philippines</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

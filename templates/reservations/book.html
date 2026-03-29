@@ -1,0 +1,172 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}Book Appointment | Velvet Steel Barbershop{% endblock %}
+
+{% block content %}
+<section class="page-hero page-hero-sm">
+    <div class="page-hero-bg"></div>
+    <div class="container page-hero-content">
+        <div class="section-badge">RESERVATION</div>
+        <h1 class="page-hero-title">Book Your <em>Appointment</em></h1>
+        <p>Choose your barber, service, and preferred schedule</p>
+    </div>
+</section>
+
+<section class="section booking-section">
+    <div class="container">
+        <div class="booking-layout">
+            <!-- FORM -->
+            <div class="booking-form-wrap">
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <h3><i class="fas fa-calendar-plus"></i> Reservation Details</h3>
+                    </div>
+                    <form method="post" action="{% url 'book_reservation' %}" class="booking-form" id="bookingForm">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-user-tie"></i> Choose Barber</label>
+                            <select name="barber" id="barberSelect" class="form-control" required>
+                                <option value="">Select a barber...</option>
+                                {% for barber in barbers %}
+                                <option value="{{ barber.pk }}" data-rating="{{ barber.rating }}" data-specialty="{{ barber.specialty }}">
+                                    {{ barber.name }} — {{ barber.specialty }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <div class="barber-preview" id="barberPreview"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-cut"></i> Choose Service</label>
+                            <select name="service" id="serviceSelect" class="form-control" required>
+                                <option value="">Select a service...</option>
+                                {% for service in services %}
+                                <optgroup label="{{ service.get_category_display }}" id="group-{{ service.category }}">
+                                    <option value="{{ service.pk }}" data-price="{{ service.price }}" data-duration="{{ service.duration_minutes }}">
+                                        {{ service.name }} — ₱{{ service.price }} ({{ service.duration_minutes }} min)
+                                    </option>
+                                </optgroup>
+                                {% endfor %}
+                            </select>
+                            <div class="service-preview" id="servicePreview"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label"><i class="fas fa-calendar"></i> Date</label>
+                                <input type="date" name="appointment_date" id="dateInput" class="form-control" required min="{{ today_min }}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label"><i class="fas fa-clock"></i> Time</label>
+                                <select name="appointment_time" id="timeSelect" class="form-control" required>
+                                    <option value="">Select date first...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-comment"></i> Special Requests <small>(optional)</small></label>
+                            <textarea name="notes" class="form-control" rows="3" placeholder="Any special requests or notes for your barber..."></textarea>
+                        </div>
+                        <div class="booking-summary" id="bookingSummary" style="display:none;">
+                            <h4><i class="fas fa-receipt"></i> Booking Summary</h4>
+                            <div class="summary-row"><span>Service:</span><span id="sum-service">—</span></div>
+                            <div class="summary-row"><span>Barber:</span><span id="sum-barber">—</span></div>
+                            <div class="summary-row"><span>Date & Time:</span><span id="sum-datetime">—</span></div>
+                            <div class="summary-row summary-total"><span>Total:</span><span id="sum-price">—</span></div>
+                        </div>
+                        <button type="submit" class="btn-gold btn-block btn-lg">
+                            <i class="fas fa-check-circle"></i> Confirm Reservation
+                        </button>
+                        {% if not user.is_authenticated %}
+                        <p class="login-note">
+                            <a href="{% url 'login' %}?next={% url 'book_reservation' %}">Login</a> or <a href="{% url 'register' %}">create an account</a> to book.
+                        </p>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
+            <!-- SIDEBAR INFO -->
+            <div class="booking-sidebar">
+                <div class="sidebar-card">
+                    <h4><i class="fas fa-info-circle"></i> Booking Info</h4>
+                    <ul class="info-list">
+                        <li><i class="fas fa-check"></i> Same-day cancellation allowed</li>
+                        <li><i class="fas fa-check"></i> Arrive 5 minutes early</li>
+                        <li><i class="fas fa-check"></i> Confirmation code via email</li>
+                        <li><i class="fas fa-check"></i> No down payment required</li>
+                    </ul>
+                </div>
+                <div class="sidebar-card">
+                    <h4><i class="fas fa-clock"></i> Shop Hours</h4>
+                    <table class="hours-table">
+                        <tr><td>Monday – Friday</td><td>8AM – 8PM</td></tr>
+                        <tr><td>Saturday</td><td>8AM – 8PM</td></tr>
+                        <tr><td>Sunday</td><td>9AM – 6PM</td></tr>
+                    </table>
+                </div>
+                <div class="sidebar-card">
+                    <h4><i class="fas fa-phone"></i> Need Help?</h4>
+                    <p>Call us at<br><strong>+63 912 345 6789</strong></p>
+                    <p>or email<br><strong>info@velvetsteel.ph</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const slotsUrl = "{% url 'get_available_slots' %}";
+const barberSelect = document.getElementById('barberSelect');
+const dateInput = document.getElementById('dateInput');
+const timeSelect = document.getElementById('timeSelect');
+const serviceSelect = document.getElementById('serviceSelect');
+const summary = document.getElementById('bookingSummary');
+
+// Set min date to tomorrow
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+dateInput.min = tomorrow.toISOString().split('T')[0];
+
+async function loadSlots() {
+    const barberId = barberSelect.value;
+    const date = dateInput.value;
+    if (!barberId || !date) return;
+
+    timeSelect.innerHTML = '<option value="">Loading...</option>';
+    const res = await fetch(`${slotsUrl}?barber_id=${barberId}&date=${date}`);
+    const data = await res.json();
+    timeSelect.innerHTML = '<option value="">Select time...</option>';
+    if (data.slots.length === 0) {
+        timeSelect.innerHTML = '<option value="">No slots available</option>';
+    } else {
+        data.slots.forEach(slot => {
+            timeSelect.innerHTML += `<option value="${slot.value}">${slot.label}</option>`;
+        });
+    }
+    updateSummary();
+}
+
+function updateSummary() {
+    const sOpt = serviceSelect.options[serviceSelect.selectedIndex];
+    const bOpt = barberSelect.options[barberSelect.selectedIndex];
+    const tOpt = timeSelect.options[timeSelect.selectedIndex];
+    const date = dateInput.value;
+
+    if (serviceSelect.value && barberSelect.value && date && timeSelect.value) {
+        summary.style.display = 'block';
+        document.getElementById('sum-service').textContent = sOpt.text.split(' — ')[0];
+        document.getElementById('sum-barber').textContent = bOpt.text.split(' — ')[0];
+        document.getElementById('sum-datetime').textContent = `${date} at ${tOpt.text}`;
+        document.getElementById('sum-price').textContent = `₱${sOpt.dataset.price}`;
+    } else {
+        summary.style.display = 'none';
+    }
+}
+
+barberSelect.addEventListener('change', () => { loadSlots(); updateSummary(); });
+dateInput.addEventListener('change', loadSlots);
+timeSelect.addEventListener('change', updateSummary);
+serviceSelect.addEventListener('change', updateSummary);
+</script>
+{% endblock %}

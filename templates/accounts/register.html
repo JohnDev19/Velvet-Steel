@@ -1,0 +1,61 @@
+{% extends 'base/base.html' %}
+{% block title %}Create Account | Velvet Steel Barbershop{% endblock %}
+{% block content %}
+<section class="auth-section">
+    <div class="auth-bg"></div>
+    <div class="auth-container auth-container-wide">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo"><i class="fas fa-cut"></i></div>
+                <h2>Create Account</h2>
+                <p>Join Velvet Steel and start booking</p>
+            </div>
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                {% if form.errors %}
+                <div class="form-error-msg">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {% for field, errors in form.errors.items %}{% for error in errors %}{{ error }} {% endfor %}{% endfor %}
+                </div>
+                {% endif %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" name="first_name" class="form-control" placeholder="Juan" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" name="last_name" class="form-control" placeholder="dela Cruz" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" placeholder="juandelacruz" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" placeholder="juan@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone <small>(optional)</small></label>
+                    <input type="text" name="phone" class="form-control" placeholder="+63 9XX XXX XXXX">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password1" class="form-control" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" name="password2" class="form-control" placeholder="Confirm" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-gold btn-block">Create Account</button>
+            </form>
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
