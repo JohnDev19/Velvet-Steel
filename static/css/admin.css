@@ -247,3 +247,142 @@
   .admin-content { padding: 16px; }
   .barbers-admin-grid { grid-template-columns: 1fr; }
 }
+/* ============================================
+   HAIRCUT STYLE FORM — TIER SELECT
+   ============================================ */
+
+.tier-select-wrap { position: relative; }
+
+select.form-control-tier {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 36px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23c8a03c' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 13px center;
+}
+
+.tier-preview {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-top: 9px;
+    padding: 9px 14px;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    border-left: 3px solid transparent;
+}
+.tier-preview[data-tier="basic"]   { background: rgba(100,190,100,0.09); border-color: #64be64; color: #64be64; }
+.tier-preview[data-tier="finish"]  { background: rgba(74,144,210,0.09);  border-color: #4a90d2; color: #4a90d2; }
+.tier-preview[data-tier="styled"]  { background: rgba(160,100,210,0.09); border-color: #a064d2; color: #a064d2; }
+.tier-preview[data-tier="fade"]    { background: rgba(210,140,60,0.09);  border-color: #d28c3c; color: #d28c3c; }
+.tier-preview[data-tier="premium"] { background: rgba(200,160,60,0.11);  border-color: #c8a03c; color: #c8a03c; }
+.tier-preview i { font-size: 0.95rem; flex-shrink: 0; }
+.tier-preview-range { font-family: 'Playfair Display', serif; font-size: 0.95rem; }
+.tier-preview-label { opacity: 0.75; font-weight: 400; font-size: 0.74rem; margin-left: 4px; }
+
+/* ============================================
+   HAIRCUT STYLE FORM — IMAGE UPLOAD ZONE
+   ============================================ */
+
+.upload-zone input[type="file"] {
+    display: none;
+}
+
+.upload-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    border: 2px dashed rgba(200,160,60,0.3);
+    border-radius: 6px;
+    padding: 28px 20px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: rgba(200,160,60,0.03);
+}
+.upload-zone:hover,
+.upload-zone.upload-zone-drag {
+    border-color: #c8a03c;
+    background: rgba(200,160,60,0.07);
+}
+.upload-zone.upload-zone-active {
+    border-color: rgba(200,160,60,0.5);
+}
+.upload-zone-icon  { font-size: 2rem; color: #c8a03c; opacity: 0.55; }
+.upload-zone-title { display: block; font-size: 0.87rem; color: #f0ebe0; font-weight: 600; }
+.upload-zone-hint  { display: block; font-size: 0.73rem; color: #6a6050; }
+
+.upload-preview-wrap {
+    display: none;
+    margin-top: 12px;
+    text-align: center;
+    position: relative;
+}
+.upload-preview-img {
+    max-width: 200px;
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid rgba(200,160,60,0.3);
+    display: inline-block;
+}
+.upload-preview-clear {
+    position: absolute;
+    top: 0;
+    right: calc(50% - 108px);
+    background: rgba(14,14,14,0.85);
+    color: #e05555;
+    border: 1px solid rgba(224,85,85,0.4);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.upload-preview-clear:hover { background: #e05555; color: #fff; }
+.upload-preview-name {
+    display: block;
+    font-size: 0.71rem;
+    color: #6a6050;
+    margin-top: 6px;
+}
+
+.current-photo-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    background: rgba(200,160,60,0.05);
+    border: 1px solid rgba(200,160,60,0.15);
+    border-radius: 5px;
+}
+.current-photo-row img {
+    width: 72px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: 3px;
+    border: 1px solid rgba(200,160,60,0.2);
+    flex-shrink: 0;
+}
+.current-photo-meta strong { display: block; font-size: 0.78rem; color: #c8a03c; }
+.current-photo-meta span   { font-size: 0.71rem; color: #6a6050; }
+
+/* ============================================
+   HAIRCUT STYLE FORM — RESPONSIVE
+   ============================================ */
+@media (max-width: 720px) {
+    .form-row-2 { grid-template-columns: 1fr !important; }
+    .form-card  { padding: 16px 12px !important; }
+    .upload-preview-clear { right: calc(50% - 100px); }
+}

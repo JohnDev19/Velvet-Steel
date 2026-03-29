@@ -2,117 +2,6 @@
 {% block title %}{{ action }} Haircut Style{% endblock %}
 {% block page_title %}{{ action }} Haircut Style{% endblock %}
 
-{% block extra_css %}
-<style>
-/* ── TIER SELECT ─────────────────────────────────────────── */
-.tier-select-wrap { position: relative; }
-
-select.form-control-tier {
-    appearance: none;
-    -webkit-appearance: none;
-    padding-right: 36px;
-    cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23c8a03c' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 13px center;
-}
-
-.tier-preview {
-    display: none;
-    align-items: center;
-    gap: 10px;
-    margin-top: 9px;
-    padding: 9px 14px;
-    border-radius: 4px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    border-left: 3px solid transparent;
-    transition: background 0.2s, border-color 0.2s;
-}
-.tier-preview[data-tier="basic"]   { background: rgba(100,190,100,0.09); border-color: #64be64; color: #64be64; }
-.tier-preview[data-tier="finish"]  { background: rgba(74,144,210,0.09);  border-color: #4a90d2; color: #4a90d2; }
-.tier-preview[data-tier="styled"]  { background: rgba(160,100,210,0.09); border-color: #a064d2; color: #a064d2; }
-.tier-preview[data-tier="fade"]    { background: rgba(210,140,60,0.09);  border-color: #d28c3c; color: #d28c3c; }
-.tier-preview[data-tier="premium"] { background: rgba(200,160,60,0.11);  border-color: #c8a03c; color: #c8a03c; }
-.tier-preview i { font-size: 0.95rem; flex-shrink: 0; }
-.tier-preview-range  { font-family: 'Playfair Display', serif; font-size: 0.95rem; }
-.tier-preview-label  { opacity: 0.75; font-weight: 400; font-size: 0.74rem; margin-left: 4px; }
-
-/* ── IMAGE UPLOAD ZONE ───────────────────────────────────── */
-.upload-zone {
-    position: relative;
-    border: 2px dashed rgba(200,160,60,0.3);
-    border-radius: 6px;
-    padding: 26px 20px 22px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    background: rgba(200,160,60,0.03);
-    overflow: hidden;
-}
-.upload-zone:hover,
-.upload-zone.drag-over {
-    border-color: #c8a03c;
-    background: rgba(200,160,60,0.07);
-}
-.upload-zone input[type="file"] {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-    z-index: 2;
-}
-.upload-zone-icon  { font-size: 2rem; color: #c8a03c; opacity: 0.55; margin-bottom: 8px; pointer-events: none; }
-.upload-zone-title { display: block; font-size: 0.87rem; color: #f0ebe0; margin-bottom: 3px; font-weight: 600; pointer-events: none; }
-.upload-zone-hint  { display: block; font-size: 0.73rem; color: #6a6050; pointer-events: none; }
-
-.upload-preview-wrap { display: none; margin-top: 12px; text-align: center; position: relative; }
-.upload-preview-img  {
-    max-width: 200px; width: 100%; height: 150px;
-    object-fit: cover; border-radius: 4px;
-    border: 1px solid rgba(200,160,60,0.3);
-    display: inline-block;
-}
-.upload-preview-clear {
-    position: absolute; top: 0; right: calc(50% - 108px);
-    background: rgba(14,14,14,0.85); color: #e05555;
-    border: 1px solid rgba(224,85,85,0.4); border-radius: 50%;
-    width: 24px; height: 24px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.65rem; cursor: pointer; transition: 0.2s;
-    z-index: 3;
-}
-.upload-preview-clear:hover { background: #e05555; color: #fff; }
-.upload-preview-name { display: block; font-size: 0.71rem; color: #6a6050; margin-top: 6px; }
-
-.current-photo-row {
-    display: flex; align-items: center; gap: 14px;
-    padding: 10px 14px; margin-bottom: 10px;
-    background: rgba(200,160,60,0.05);
-    border: 1px solid rgba(200,160,60,0.15);
-    border-radius: 5px;
-}
-.current-photo-row img {
-    width: 72px; height: 54px; object-fit: cover;
-    border-radius: 3px; border: 1px solid rgba(200,160,60,0.2);
-    flex-shrink: 0;
-}
-.current-photo-meta strong { display: block; font-size: 0.78rem; color: #c8a03c; }
-.current-photo-meta span   { font-size: 0.71rem; color: #6a6050; }
-
-/* ── RESPONSIVE ──────────────────────────────────────────── */
-@media (max-width: 720px) {
-    .form-row-2 { grid-template-columns: 1fr !important; }
-    .form-card  { padding: 16px 12px !important; }
-    .admin-page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-    .upload-preview-clear { right: calc(50% - 100px); }
-}
-</style>
-{% endblock %}
-
 {% block content %}
 
 <div class="admin-page-header">
@@ -183,15 +72,13 @@ select.form-control-tier {
                     </div>
                     {% endif %}
 
-                    <!-- Drag-and-drop / click upload zone -->
-                    <div class="upload-zone" id="uploadZone">
-                        {{ form.image }}
+                    <label class="upload-zone" id="uploadZone" for="id_image">
                         <div class="upload-zone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                         <strong class="upload-zone-title">Click to upload or drag & drop</strong>
                         <span class="upload-zone-hint">JPG, PNG, WEBP &nbsp;·&nbsp; Recommended 600 × 450 px</span>
-                    </div>
+                        {{ form.image }}
+                    </label>
 
-                    <!-- Live preview after selection -->
                     <div class="upload-preview-wrap" id="previewWrap">
                         <button type="button" class="upload-preview-clear" id="clearBtn" title="Remove">
                             <i class="fas fa-times"></i>
@@ -238,21 +125,21 @@ select.form-control-tier {
 <script>
 /* ── PRICE TIER LIVE PREVIEW ─────────────────────────── */
 const TIERS = {
-    basic:   { range: '₱70 – ₱100',     label: 'Traditional, basic cut',   icon: 'fas fa-scissors' },
-    finish:  { range: '₱100 – ₱200',    label: 'Cleaner finish',            icon: 'fas fa-cut' },
-    styled:  { range: '₱200 – ₱350',    label: 'Styled cuts',               icon: 'fas fa-magic' },
-    fade:    { range: '₱350 – ₱600',    label: 'Advanced fades & shaping',  icon: 'fas fa-layer-group' },
-    premium: { range: '₱600 – ₱1,000+', label: 'Premium full service',      icon: 'fas fa-crown' },
+    basic:   { range: '₱70 – ₱100',     label: 'Traditional, basic cut',  icon: 'fas fa-scissors' },
+    finish:  { range: '₱100 – ₱200',    label: 'Cleaner finish',           icon: 'fas fa-cut' },
+    styled:  { range: '₱200 – ₱350',    label: 'Styled cuts',              icon: 'fas fa-magic' },
+    fade:    { range: '₱350 – ₱600',    label: 'Advanced fades & shaping', icon: 'fas fa-layer-group' },
+    premium: { range: '₱600 – ₱1,000+', label: 'Premium full service',     icon: 'fas fa-crown' },
 };
 
-const catSel     = document.querySelector('select.form-control-tier');
-const tierBar    = document.getElementById('tierPreview');
-const tierRange  = document.getElementById('tierRange');
-const tierLabel  = document.getElementById('tierLabel');
+const catSel    = document.querySelector('select.form-control-tier');
+const tierBar   = document.getElementById('tierPreview');
+const tierRange = document.getElementById('tierRange');
+const tierLabel = document.getElementById('tierLabel');
 
 function refreshTier() {
-    const t = TIERS[catSel.value];
-    if (!t) { tierBar.style.display = 'none'; return; }
+    const t = TIERS[catSel ? catSel.value : ''];
+    if (!t) { if (tierBar) tierBar.style.display = 'none'; return; }
     tierBar.setAttribute('data-tier', catSel.value);
     tierBar.querySelector('i').className = t.icon;
     tierRange.textContent = t.range;
@@ -266,8 +153,8 @@ if (catSel) {
 }
 
 /* ── IMAGE UPLOAD PREVIEW ────────────────────────────── */
-const fileInput  = document.getElementById('id_image');
-const uploadZone = document.getElementById('uploadZone');
+const fileInput   = document.getElementById('id_image');
+const uploadZone  = document.getElementById('uploadZone');
 const previewWrap = document.getElementById('previewWrap');
 const previewImg  = document.getElementById('previewImg');
 const previewName = document.getElementById('previewName');
@@ -280,7 +167,7 @@ function showPreview(file) {
         previewImg.src = e.target.result;
         previewName.textContent = file.name + ' · ' + (file.size / 1024).toFixed(0) + ' KB';
         previewWrap.style.display = 'block';
-        uploadZone.style.borderColor = '#c8a03c';
+        uploadZone.classList.add('upload-zone-active');
     };
     reader.readAsDataURL(file);
 }
@@ -292,30 +179,24 @@ if (fileInput) {
 }
 
 if (clearBtn) {
-    clearBtn.addEventListener('click', () => {
+    clearBtn.addEventListener('click', e => {
+        e.stopPropagation();
         fileInput.value = '';
         previewImg.src  = '';
         previewWrap.style.display = 'none';
-        uploadZone.style.borderColor = '';
+        uploadZone.classList.remove('upload-zone-active');
     });
 }
 
 if (uploadZone) {
-    uploadZone.addEventListener('dragover', e => {
-        e.preventDefault();
-        uploadZone.classList.add('drag-over');
-    });
-    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+    uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('upload-zone-drag'); });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('upload-zone-drag'));
     uploadZone.addEventListener('drop', e => {
         e.preventDefault();
-        uploadZone.classList.remove('drag-over');
+        uploadZone.classList.remove('upload-zone-drag');
         const file = e.dataTransfer.files[0];
         if (file) {
-            try {
-                const dt = new DataTransfer();
-                dt.items.add(file);
-                fileInput.files = dt.files;
-            } catch(_) {}
+            try { const dt = new DataTransfer(); dt.items.add(file); fileInput.files = dt.files; } catch(_) {}
             showPreview(file);
         }
     });
