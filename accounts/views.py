@@ -75,14 +75,24 @@ def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            user = authenticate(
-                request,
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password']
-            )
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            
+            user = authenticate(request, username=username, password=password)
+            if not user:
+                try:
+                    user_by_email = User.objects.get(email=username)
+                    user = authenticate(request, username=user_by_email.username, password=password)
+                except User.DoesNotExist:
+                    user = None
+            
             if user:
                 login(request, user)
+                _get_or_create_profile(user)
+                messages.success(request, f'Welcome back, {user.first_name or user.username}!')
                 next_url = request.GET.get('next', 'home')
+                if user.is_staff:
+                    next_url = request.GET.get('next', 'user_dashboard')
                 return redirect(next_url)
             else:
                 messages.error(request, 'Invalid username or password.')
@@ -95,6 +105,30 @@ def logout_view(request):
     logout(request)
     messages.info(request, 'You have been logged out.')
     return redirect('home')
+
+
+@login_required
+def user_dashboard(request):
+    """User dashboard showing their reservations and profile overview."""
+    from reservations.models import Reservation
+    profile = _get_or_create_profile(request.user)
+    
+    user_reservations = Reservation.objects(user_id=request.user.pk).order_by('-created_at')
+    upcoming = [r for r in user_reservations if r.status in ['pending', 'confirmed']]
+    past = [r for r in user_reservations if r.status in ['completed', 'cancelled']]
+    
+    total_visits = len([r for r in user_reservations if r.status == 'completed'])
+    total_spent = sum(float(r.total_price or 0) for r in user_reservations if r.status == 'completed')
+    
+    context = {
+        'profile': profile,
+        'upcoming': upcoming[:5],
+        'past': past[:5],
+        'total_visits': total_visits,
+        'total_spent': total_spent,
+        'reservation_count': len(user_reservations),
+    }
+    return render(request, 'accounts/dashboard.html', context)
 
 
 @login_required

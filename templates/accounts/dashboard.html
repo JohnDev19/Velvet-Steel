@@ -1,0 +1,466 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}My Dashboard | Velvet Steel{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-hero {
+        background: linear-gradient(135deg, rgba(200,160,60,0.1) 0%, rgba(14,14,14,0) 100%);
+        padding: 40px 0;
+        border-bottom: 1px solid rgba(200,160,60,0.15);
+        margin-bottom: 40px;
+    }
+
+    .dashboard-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .dashboard-avatar {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #c8a03c 0%, #e8c050 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: #0e0e0e;
+        flex-shrink: 0;
+    }
+
+    .dashboard-info h1 {
+        font-size: 2rem;
+        color: #c8a03c;
+        margin-bottom: 4px;
+    }
+
+    .dashboard-info p {
+        color: #9a9a9a;
+        font-size: 0.95rem;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        margin-bottom: 40px;
+    }
+
+    .stat-card-user {
+        background: linear-gradient(135deg, #1a1a1a 0%, #242424 100%);
+        border: 1px solid rgba(200,160,60,0.15);
+        border-radius: 12px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card-user:hover {
+        border-color: rgba(200,160,60,0.4);
+        box-shadow: 0 8px 24px rgba(200,160,60,0.1);
+    }
+
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        background: rgba(200,160,60,0.15);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #c8a03c;
+        flex-shrink: 0;
+    }
+
+    .stat-content h3 {
+        font-size: 0.85rem;
+        color: #9a9a9a;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 4px;
+    }
+
+    .stat-content .stat-value {
+        font-size: 1.8rem;
+        color: #c8a03c;
+        font-weight: 700;
+    }
+
+    .section-title {
+        font-size: 1.4rem;
+        color: #fff;
+        margin-bottom: 20px;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .section-title i {
+        color: #c8a03c;
+    }
+
+    .reservations-list {
+        display: grid;
+        gap: 16px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        margin-bottom: 40px;
+    }
+
+    .reservation-card {
+        background: #1a1a1a;
+        border: 1px solid rgba(200,160,60,0.15);
+        border-radius: 12px;
+        padding: 20px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 20px;
+        align-items: start;
+        transition: all 0.3s ease;
+    }
+
+    .reservation-card:hover {
+        border-color: rgba(200,160,60,0.4);
+        background: #222;
+    }
+
+    .reservation-info h4 {
+        font-size: 1.1rem;
+        color: #c8a03c;
+        margin-bottom: 8px;
+    }
+
+    .reservation-details {
+        display: grid;
+        gap: 6px;
+        font-size: 0.9rem;
+        color: #9a9a9a;
+    }
+
+    .reservation-detail {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .reservation-detail i {
+        color: #c8a03c;
+        width: 16px;
+    }
+
+    .reservation-status {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-end;
+    }
+
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .status-pending {
+        background: rgba(255,193,7,0.2);
+        color: #ffc107;
+    }
+
+    .status-confirmed {
+        background: rgba(76,175,80,0.2);
+        color: #4caf50;
+    }
+
+    .status-completed {
+        background: rgba(200,160,60,0.2);
+        color: #c8a03c;
+    }
+
+    .status-cancelled {
+        background: rgba(244,67,54,0.2);
+        color: #f44336;
+    }
+
+    .btn-small {
+        background: none;
+        border: 1px solid rgba(200,160,60,0.3);
+        color: #c8a03c;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-small:hover {
+        background: rgba(200,160,60,0.1);
+        border-color: #c8a03c;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #9a9a9a;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: rgba(200,160,60,0.2);
+        margin-bottom: 16px;
+    }
+
+    .empty-state p {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+
+    .btn-gold {
+        background: #c8a03c;
+        color: #0e0e0e;
+        padding: 10px 24px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        transition: all 0.3s ease;
+        display: inline-block;
+        text-decoration: none;
+    }
+
+    .btn-gold:hover {
+        background: #e8c050;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(200,160,60,0.3);
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-hero {
+            padding: 24px 0;
+            margin-bottom: 24px;
+        }
+
+        .dashboard-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 16px;
+        }
+
+        .dashboard-avatar {
+            width: 64px;
+            height: 64px;
+            font-size: 2rem;
+        }
+
+        .dashboard-info h1 {
+            font-size: 1.5rem;
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card-user {
+            padding: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            font-size: 1.2rem;
+        }
+
+        .stat-content .stat-value {
+            font-size: 1.4rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+        }
+
+        .reservation-card {
+            grid-template-columns: 1fr;
+            gap: 16px;
+            padding: 16px;
+        }
+
+        .reservation-status {
+            align-items: flex-start;
+        }
+
+        .reservations-list {
+            margin-bottom: 24px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-hero">
+    <div class="dashboard-header">
+        <div class="dashboard-avatar">
+            <i class="fas fa-user-tie"></i>
+        </div>
+        <div class="dashboard-info">
+            <h1>{{ user.first_name|default:"Welcome" }}</h1>
+            <p>Member since {{ user.date_joined|date:"F Y" }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- STATS -->
+<div class="dashboard-grid">
+    <div class="stat-card-user">
+        <div class="stat-icon">
+            <i class="fas fa-calendar-alt"></i>
+        </div>
+        <div class="stat-content">
+            <h3>Upcoming</h3>
+            <div class="stat-value">{{ upcoming|length }}</div>
+        </div>
+    </div>
+
+    <div class="stat-card-user">
+        <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-content">
+            <h3>Total Visits</h3>
+            <div class="stat-value">{{ total_visits }}</div>
+        </div>
+    </div>
+
+    <div class="stat-card-user">
+        <div class="stat-icon">
+            <i class="fas fa-peso-sign"></i>
+        </div>
+        <div class="stat-content">
+            <h3>Total Spent</h3>
+            <div class="stat-value">₱{{ total_spent|floatformat:0 }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- UPCOMING RESERVATIONS -->
+<h2 class="section-title">
+    <i class="fas fa-calendar-check"></i> Upcoming Appointments
+</h2>
+
+{% if upcoming %}
+<div class="reservations-list">
+    {% for reservation in upcoming %}
+    <div class="reservation-card">
+        <div class="reservation-info">
+            <h4>{{ reservation.service.name }}</h4>
+            <div class="reservation-details">
+                <div class="reservation-detail">
+                    <i class="fas fa-user"></i>
+                    <span>with {{ reservation.barber.name }}</span>
+                </div>
+                <div class="reservation-detail">
+                    <i class="fas fa-calendar"></i>
+                    <span>{{ reservation.appointment_date|date:"M d, Y" }}</span>
+                </div>
+                <div class="reservation-detail">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ reservation.appointment_time }}</span>
+                </div>
+                <div class="reservation-detail">
+                    <i class="fas fa-barcode"></i>
+                    <span>{{ reservation.confirmation_code }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="reservation-status">
+            <span class="status-badge status-{{ reservation.status }}">{{ reservation.status }}</span>
+            <a href="{% url 'reservation_detail' reservation.id %}" class="btn-small">View Details</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="fas fa-calendar"></i>
+    <p>No upcoming appointments</p>
+    <a href="{% url 'book_reservation' %}" class="btn-gold">Book Now</a>
+</div>
+{% endif %}
+
+<!-- PAST RESERVATIONS -->
+<h2 class="section-title">
+    <i class="fas fa-history"></i> Past Appointments
+</h2>
+
+{% if past %}
+<div class="reservations-list">
+    {% for reservation in past %}
+    <div class="reservation-card">
+        <div class="reservation-info">
+            <h4>{{ reservation.service.name }}</h4>
+            <div class="reservation-details">
+                <div class="reservation-detail">
+                    <i class="fas fa-user"></i>
+                    <span>with {{ reservation.barber.name }}</span>
+                </div>
+                <div class="reservation-detail">
+                    <i class="fas fa-calendar"></i>
+                    <span>{{ reservation.appointment_date|date:"M d, Y" }}</span>
+                </div>
+                <div class="reservation-detail">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ reservation.appointment_time }}</span>
+                </div>
+                <div class="reservation-detail">
+                    <i class="fas fa-peso-sign"></i>
+                    <span>₱{{ reservation.total_price }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="reservation-status">
+            <span class="status-badge status-{{ reservation.status }}">{{ reservation.status }}</span>
+            <a href="{% url 'reservation_detail' reservation.id %}" class="btn-small">View Details</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="fas fa-inbox"></i>
+    <p>No past appointments</p>
+</div>
+{% endif %}
+
+<!-- CALL TO ACTION -->
+<div style="text-align: center; padding: 40px 20px; margin-top: 40px; border-top: 1px solid rgba(200,160,60,0.15);">
+    <h3 style="color: #fff; margin-bottom: 16px;">Ready for your next appointment?</h3>
+    <a href="{% url 'book_reservation' %}" class="btn-gold">Book Now</a>
+    &nbsp; &nbsp;
+    <a href="{% url 'profile' %}" class="btn-small" style="padding: 10px 24px; font-size: 0.85rem; text-decoration: none; text-transform: uppercase;">Edit Profile</a>
+</div>
+
+{% endblock %}
