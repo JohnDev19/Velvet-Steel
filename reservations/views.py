@@ -74,6 +74,14 @@ def book_reservation(request):
         except Exception:
             service = None
 
+        total_price = None
+        if haircut_style and haircut_style.price is not None:
+            total_price = haircut_style.price
+        elif service and service.price is not None:
+            total_price = service.price
+        else:
+            total_price = 0
+
         reservation = Reservation(
             customer_id=request.user.pk,
             customer_username=request.user.username,
@@ -83,12 +91,18 @@ def book_reservation(request):
             appointment_date=appointment_date,
             appointment_time=appointment_time,
             notes=notes,
-            total_price=haircut_style.price,
+            total_price=total_price,
         )
+
+        import random, string
+        reservation.confirmation_code = ''.join(
+            random.choices(string.ascii_uppercase + string.digits, k=8)
+        )
+
         try:
             reservation.save()
         except Exception as e:
-            messages.error(request, 'Could not save reservation. Please try again.')
+            messages.error(request, f'Could not save reservation. Please try again. ({e})')
             styles  = HaircutStyle.objects(is_active=True).order_by('category', 'price')
             barbers = Barber.objects(is_active=True)
             return render(request, 'reservations/book.html', {'styles': styles, 'barbers': barbers})
@@ -113,7 +127,10 @@ def my_reservations(request):
 @login_required
 def reservation_detail(request, pk):
     try:
-        reservation = Reservation.objects(id=pk, customer_id=request.user.pk).first()
+        reservation = Reservation.objects(id=pk).first()
+        if reservation and not request.user.is_staff:
+            if reservation.customer_id != request.user.pk:
+                reservation = None
     except Exception:
         reservation = None
     if not reservation:
@@ -125,7 +142,9 @@ def reservation_detail(request, pk):
 @login_required
 def cancel_reservation(request, pk):
     try:
-        reservation = Reservation.objects(id=pk, customer_id=request.user.pk).first()
+        reservation = Reservation.objects(id=pk).first()
+        if reservation and reservation.customer_id != request.user.pk:
+            reservation = None
     except Exception:
         reservation = None
     if reservation and reservation.status in ['pending', 'confirmed']:

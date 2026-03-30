@@ -25,19 +25,20 @@
                 <div class="res-card status-{{ res.status }}">
                     <div class="res-card-left">
                         <div class="res-date-block">
-                            <span class="res-month">{{ res.appointment_date|date:"M" }}</span>
-                            <span class="res-day">{{ res.appointment_date|date:"d" }}</span>
-                            <span class="res-year">{{ res.appointment_date|date:"Y" }}</span>
+                            {# Use model properties — appointment_date is a plain string, not a date object #}
+                            <span class="res-month">{{ res.appointment_month }}</span>
+                            <span class="res-day">{{ res.appointment_day }}</span>
+                            <span class="res-year">{{ res.appointment_year }}</span>
                         </div>
                     </div>
                     <div class="res-card-body">
                         <div class="res-top">
-                            <h4>{{ res.service.name }}</h4>
+                            <h4>{% if res.service %}{{ res.service.name }}{% else %}Appointment{% endif %}</h4>
                             <span class="res-status status-badge-{{ res.status }}">{{ res.get_status_display }}</span>
                         </div>
                         <div class="res-details">
-                            <span><i class="fas fa-user-tie"></i> {{ res.barber.name }}</span>
-                            <span><i class="fas fa-clock"></i> {{ res.appointment_time|time:"g:i A" }}</span>
+                            <span><i class="fas fa-user-tie"></i> {% if res.barber %}{{ res.barber.name }}{% else %}—{% endif %}</span>
+                            <span><i class="fas fa-clock"></i> {{ res.appointment_time_display }}</span>
                             <span><i class="fas fa-tag"></i> ₱{{ res.total_price }}</span>
                         </div>
                         <div class="res-code">Code: <strong>{{ res.confirmation_code }}</strong></div>

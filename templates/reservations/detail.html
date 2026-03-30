@@ -18,23 +18,25 @@
             <div class="detail-grid">
                 <div class="detail-item">
                     <label>Service</label>
-                    <strong>{{ reservation.service.name }}</strong>
+                    <strong>{% if reservation.service %}{{ reservation.service.name }}{% else %}—{% endif %}</strong>
                 </div>
                 <div class="detail-item">
                     <label>Barber</label>
-                    <strong>{{ reservation.barber.name }}</strong>
+                    <strong>{% if reservation.barber %}{{ reservation.barber.name }}{% else %}—{% endif %}</strong>
                 </div>
                 <div class="detail-item">
                     <label>Date</label>
-                    <strong>{{ reservation.appointment_date|date:"F d, Y" }}</strong>
+                    {# appointment_date is a plain string — use the model property, not |date: filter #}
+                    <strong>{{ reservation.appointment_date_display }}</strong>
                 </div>
                 <div class="detail-item">
                     <label>Time</label>
-                    <strong>{{ reservation.appointment_time|time:"g:i A" }}</strong>
+                    {# appointment_time is a plain string — use the model property, not |time: filter #}
+                    <strong>{{ reservation.appointment_time_display }}</strong>
                 </div>
                 <div class="detail-item">
                     <label>Duration</label>
-                    <strong>{{ reservation.service.duration_minutes }} minutes</strong>
+                    <strong>{% if reservation.service %}{{ reservation.service.duration_minutes }} minutes{% else %}—{% endif %}</strong>
                 </div>
                 <div class="detail-item">
                     <label>Total Price</label>
@@ -49,7 +51,8 @@
             {% endif %}
             <div class="detail-footer">
                 <a href="{% url 'my_reservations' %}" class="btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
-                {% if reservation.status in 'pending,confirmed' %}
+                {# Use explicit equality checks — Django's `in` with a string literal is unreliable #}
+                {% if reservation.status == 'pending' or reservation.status == 'confirmed' %}
                 <form method="post" action="{% url 'cancel_reservation' reservation.pk %}" onsubmit="return confirm('Cancel this reservation?')">
                     {% csrf_token %}
                     <button type="submit" class="btn-danger">Cancel Reservation</button>

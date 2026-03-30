@@ -75,7 +75,7 @@ class Reservation(Document):
     customer_name = StringField(max_length=200)
 
     barber = ReferenceField(Barber, reverse_delete_rule=CASCADE)
-    service = ReferenceField(Service, reverse_delete_rule=CASCADE)
+    service = ReferenceField(Service, reverse_delete_rule=CASCADE, null=True)
 
     appointment_date = StringField()
     appointment_time = StringField()
@@ -111,13 +111,56 @@ class Reservation(Document):
         except Exception:
             return None
 
+    @property
+    def appointment_date_display(self):
+        try:
+            d = datetime.date.fromisoformat(self.appointment_date)
+            return d.strftime('%B %d, %Y')
+        except Exception:
+            return self.appointment_date or '—'
+
+    @property
+    def appointment_time_display(self):
+        """Returns a 12-hour formatted time string safe for templates."""
+        try:
+            t = datetime.time.fromisoformat(self.appointment_time)
+            return t.strftime('%I:%M %p')
+        except Exception:
+            return self.appointment_time or '—'
+
+    @property
+    def appointment_month(self):
+        try:
+            return datetime.date.fromisoformat(self.appointment_date).strftime('%b')
+        except Exception:
+            return ''
+
+    @property
+    def appointment_day(self):
+        try:
+            return datetime.date.fromisoformat(self.appointment_date).strftime('%d')
+        except Exception:
+            return ''
+
+    @property
+    def appointment_year(self):
+        try:
+            return datetime.date.fromisoformat(self.appointment_date).strftime('%Y')
+        except Exception:
+            return ''
+
     def save(self, *args, **kwargs):
         if not self.confirmation_code:
             self.confirmation_code = ''.join(
                 random.choices(string.ascii_uppercase + string.digits, k=8)
             )
-        if not self.total_price and self.service:
-            self.total_price = self.service.price
+        if self.total_price is None and self.service:
+            try:
+                self.total_price = self.service.price
+            except Exception:
+                self.total_price = 0
+        if self.total_price is None:
+            self.total_price = 0
         self.updated_at = timezone.now()
         super().save(*args, **kwargs)
 
