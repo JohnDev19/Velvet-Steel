@@ -13,9 +13,12 @@ def _generate_code():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
 
 
-@login_required
 def book_reservation(request):
     if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.error(request, 'Please log in to book an appointment.')
+            return redirect(f'/accounts/login/?next=/reservations/book/')
+
         barber_id        = request.POST.get('barber', '').strip()
         haircut_style_id = request.POST.get('haircut_style', '').strip()
         appointment_date = request.POST.get('appointment_date', '').strip()
@@ -123,6 +126,7 @@ def book_reservation(request):
         )
         return redirect('reservation_detail', pk=str(reservation.pk))
 
+    # ── GET ──────────────────────────────────────────────────────────────
     styles  = HaircutStyle.objects(is_active=True).order_by('category', 'price')
     barbers = Barber.objects(is_active=True)
     return render(request, 'reservations/book.html', {

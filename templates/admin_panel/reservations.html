@@ -13,12 +13,13 @@
     <form method="get" class="filter-form">
         <select name="status" class="form-control form-control-sm" onchange="this.form.submit()">
             <option value="">All Statuses</option>
-            <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+            <option value="pending"   {% if status_filter == 'pending'   %}selected{% endif %}>Pending</option>
             <option value="confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>Confirmed</option>
             <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
             <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
         </select>
-        <input type="date" name="date" class="form-control form-control-sm" value="{{ date_filter }}" onchange="this.form.submit()">
+        <input type="date" name="date" class="form-control form-control-sm"
+               value="{{ date_filter }}" onchange="this.form.submit()">
         {% if status_filter or date_filter %}
         <a href="{% url 'admin_reservations' %}" class="btn-outline btn-sm">Clear</a>
         {% endif %}
@@ -46,22 +47,23 @@
                 {% for res in reservations %}
                 <tr>
                     <td><span class="code-badge">{{ res.confirmation_code }}</span></td>
-                    <td>{{ res.customer.get_full_name|default:res.customer.username }}</td>
-                    <td>{{ res.barber.name }}</td>
-                    <td>{{ res.service.name }}</td>
-                    <td>{{ res.appointment_date|date:"M d, Y" }}</td>
-                    <td>{{ res.appointment_time|time:"g:i A" }}</td>
+                    <td>{{ res.customer_name }}</td>
+                    <td>{% if res.barber %}{{ res.barber.name }}{% else %}—{% endif %}</td>
+                    <td>{% if res.service %}{{ res.service.name }}{% else %}—{% endif %}</td>
+                    {# Use model properties — appointment_date/time are plain strings, not date objects #}
+                    <td>{{ res.appointment_date_display }}</td>
+                    <td>{{ res.appointment_time_display }}</td>
                     <td>₱{{ res.total_price }}</td>
                     <td><span class="status-badge-{{ res.status }}">{{ res.get_status_display }}</span></td>
                     <td>
                         <form method="post" action="{% url 'admin_update_reservation' res.pk %}" class="inline-form">
                             {% csrf_token %}
                             <select name="status" class="status-select status-select-{{ res.status }}" onchange="this.form.submit()">
-                                <option value="pending" {% if res.status == 'pending' %}selected{% endif %}>Pending</option>
+                                <option value="pending"   {% if res.status == 'pending'   %}selected{% endif %}>Pending</option>
                                 <option value="confirmed" {% if res.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
                                 <option value="completed" {% if res.status == 'completed' %}selected{% endif %}>Completed</option>
                                 <option value="cancelled" {% if res.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
-                                <option value="no_show" {% if res.status == 'no_show' %}selected{% endif %}>No Show</option>
+                                <option value="no_show"   {% if res.status == 'no_show'   %}selected{% endif %}>No Show</option>
                             </select>
                         </form>
                     </td>
