@@ -77,8 +77,8 @@ class Reservation(Document):
     barber = ReferenceField(Barber, reverse_delete_rule=CASCADE)
     service = ReferenceField(Service, reverse_delete_rule=CASCADE, null=True)
 
-    appointment_date = StringField()
-    appointment_time = StringField()
+    appointment_date = StringField()   # stored as "YYYY-MM-DD" string
+    appointment_time = StringField()   # stored as "HH:MM" string
     status = StringField(max_length=20, choices=STATUS_CHOICES, default='pending')
     notes = StringField()
     total_price = DecimalField(precision=2)
@@ -98,33 +98,16 @@ class Reservation(Document):
         return dict(self.STATUS_CHOICES).get(self.status, self.status)
 
     @property
-    def appointment_date_obj(self):
-        try:
-            return datetime.date.fromisoformat(self.appointment_date)
-        except Exception:
-            return None
-
-    @property
-    def appointment_time_obj(self):
-        try:
-            return datetime.time.fromisoformat(self.appointment_time)
-        except Exception:
-            return None
-
-    @property
     def appointment_date_display(self):
         try:
-            d = datetime.date.fromisoformat(self.appointment_date)
-            return d.strftime('%B %d, %Y')
+            return datetime.date.fromisoformat(self.appointment_date).strftime('%B %d, %Y')
         except Exception:
             return self.appointment_date or '—'
 
     @property
     def appointment_time_display(self):
-        """Returns a 12-hour formatted time string safe for templates."""
         try:
-            t = datetime.time.fromisoformat(self.appointment_time)
-            return t.strftime('%I:%M %p')
+            return datetime.time.fromisoformat(self.appointment_time).strftime('%I:%M %p')
         except Exception:
             return self.appointment_time or '—'
 
@@ -149,18 +132,30 @@ class Reservation(Document):
         except Exception:
             return ''
 
+    @property
+    def appointment_date_obj(self):
+        try:
+            return datetime.date.fromisoformat(self.appointment_date)
+        except Exception:
+            return None
+
+    @property
+    def appointment_time_obj(self):
+        try:
+            return datetime.time.fromisoformat(self.appointment_time)
+        except Exception:
+            return None
+
     def save(self, *args, **kwargs):
         if not self.confirmation_code:
             self.confirmation_code = ''.join(
                 random.choices(string.ascii_uppercase + string.digits, k=8)
             )
-        if self.total_price is None and self.service:
+        if self.total_price is None:
             try:
-                self.total_price = self.service.price
+                self.total_price = self.service.price if self.service else 0
             except Exception:
                 self.total_price = 0
-        if self.total_price is None:
-            self.total_price = 0
         self.updated_at = timezone.now()
         super().save(*args, **kwargs)
 

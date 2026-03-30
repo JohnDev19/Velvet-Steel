@@ -15,8 +15,10 @@
     <div class="container">
         <div class="reservations-wrap">
             <div class="res-header">
-                <h3>Your Bookings <span class="res-count">{{ reservations.count }}</span></h3>
-                <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> New Booking</a>
+                <h3>Your Bookings <span class="res-count">{{ reservations|length }}</span></h3>
+                <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">
+                    <i class="fas fa-plus"></i> New Booking
+                </a>
             </div>
 
             {% if reservations %}
@@ -25,7 +27,7 @@
                 <div class="res-card status-{{ res.status }}">
                     <div class="res-card-left">
                         <div class="res-date-block">
-                            {# Use model properties — appointment_date is a plain string, not a date object #}
+                            {{- /* appointment_date is a plain string "YYYY-MM-DD" — use model properties */ -}}
                             <span class="res-month">{{ res.appointment_month }}</span>
                             <span class="res-day">{{ res.appointment_day }}</span>
                             <span class="res-year">{{ res.appointment_year }}</span>
@@ -46,7 +48,8 @@
                     <div class="res-card-actions">
                         <a href="{% url 'reservation_detail' res.pk %}" class="btn-outline btn-sm">View</a>
                         {% if res.status == 'pending' or res.status == 'confirmed' %}
-                        <form method="post" action="{% url 'cancel_reservation' res.pk %}" onsubmit="return confirm('Cancel this reservation?')">
+                        <form method="post" action="{% url 'cancel_reservation' res.pk %}"
+                              onsubmit="return confirm('Cancel this reservation?')">
                             {% csrf_token %}
                             <button type="submit" class="btn-danger btn-sm">Cancel</button>
                         </form>

@@ -26,17 +26,23 @@
                 </div>
                 <div class="detail-item">
                     <label>Date</label>
-                    {# appointment_date is a plain string — use the model property, not |date: filter #}
+                    {{- /* appointment_date is stored as a plain string — use the model property */ -}}
                     <strong>{{ reservation.appointment_date_display }}</strong>
                 </div>
                 <div class="detail-item">
                     <label>Time</label>
-                    {# appointment_time is a plain string — use the model property, not |time: filter #}
+                    {{- /* appointment_time is stored as a plain string — use the model property */ -}}
                     <strong>{{ reservation.appointment_time_display }}</strong>
                 </div>
                 <div class="detail-item">
                     <label>Duration</label>
-                    <strong>{% if reservation.service %}{{ reservation.service.duration_minutes }} minutes{% else %}—{% endif %}</strong>
+                    <strong>
+                        {% if reservation.service %}
+                            {{ reservation.service.duration_minutes }} minutes
+                        {% else %}
+                            —
+                        {% endif %}
+                    </strong>
                 </div>
                 <div class="detail-item">
                     <label>Total Price</label>
@@ -50,10 +56,12 @@
             </div>
             {% endif %}
             <div class="detail-footer">
-                <a href="{% url 'my_reservations' %}" class="btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
-                {# Use explicit equality checks — Django's `in` with a string literal is unreliable #}
+                <a href="{% url 'my_reservations' %}" class="btn-outline">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
                 {% if reservation.status == 'pending' or reservation.status == 'confirmed' %}
-                <form method="post" action="{% url 'cancel_reservation' reservation.pk %}" onsubmit="return confirm('Cancel this reservation?')">
+                <form method="post" action="{% url 'cancel_reservation' reservation.pk %}"
+                      onsubmit="return confirm('Cancel this reservation?')">
                     {% csrf_token %}
                     <button type="submit" class="btn-danger">Cancel Reservation</button>
                 </form>

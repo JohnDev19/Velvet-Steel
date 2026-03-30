@@ -24,7 +24,7 @@ def admin_dashboard(request):
     today = timezone.now().date().isoformat()
     today_obj = timezone.now().date()
 
-    total_reservations = Reservation.objects.count()
+    total_reservations = Reservation.objects().count()
     today_reservations = Reservation.objects(appointment_date=today).count()
     pending   = Reservation.objects(status='pending').count()
     confirmed = Reservation.objects(status='confirmed').count()
@@ -38,11 +38,11 @@ def admin_dashboard(request):
     completed_month = Reservation.objects(
         appointment_date__gte=month_start,
         appointment_date__lte=today,
-        status='completed'
+        status='completed',
     )
     revenue_month = sum(float(r.total_price or 0) for r in completed_month)
 
-    recent_reservations  = Reservation.objects.order_by('-created_at')[:10]
+    recent_reservations  = Reservation.objects().order_by('-created_at')[:10]
     pending_testimonials = Testimonial.objects(is_approved=False).count()
 
     return render(request, 'admin_panel/dashboard.html', {
@@ -64,7 +64,7 @@ def admin_dashboard(request):
 def admin_reservations(request):
     status_filter = request.GET.get('status', '')
     date_filter   = request.GET.get('date', '')
-    qs = Reservation.objects.order_by('-created_at')
+    qs = Reservation.objects().order_by('-created_at')
     if status_filter:
         qs = qs.filter(status=status_filter)
     if date_filter:
@@ -78,7 +78,10 @@ def admin_reservations(request):
 
 @admin_required
 def admin_update_reservation(request, pk):
-    reservation = Reservation.objects(id=pk).first()
+    try:
+        reservation = Reservation.objects(id=pk).first()
+    except Exception:
+        reservation = None
     if not reservation:
         messages.error(request, 'Reservation not found.')
         return redirect('admin_reservations')
@@ -88,14 +91,17 @@ def admin_update_reservation(request, pk):
         if new_status in valid:
             reservation.status = new_status
             reservation.save()
-            messages.success(request, f'Reservation {reservation.confirmation_code} updated to {new_status}.')
+            messages.success(
+                request,
+                f'Reservation {reservation.confirmation_code} updated to {new_status}.'
+            )
     return redirect('admin_reservations')
 
 
 @admin_required
 def admin_barbers(request):
     return render(request, 'admin_panel/barbers.html', {
-        'barbers': Barber.objects.all()
+        'barbers': Barber.objects().all()
     })
 
 
@@ -126,7 +132,10 @@ def admin_barber_add(request):
 @admin_required
 def admin_barber_edit(request, pk):
     from .forms import BarberForm
-    barber = Barber.objects(id=pk).first()
+    try:
+        barber = Barber.objects(id=pk).first()
+    except Exception:
+        barber = None
     if not barber:
         messages.error(request, 'Barber not found.')
         return redirect('admin_barbers')
@@ -163,7 +172,10 @@ def admin_barber_edit(request, pk):
 
 @admin_required
 def admin_barber_delete(request, pk):
-    barber = Barber.objects(id=pk).first()
+    try:
+        barber = Barber.objects(id=pk).first()
+    except Exception:
+        barber = None
     if barber and request.method == 'POST':
         name = barber.name
         barber.delete()
@@ -174,13 +186,16 @@ def admin_barber_delete(request, pk):
 @admin_required
 def admin_testimonials(request):
     return render(request, 'admin_panel/testimonials.html', {
-        'testimonials': Testimonial.objects.order_by('-created_at')
+        'testimonials': Testimonial.objects().order_by('-created_at')
     })
 
 
 @admin_required
 def approve_testimonial(request, pk):
-    testimonial = Testimonial.objects(id=pk).first()
+    try:
+        testimonial = Testimonial.objects(id=pk).first()
+    except Exception:
+        testimonial = None
     if testimonial:
         testimonial.is_approved = not testimonial.is_approved
         testimonial.save()
@@ -197,34 +212,41 @@ def admin_analytics(request):
         count   = Reservation.objects(appointment_date=day_str).count()
         done    = Reservation.objects(appointment_date=day_str, status='completed')
         revenue = sum(float(r.total_price or 0) for r in done)
-        days_data.append({'date': day.strftime('%b %d'), 'count': count, 'revenue': revenue})
+        days_data.append({
+            'date': day.strftime('%b %d'),
+            'count': count,
+            'revenue': revenue,
+        })
 
     from collections import Counter
     svc_counter = Counter()
-    for r in Reservation.objects.only('service'):
+    for r in Reservation.objects().only('service'):
         if r.service:
             svc_counter[str(r.service.id)] += 1
 
     service_stats = []
     for svc_id, count in svc_counter.most_common(5):
-        svc = Service.objects(id=svc_id).first()
+        try:
+            svc = Service.objects(id=svc_id).first()
+        except Exception:
+            svc = None
         if svc:
             svc.booking_count = count
             service_stats.append(svc)
 
     barber_counter = Counter()
-    for r in Reservation.objects.only('barber'):
+    for r in Reservation.objects().only('barber'):
         if r.barber:
             barber_counter[str(r.barber.id)] += 1
 
     barber_stats = []
-    for barber in Barber.objects.all():
+    for barber in Barber.objects().all():
         barber.booking_count = barber_counter.get(str(barber.id), 0)
         barber_stats.append(barber)
     barber_stats.sort(key=lambda b: b.booking_count, reverse=True)
 
     return render(request, 'admin_panel/analytics.html', {
-        'days_data':    days_data,
+        'days_data':     days_data,
         'service_stats': service_stats,
         'barber_stats':  barber_stats,
     })
@@ -233,7 +255,7 @@ def admin_analytics(request):
 @admin_required
 def admin_haircut_styles(request):
     category_filter = request.GET.get('category', '')
-    styles = HaircutStyle.objects.all()
+    styles = HaircutStyle.objects().all()
     if category_filter:
         styles = styles.filter(category=category_filter)
     return render(request, 'admin_panel/haircut_styles.html', {
@@ -267,7 +289,7 @@ def admin_haircut_style_add(request):
                 messages.success(request, f'"{style.name}" added successfully.')
                 return redirect('admin_haircut_styles')
             except Exception as e:
-                messages.error(request, f'Could not save: {e}. Make sure MONGODB_URI is configured.')
+                messages.error(request, f'Could not save: {e}')
     else:
         form = HaircutStyleForm()
     return render(request, 'admin_panel/haircut_style_form.html', {
@@ -278,7 +300,10 @@ def admin_haircut_style_add(request):
 @admin_required
 def admin_haircut_style_edit(request, pk):
     from .forms import HaircutStyleForm
-    style = HaircutStyle.objects(id=pk).first()
+    try:
+        style = HaircutStyle.objects(id=pk).first()
+    except Exception:
+        style = None
     if not style:
         messages.error(request, 'Style not found.')
         return redirect('admin_haircut_styles')
@@ -297,7 +322,7 @@ def admin_haircut_style_edit(request, pk):
                 messages.success(request, f'"{style.name}" updated successfully.')
                 return redirect('admin_haircut_styles')
             except Exception as e:
-                messages.error(request, f'Could not save: {e}. Make sure MONGODB_URI is configured.')
+                messages.error(request, f'Could not save: {e}')
     else:
         form = HaircutStyleForm(initial={
             'name':        style.name,
@@ -313,13 +338,17 @@ def admin_haircut_style_edit(request, pk):
 
 @admin_required
 def admin_haircut_style_delete(request, pk):
-    style = HaircutStyle.objects(id=pk).first()
+    try:
+        style = HaircutStyle.objects(id=pk).first()
+    except Exception:
+        style = None
     if style and request.method == 'POST':
         name = style.name
         style.delete()
         messages.success(request, f'"{name}" deleted.')
     return redirect('admin_haircut_styles')
-    
+
+
 @admin_required
 def admin_availability(request):
     barbers = Barber.objects(is_active=True)
