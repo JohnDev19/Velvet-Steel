@@ -5,322 +5,361 @@
 
 {% block extra_css %}
 <style>
+/* ── HERO ──────────────────────────────────────────────────── */
+.dashboard-hero {
+    background: linear-gradient(135deg, rgba(200,160,60,0.1) 0%, rgba(14,14,14,0) 100%);
+    /* 72px fixed navbar + 32px breathing room = 104px top padding */
+    padding: 104px 0 40px;
+    border-bottom: 1px solid rgba(200,160,60,0.15);
+    margin-bottom: 40px;
+}
+
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.dashboard-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #c8a03c 0%, #e8c050 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: #0e0e0e;
+    flex-shrink: 0;
+}
+
+.dashboard-info h1 {
+    font-size: 2rem;
+    color: #c8a03c;
+    margin-bottom: 4px;
+}
+
+.dashboard-info p {
+    color: #9a9a9a;
+    font-size: 0.95rem;
+}
+
+/* ── STATS ─────────────────────────────────────────────────── */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    padding: 0 20px;
+}
+
+.stat-card-user {
+    background: linear-gradient(135deg, #1a1a1a 0%, #242424 100%);
+    border: 1px solid rgba(200,160,60,0.15);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.3s ease;
+}
+
+.stat-card-user:hover {
+    border-color: rgba(200,160,60,0.4);
+    box-shadow: 0 8px 24px rgba(200,160,60,0.1);
+}
+
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba(200,160,60,0.15);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #c8a03c;
+    flex-shrink: 0;
+}
+
+.stat-content h3 {
+    font-size: 0.85rem;
+    color: #9a9a9a;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+}
+
+.stat-content .stat-value {
+    font-size: 1.8rem;
+    color: #c8a03c;
+    font-weight: 700;
+}
+
+/* ── SECTION TITLES ────────────────────────────────────────── */
+.dash-section-title {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 16px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dash-section-title i { color: #c8a03c; }
+
+/* ── RESERVATION CARDS ─────────────────────────────────────── */
+.reservations-list {
+    display: grid;
+    gap: 16px;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    padding: 0 20px;
+}
+
+.reservation-card {
+    background: #1a1a1a;
+    border: 1px solid rgba(200,160,60,0.15);
+    border-radius: 12px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: start;
+    transition: all 0.3s ease;
+}
+
+.reservation-card:hover {
+    border-color: rgba(200,160,60,0.4);
+    background: #222;
+}
+
+.reservation-info h4 {
+    font-size: 1.1rem;
+    color: #c8a03c;
+    margin-bottom: 8px;
+}
+
+.reservation-details {
+    display: grid;
+    gap: 6px;
+    font-size: 0.9rem;
+    color: #9a9a9a;
+}
+
+.reservation-detail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.reservation-detail i {
+    color: #c8a03c;
+    width: 16px;
+    flex-shrink: 0;
+}
+
+.reservation-status {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.status-pending  { background: rgba(255,193,7,0.2);  color: #ffc107; }
+.status-confirmed{ background: rgba(76,175,80,0.2);  color: #4caf50; }
+.status-completed{ background: rgba(200,160,60,0.2); color: #c8a03c; }
+.status-cancelled{ background: rgba(244,67,54,0.2);  color: #f44336; }
+
+.btn-small {
+    background: none;
+    border: 1px solid rgba(200,160,60,0.3);
+    color: #c8a03c;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-small:hover {
+    background: rgba(200,160,60,0.1);
+    border-color: #c8a03c;
+    color: #c8a03c;
+}
+
+/* ── EMPTY STATE ───────────────────────────────────────────── */
+.dash-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #9a9a9a;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    padding: 32px 20px;
+}
+
+.dash-empty i {
+    font-size: 2.5rem;
+    color: rgba(200,160,60,0.25);
+    margin-bottom: 12px;
+    display: block;
+}
+
+.dash-empty p {
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+}
+
+/* ── CTA STRIP ─────────────────────────────────────────────── */
+.dash-cta {
+    text-align: center;
+    padding: 40px 20px;
+    margin-top: 20px;
+    border-top: 1px solid rgba(200,160,60,0.15);
+}
+
+.dash-cta h3 {
+    color: #fff;
+    margin-bottom: 16px;
+    font-size: 1.3rem;
+}
+
+.dash-cta .dash-cta-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* ── RESPONSIVE ────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+}
+
+@media (max-width: 768px) {
     .dashboard-hero {
-        background: linear-gradient(135deg, rgba(200,160,60,0.1) 0%, rgba(14,14,14,0) 100%);
-        padding: 40px 0;
-        border-bottom: 1px solid rgba(200,160,60,0.15);
-        margin-bottom: 40px;
+        padding: 90px 0 24px;
+        margin-bottom: 24px;
     }
 
     .dashboard-header {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
+        gap: 16px;
     }
 
     .dashboard-avatar {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(135deg, #c8a03c 0%, #e8c050 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.5rem;
-        color: #0e0e0e;
-        flex-shrink: 0;
-    }
-
-    .dashboard-info h1 {
+        width: 64px;
+        height: 64px;
         font-size: 2rem;
-        color: #c8a03c;
-        margin-bottom: 4px;
     }
 
-    .dashboard-info p {
-        color: #9a9a9a;
-        font-size: 0.95rem;
-    }
+    .dashboard-info h1 { font-size: 1.6rem; }
 
     .dashboard-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 24px;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-        margin-bottom: 40px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card-user { padding: 14px; gap: 12px; }
+    .stat-icon { width: 44px; height: 44px; font-size: 1.2rem; }
+    .stat-content .stat-value { font-size: 1.4rem; }
+    .stat-content h3 { font-size: 0.72rem; }
+
+    .reservations-list { margin-bottom: 24px; }
+    .reservation-card { padding: 16px; gap: 14px; }
+    .dash-section-title { font-size: 1.05rem; margin-bottom: 12px; }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .dashboard-hero {
+        padding: 88px 0 20px;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+
+    .dashboard-info h1 { font-size: 1.4rem; }
+    .dashboard-info p  { font-size: 0.85rem; }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 20px;
     }
 
     .stat-card-user {
-        background: linear-gradient(135deg, #1a1a1a 0%, #242424 100%);
-        border: 1px solid rgba(200,160,60,0.15);
-        border-radius: 12px;
-        padding: 24px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        transition: all 0.3s ease;
+        padding: 14px 16px;
+        border-radius: 10px;
     }
 
-    .stat-card-user:hover {
-        border-color: rgba(200,160,60,0.4);
-        box-shadow: 0 8px 24px rgba(200,160,60,0.1);
-    }
-
-    .stat-icon {
-        width: 56px;
-        height: 56px;
-        background: rgba(200,160,60,0.15);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        color: #c8a03c;
-        flex-shrink: 0;
-    }
-
-    .stat-content h3 {
-        font-size: 0.85rem;
-        color: #9a9a9a;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-bottom: 4px;
-    }
-
-    .stat-content .stat-value {
-        font-size: 1.8rem;
-        color: #c8a03c;
-        font-weight: 700;
-    }
-
-    .section-title {
-        font-size: 1.4rem;
-        color: #fff;
-        margin-bottom: 20px;
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-        padding: 0 20px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .section-title i {
-        color: #c8a03c;
-    }
-
-    .reservations-list {
-        display: grid;
-        gap: 16px;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-        margin-bottom: 40px;
-    }
+    .stat-icon { width: 42px; height: 42px; font-size: 1.1rem; border-radius: 10px; }
+    .stat-content .stat-value { font-size: 1.5rem; }
 
     .reservation-card {
-        background: #1a1a1a;
-        border: 1px solid rgba(200,160,60,0.15);
-        border-radius: 12px;
-        padding: 20px;
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 20px;
-        align-items: start;
-        transition: all 0.3s ease;
-    }
-
-    .reservation-card:hover {
-        border-color: rgba(200,160,60,0.4);
-        background: #222;
-    }
-
-    .reservation-info h4 {
-        font-size: 1.1rem;
-        color: #c8a03c;
-        margin-bottom: 8px;
-    }
-
-    .reservation-details {
-        display: grid;
-        gap: 6px;
-        font-size: 0.9rem;
-        color: #9a9a9a;
-    }
-
-    .reservation-detail {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .reservation-detail i {
-        color: #c8a03c;
-        width: 16px;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 14px;
+        border-radius: 10px;
     }
 
     .reservation-status {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-end;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
     }
 
-    .status-badge {
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
+    .reservation-info h4 { font-size: 1rem; }
 
-    .status-pending {
-        background: rgba(255,193,7,0.2);
-        color: #ffc107;
-    }
+    .reservation-details { font-size: 0.82rem; gap: 4px; }
 
-    .status-confirmed {
-        background: rgba(76,175,80,0.2);
-        color: #4caf50;
-    }
+    .dash-cta h3 { font-size: 1.1rem; }
+    .dash-cta .dash-cta-actions { flex-direction: column; align-items: stretch; }
+    .dash-cta .btn-gold,
+    .dash-cta .btn-small { width: 100%; text-align: center; justify-content: center; }
+}
 
-    .status-completed {
-        background: rgba(200,160,60,0.2);
-        color: #c8a03c;
-    }
-
-    .status-cancelled {
-        background: rgba(244,67,54,0.2);
-        color: #f44336;
-    }
-
-    .btn-small {
-        background: none;
-        border: 1px solid rgba(200,160,60,0.3);
-        color: #c8a03c;
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .btn-small:hover {
-        background: rgba(200,160,60,0.1);
-        border-color: #c8a03c;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 40px 20px;
-        color: #9a9a9a;
-    }
-
-    .empty-state i {
-        font-size: 3rem;
-        color: rgba(200,160,60,0.2);
-        margin-bottom: 16px;
-    }
-
-    .empty-state p {
-        font-size: 1rem;
-        margin-bottom: 20px;
-    }
-
-    .btn-gold {
-        background: #c8a03c;
-        color: #0e0e0e;
-        padding: 10px 24px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 700;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        transition: all 0.3s ease;
-        display: inline-block;
-        text-decoration: none;
-    }
-
-    .btn-gold:hover {
-        background: #e8c050;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 16px rgba(200,160,60,0.3);
-    }
-
-    @media (max-width: 768px) {
-        .dashboard-hero {
-            padding: 24px 0;
-            margin-bottom: 24px;
-        }
-
-        .dashboard-header {
-            flex-direction: column;
-            text-align: center;
-            gap: 16px;
-        }
-
-        .dashboard-avatar {
-            width: 64px;
-            height: 64px;
-            font-size: 2rem;
-        }
-
-        .dashboard-info h1 {
-            font-size: 1.5rem;
-        }
-
-        .dashboard-grid {
-            grid-template-columns: 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card-user {
-            padding: 16px;
-        }
-
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            font-size: 1.2rem;
-        }
-
-        .stat-content .stat-value {
-            font-size: 1.4rem;
-        }
-
-        .section-title {
-            font-size: 1.1rem;
-            margin-bottom: 16px;
-        }
-
-        .reservation-card {
-            grid-template-columns: 1fr;
-            gap: 16px;
-            padding: 16px;
-        }
-
-        .reservation-status {
-            align-items: flex-start;
-        }
-
-        .reservations-list {
-            margin-bottom: 24px;
-        }
-    }
+@media (max-width: 400px) {
+    .dashboard-hero { padding: 84px 0 16px; }
+    .dashboard-info h1 { font-size: 1.2rem; }
+    .stat-content .stat-value { font-size: 1.3rem; }
+}
 </style>
 {% endblock %}
 
 {% block content %}
+
 <div class="dashboard-hero">
     <div class="dashboard-header">
         <div class="dashboard-avatar">
@@ -336,29 +375,21 @@
 <!-- STATS -->
 <div class="dashboard-grid">
     <div class="stat-card-user">
-        <div class="stat-icon">
-            <i class="fas fa-calendar-alt"></i>
-        </div>
+        <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
         <div class="stat-content">
             <h3>Upcoming</h3>
             <div class="stat-value">{{ upcoming|length }}</div>
         </div>
     </div>
-
     <div class="stat-card-user">
-        <div class="stat-icon">
-            <i class="fas fa-check-circle"></i>
-        </div>
+        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
         <div class="stat-content">
             <h3>Total Visits</h3>
             <div class="stat-value">{{ total_visits }}</div>
         </div>
     </div>
-
     <div class="stat-card-user">
-        <div class="stat-icon">
-            <i class="fas fa-peso-sign"></i>
-        </div>
+        <div class="stat-icon"><i class="fas fa-peso-sign"></i></div>
         <div class="stat-content">
             <h3>Total Spent</h3>
             <div class="stat-value">₱{{ total_spent|floatformat:0 }}</div>
@@ -367,7 +398,7 @@
 </div>
 
 <!-- UPCOMING RESERVATIONS -->
-<h2 class="section-title">
+<h2 class="dash-section-title">
     <i class="fas fa-calendar-check"></i> Upcoming Appointments
 </h2>
 
@@ -384,7 +415,7 @@
                 </div>
                 <div class="reservation-detail">
                     <i class="fas fa-calendar"></i>
-                    <span>{{ reservation.appointment_date|date:"M d, Y" }}</span>
+                    <span>{{ reservation.appointment_date }}</span>
                 </div>
                 <div class="reservation-detail">
                     <i class="fas fa-clock"></i>
@@ -404,15 +435,15 @@
     {% endfor %}
 </div>
 {% else %}
-<div class="empty-state">
+<div class="dash-empty">
     <i class="fas fa-calendar"></i>
     <p>No upcoming appointments</p>
-    <a href="{% url 'book_reservation' %}" class="btn-gold">Book Now</a>
+    <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
 </div>
 {% endif %}
 
 <!-- PAST RESERVATIONS -->
-<h2 class="section-title">
+<h2 class="dash-section-title">
     <i class="fas fa-history"></i> Past Appointments
 </h2>
 
@@ -429,7 +460,7 @@
                 </div>
                 <div class="reservation-detail">
                     <i class="fas fa-calendar"></i>
-                    <span>{{ reservation.appointment_date|date:"M d, Y" }}</span>
+                    <span>{{ reservation.appointment_date }}</span>
                 </div>
                 <div class="reservation-detail">
                     <i class="fas fa-clock"></i>
@@ -449,18 +480,23 @@
     {% endfor %}
 </div>
 {% else %}
-<div class="empty-state">
+<div class="dash-empty">
     <i class="fas fa-inbox"></i>
-    <p>No past appointments</p>
+    <p>No past appointments yet</p>
 </div>
 {% endif %}
 
-<!-- CALL TO ACTION -->
-<div style="text-align: center; padding: 40px 20px; margin-top: 40px; border-top: 1px solid rgba(200,160,60,0.15);">
-    <h3 style="color: #fff; margin-bottom: 16px;">Ready for your next appointment?</h3>
-    <a href="{% url 'book_reservation' %}" class="btn-gold">Book Now</a>
-    &nbsp; &nbsp;
-    <a href="{% url 'profile' %}" class="btn-small" style="padding: 10px 24px; font-size: 0.85rem; text-decoration: none; text-transform: uppercase;">Edit Profile</a>
+<!-- CTA -->
+<div class="dash-cta">
+    <h3>Ready for your next appointment?</h3>
+    <div class="dash-cta-actions">
+        <a href="{% url 'book_reservation' %}" class="btn-gold">
+            <i class="fas fa-calendar-plus"></i> Book Now
+        </a>
+        <a href="{% url 'profile' %}" class="btn-small" style="padding: 10px 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em;">
+            Edit Profile
+        </a>
+    </div>
 </div>
 
 {% endblock %}
