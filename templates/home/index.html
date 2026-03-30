@@ -181,7 +181,6 @@
       <h2 class="section-title">Meet the <em>Barbers</em></h2>
       <p class="section-subtitle">Specialists, not generalists. Every barber at Velvet Steel has a defined craft and years of deliberate practice behind it.</p>
     </div>
-    <!-- Changed from barbers-grid to barbers-grid barbers-grid-full to show all 4 barbers -->
     <div class="barbers-grid barbers-grid-full">
       {% for barber in barbers %}
       <div class="barber-card">
@@ -191,9 +190,9 @@
           {% else %}
           <div class="barber-photo-placeholder"><i class="fas fa-user-tie"></i></div>
           {% endif %}
-          <div class="barber-overlay">
-            <a href="{% url 'book_reservation' %}" class="barber-book-btn">Book with {{ barber.name }}</a>
-          </div>
+          <a href="{% url 'book_reservation' %}" class="barber-book-icon" title="Book with {{ barber.name }}">
+            <i class="fas fa-calendar-alt"></i>
+          </a>
         </div>
         <div class="barber-info">
           <h3 class="barber-name">{{ barber.name }}</h3>
