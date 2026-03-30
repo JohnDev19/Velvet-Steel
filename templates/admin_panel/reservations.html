@@ -4,375 +4,420 @@
 
 {% block extra_css %}
 <style>
-/* ── BULK-ACTION BAR ──────────────────────────────────────── */
+/* ── BULK BAR ─────────────────────────────────────────────── */
 .bulk-bar {
-    display: none;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
-    background: rgba(200,160,60,0.08);
-    border: 1px solid rgba(200,160,60,0.25);
-    border-radius: 6px;
-    margin-bottom: 14px;
-    flex-wrap: wrap;
+  display: none; align-items: center; gap: 10px;
+  padding: 10px 16px;
+  background: rgba(200,160,60,0.08);
+  border: 1px solid rgba(200,160,60,0.25);
+  border-radius: 6px; margin-bottom: 14px; flex-wrap: wrap;
 }
 .bulk-bar.visible { display: flex; }
 .bulk-bar-count { font-size: 0.82rem; font-weight: 700; color: #c8a03c; flex: 1; }
 .btn-bulk-delete {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(224,85,85,0.15); color: #e05555;
-    border: 1px solid rgba(224,85,85,0.35);
-    padding: 6px 14px; border-radius: 4px;
-    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.05em;
-    cursor: pointer; transition: 0.2s ease; font-family: 'Josefin Sans', sans-serif;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(224,85,85,0.15); color: #e05555;
+  border: 1px solid rgba(224,85,85,0.35);
+  padding: 6px 14px; border-radius: 4px;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.05em;
+  cursor: pointer; transition: 0.2s ease; font-family: 'Josefin Sans', sans-serif;
 }
 .btn-bulk-delete:hover { background: #e05555; color: #fff; }
 .btn-bulk-cancel {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: transparent; color: #8a8070;
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 6px 12px; border-radius: 4px;
-    font-size: 0.78rem; font-weight: 600;
-    cursor: pointer; transition: 0.2s ease; font-family: 'Josefin Sans', sans-serif;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; color: #8a8070;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 6px 12px; border-radius: 4px;
+  font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; transition: 0.2s ease; font-family: 'Josefin Sans', sans-serif;
 }
 .btn-bulk-cancel:hover { color: #f0ebe0; border-color: rgba(255,255,255,0.25); }
 
 /* ── CHECKBOX ─────────────────────────────────────────────── */
 .cb-col { width: 36px; padding-left: 14px !important; }
 .row-checkbox, .select-all-checkbox {
-    appearance: none; -webkit-appearance: none;
-    width: 15px; height: 15px; min-width: 15px;
-    border: 1.5px solid rgba(200,160,60,0.4);
-    border-radius: 3px; background: #1c1c1c;
-    cursor: pointer; transition: 0.15s ease;
-    position: relative; vertical-align: middle; display: inline-block;
+  appearance: none; -webkit-appearance: none;
+  width: 15px; height: 15px; min-width: 15px;
+  border: 1.5px solid rgba(200,160,60,0.4);
+  border-radius: 3px; background: #1c1c1c;
+  cursor: pointer; transition: 0.15s ease;
+  position: relative; vertical-align: middle; display: inline-block;
 }
 .row-checkbox:checked, .select-all-checkbox:checked {
-    background: #c8a03c; border-color: #c8a03c;
+  background: #c8a03c; border-color: #c8a03c;
 }
 .row-checkbox:checked::after, .select-all-checkbox:checked::after {
-    content: ''; position: absolute;
-    left: 3px; top: 0px; width: 5px; height: 9px;
-    border: 2px solid #0e0e0e; border-top: none; border-left: none;
-    transform: rotate(45deg);
+  content: ''; position: absolute;
+  left: 3px; top: 0px; width: 5px; height: 9px;
+  border: 2px solid #0e0e0e; border-top: none; border-left: none;
+  transform: rotate(45deg);
 }
 .select-all-checkbox:indeterminate { background: rgba(200,160,60,0.3); border-color: #c8a03c; }
 .select-all-checkbox:indeterminate::after {
-    content: ''; position: absolute;
-    left: 2px; top: 5px; width: 8px; height: 2px;
-    background: #c8a03c; border: none; transform: none;
+  content: ''; position: absolute;
+  left: 2px; top: 5px; width: 8px; height: 2px;
+  background: #c8a03c; border: none; transform: none;
 }
 tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
 
-/* ── TABLET ────────────────────── */
-@media (max-width: 900px) and (min-width: 641px) {
-    .col-hide-tablet { display: none; }
-}
+/* ── VIEW SWITCHING ───────────────────────────────────────── */
+.res-desktop-table { display: block; }
+.res-card-list     { display: none; }
 
-/* ── MOBILE CARD LIST (≤ 640 px) ─────────────────────────── */
 @media (max-width: 640px) {
-    .res-desktop-table { display: none !important; }
-    .res-card-list      { display: flex !important; flex-direction: column; gap: 10px; padding: 12px; }
-}
-@media (min-width: 641px) {
-    .res-card-list { display: none !important; }
+  .res-desktop-table { display: none !important; }
+  .res-card-list     { display: flex !important; flex-direction: column; gap: 10px; padding: 12px; }
 }
 
-.res-card-list { display: none; }
+/* ── TABLE TABLET HIDE ────────────────────────────────────── */
+@media (max-width: 900px) and (min-width: 641px) {
+  .col-hide-tablet { display: none; }
+}
 
+/* ── MOBILE CARDS ─────────────────────────────────────────── */
 .res-mobile-card {
-    background: #161616;
-    border: 1px solid rgba(200,160,60,0.15);
-    border-radius: 8px; padding: 14px 14px 12px;
-    display: flex; flex-direction: column; gap: 8px;
-    transition: border-color 0.2s;
+  background: #161616;
+  border: 1px solid rgba(200,160,60,0.15);
+  border-radius: 8px; padding: 14px;
+  display: flex; flex-direction: column; gap: 0;
+  transition: border-color 0.2s;
 }
 .res-mobile-card.row-selected {
-    border-color: rgba(200,160,60,0.5);
-    background: rgba(200,160,60,0.04);
+  border-color: rgba(200,160,60,0.5);
+  background: rgba(200,160,60,0.04);
 }
-.rmc-top { display: flex; align-items: flex-start; gap: 10px; }
+.rmc-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
 .rmc-cb  { padding-top: 2px; flex-shrink: 0; }
 .rmc-main { flex: 1; min-width: 0; }
 .rmc-code {
-    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
-    color: #c8a03c; font-family: monospace;
-    background: rgba(200,160,60,0.1); border: 1px solid rgba(200,160,60,0.2);
-    padding: 1px 6px; border-radius: 3px; display: inline-block; margin-bottom: 4px;
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+  color: #c8a03c; font-family: monospace;
+  background: rgba(200,160,60,0.1); border: 1px solid rgba(200,160,60,0.2);
+  padding: 1px 6px; border-radius: 3px; display: inline-block; margin-bottom: 4px;
 }
 .rmc-customer { font-size: 0.9rem; font-weight: 700; color: #f0ebe0; }
-.rmc-barber   { font-size: 0.78rem; color: #8a8070; margin-top: 2px; }
+.rmc-barber   { font-size: 0.75rem; color: #8a8070; margin-top: 2px; }
+
 .rmc-details {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 6px 12px; padding: 8px 0;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6px 12px; padding: 10px 0;
+  border-top: 1px solid rgba(255,255,255,0.05);
 }
 .rmc-detail { display: flex; flex-direction: column; gap: 1px; }
 .rmc-detail-label { font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #4a4a3a; }
 .rmc-detail-value { font-size: 0.8rem; color: #c0b898; }
-.rmc-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 
-/* ── GENERAL ──────────────────────────────────────────────── */
+.rmc-footer {
+  display: flex; align-items: center; gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  flex-wrap: wrap;
+}
+.rmc-status-form { flex: 1; min-width: 120px; }
+.rmc-status-form select { width: 100%; }
+
+.btn-card-delete {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(224,85,85,0.12); color: #e05555;
+  border: 1px solid rgba(224,85,85,0.3);
+  padding: 6px 10px; border-radius: 4px;
+  font-size: 0.72rem; font-weight: 700;
+  cursor: pointer; transition: 0.2s ease;
+  font-family: 'Josefin Sans', sans-serif;
+  flex-shrink: 0;
+}
+.btn-card-delete:hover { background: #e05555; color: #fff; }
+
+/* ── SELECT ALL ROW ───────────────────────────────────────── */
+.mob-select-all-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 2px 2px 8px;
+}
+.mob-select-all-row span {
+  font-size: 0.72rem; color: #6a6050;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+
+/* ── TABLE WRAP ───────────────────────────────────────────── */
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="admin-page-header">
-    <h2>Reservations</h2>
-    <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> New</a>
+  <h2>Reservations</h2>
+  <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> New</a>
 </div>
 
 <!-- FILTERS -->
 <div class="filter-bar">
-    <form method="get" class="filter-form">
-        <select name="status" class="form-control form-control-sm" onchange="this.form.submit()">
-            <option value="">All Statuses</option>
-            <option value="pending"   {% if status_filter == 'pending'   %}selected{% endif %}>Pending</option>
-            <option value="confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>Confirmed</option>
-            <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
-            <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
-        </select>
-        <input type="date" name="date" class="form-control form-control-sm"
-               value="{{ date_filter }}" onchange="this.form.submit()">
-        {% if status_filter or date_filter %}
-        <a href="{% url 'admin_reservations' %}" class="btn-outline btn-sm">Clear</a>
-        {% endif %}
-    </form>
-    <span class="filter-count">{{ reservations.count }} result(s)</span>
+  <form method="get" class="filter-form">
+    <select name="status" class="form-control form-control-sm" onchange="this.form.submit()">
+      <option value="">All Statuses</option>
+      <option value="pending"   {% if status_filter == 'pending'   %}selected{% endif %}>Pending</option>
+      <option value="confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>Confirmed</option>
+      <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+      <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+    </select>
+    <input type="date" name="date" class="form-control form-control-sm"
+           value="{{ date_filter }}" onchange="this.form.submit()">
+    {% if status_filter or date_filter %}
+    <a href="{% url 'admin_reservations' %}" class="btn-outline btn-sm">Clear</a>
+    {% endif %}
+  </form>
+  <span class="filter-count">{{ reservations.count }} result(s)</span>
 </div>
 
 <!-- BULK ACTION BAR -->
 <div class="bulk-bar" id="bulkBar">
-    <span class="bulk-bar-count" id="bulkCount">0 selected</span>
-    <button type="button" class="btn-bulk-delete" id="bulkDeleteBtn">
-        <i class="fas fa-trash"></i> Delete Selected
-    </button>
-    <button type="button" class="btn-bulk-cancel" id="bulkClearBtn">
-        <i class="fas fa-times"></i> Clear
-    </button>
+  <span class="bulk-bar-count" id="bulkCount">0 selected</span>
+  <button type="button" class="btn-bulk-delete" id="bulkDeleteBtn">
+    <i class="fas fa-trash"></i> Delete Selected
+  </button>
+  <button type="button" class="btn-bulk-cancel" id="bulkClearBtn">
+    <i class="fas fa-times"></i> Clear
+  </button>
 </div>
 
 <form method="post" action="{% url 'admin_bulk_delete_reservations' %}" id="bulkDeleteForm">
-    {% csrf_token %}
-    <div id="bulkPkInputs"></div>
+  {% csrf_token %}
+  <div id="bulkPkInputs"></div>
 </form>
 
-<!-- ── DESKTOP / TABLET TABLE ─────────────────────────────── -->
+<!-- ── DESKTOP / TABLET TABLE (>640px) ───────────────────── -->
 <div class="admin-section res-desktop-table">
-    <div class="table-wrap">
-        <table class="admin-table" id="resTable">
-            <thead>
-                <tr>
-                    <th class="cb-col">
-                        <input type="checkbox" class="select-all-checkbox" id="selectAll" title="Select all">
-                    </th>
-                    <th>Code</th>
-                    <th>Customer</th>
-                    <th class="col-hide-tablet">Barber</th>
-                    <th>Date</th>
-                    <th class="col-hide-tablet">Time</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                    <th>Update</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for res in reservations %}
-                <tr data-pk="{{ res.pk }}">
-                    <td class="cb-col">
-                        <input type="checkbox" class="row-checkbox" value="{{ res.pk }}">
-                    </td>
-                    <td><span class="code-badge">{{ res.confirmation_code }}</span></td>
-                    <td>{{ res.customer_name }}</td>
-                    <td class="col-hide-tablet">{% if res.barber %}{{ res.barber.name }}{% else %}—{% endif %}</td>
-                    <td>{{ res.appointment_date_display }}</td>
-                    <td class="col-hide-tablet">{{ res.appointment_time_display }}</td>
-                    <td>₱{{ res.total_price }}</td>
-                    <td><span class="status-badge-{{ res.status }}">{{ res.get_status_display }}</span></td>
-                    <td>
-                        <form method="post" action="{% url 'admin_update_reservation' res.pk %}" class="inline-form">
-                            {% csrf_token %}
-                            <select name="status" class="status-select status-select-{{ res.status }}" onchange="this.form.submit()">
-                                <option value="pending"   {% if res.status == 'pending'   %}selected{% endif %}>Pending</option>
-                                <option value="confirmed" {% if res.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
-                                <option value="completed" {% if res.status == 'completed' %}selected{% endif %}>Completed</option>
-                                <option value="cancelled" {% if res.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
-                                <option value="no_show"   {% if res.status == 'no_show'   %}selected{% endif %}>No Show</option>
-                            </select>
-                        </form>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="9" class="empty-row">No reservations found.</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+  <div class="table-wrap">
+    <table class="admin-table" id="resTable">
+      <thead>
+        <tr>
+          <th class="cb-col">
+            <input type="checkbox" class="select-all-checkbox" id="selectAll" title="Select all">
+          </th>
+          <th>Code</th>
+          <th>Customer</th>
+          <th class="col-hide-tablet">Barber</th>
+          <th>Date</th>
+          <th class="col-hide-tablet">Time</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Update</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for res in reservations %}
+        <tr data-pk="{{ res.pk }}">
+          <td class="cb-col">
+            <input type="checkbox" class="row-checkbox" value="{{ res.pk }}">
+          </td>
+          <td><span class="code-badge">{{ res.confirmation_code }}</span></td>
+          <td>{{ res.customer_name }}</td>
+          <td class="col-hide-tablet">{% if res.barber %}{{ res.barber.name }}{% else %}—{% endif %}</td>
+          <td>{{ res.appointment_date_display }}</td>
+          <td class="col-hide-tablet">{{ res.appointment_time_display }}</td>
+          <td>₱{{ res.total_price }}</td>
+          <td><span class="status-badge-{{ res.status }}">{{ res.get_status_display }}</span></td>
+          <td>
+            <form method="post" action="{% url 'admin_update_reservation' res.pk %}" class="inline-form">
+              {% csrf_token %}
+              <select name="status" class="status-select status-select-{{ res.status }}" onchange="this.form.submit()">
+                <option value="pending"   {% if res.status == 'pending'   %}selected{% endif %}>Pending</option>
+                <option value="confirmed" {% if res.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                <option value="completed" {% if res.status == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="cancelled" {% if res.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                <option value="no_show"   {% if res.status == 'no_show'   %}selected{% endif %}>No Show</option>
+              </select>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="9" class="empty-row">No reservations found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<!-- ── MOBILE CARD LIST ───────────────────────────────────── -->
-<div class="res-card-list" id="mobileCardList">
-    {% if reservations %}
-    <div style="display:flex;align-items:center;gap:8px;padding:2px 2px 6px;">
-        <input type="checkbox" class="select-all-checkbox" id="selectAllMobile" title="Select all">
-        <span style="font-size:0.72rem;color:#6a6050;letter-spacing:0.08em;text-transform:uppercase;">Select all</span>
-    </div>
-    {% endif %}
+<!-- ── MOBILE CARDS (≤640px) ─────────────────────────────── -->
+<div class="admin-section res-card-list" id="resCardList">
+  {% if reservations %}
+  <div class="mob-select-all-row">
+    <input type="checkbox" class="select-all-checkbox" id="selectAllMobile">
+    <span>Select all</span>
+  </div>
+  {% endif %}
 
-    {% for res in reservations %}
-    <div class="res-mobile-card" data-pk="{{ res.pk }}">
-        <div class="rmc-top">
-            <div class="rmc-cb">
-                <input type="checkbox" class="row-checkbox" value="{{ res.pk }}">
-            </div>
-            <div class="rmc-main">
-                <span class="rmc-code">{{ res.confirmation_code }}</span>
-                <div class="rmc-customer">{{ res.customer_name }}</div>
-                <div class="rmc-barber">
-                    {% if res.barber %}
-                    <i class="fas fa-user-tie" style="color:#c8a03c;margin-right:4px;font-size:0.7rem;"></i>{{ res.barber.name }}
-                    {% else %}No barber assigned{% endif %}
-                </div>
-            </div>
+  {% for res in reservations %}
+  <div class="res-mobile-card" data-pk="{{ res.pk }}">
+    <div class="rmc-top">
+      <div class="rmc-cb">
+        <input type="checkbox" class="row-checkbox" value="{{ res.pk }}">
+      </div>
+      <div class="rmc-main">
+        <span class="rmc-code">{{ res.confirmation_code }}</span>
+        <div class="rmc-customer">{{ res.customer_name }}</div>
+        <div class="rmc-barber">
+          {% if res.barber %}
+          <i class="fas fa-user-tie" style="color:#c8a03c;margin-right:4px;font-size:0.68rem;"></i>{{ res.barber.name }}
+          {% else %}No barber assigned{% endif %}
         </div>
-        <div class="rmc-details">
-            <div class="rmc-detail">
-                <span class="rmc-detail-label">Date</span>
-                <span class="rmc-detail-value">{{ res.appointment_date_display }}</span>
-            </div>
-            <div class="rmc-detail">
-                <span class="rmc-detail-label">Time</span>
-                <span class="rmc-detail-value">{{ res.appointment_time_display }}</span>
-            </div>
-            <div class="rmc-detail">
-                <span class="rmc-detail-label">Price</span>
-                <span class="rmc-detail-value" style="color:#c8a03c;font-weight:700;">₱{{ res.total_price }}</span>
-            </div>
-            <div class="rmc-detail">
-                <span class="rmc-detail-label">Status</span>
-                <span class="rmc-detail-value">
-                    <span class="status-badge-{{ res.status }}">{{ res.get_status_display }}</span>
-                </span>
-            </div>
-        </div>
-        <div class="rmc-footer">
-            <form method="post" action="{% url 'admin_update_reservation' res.pk %}" class="inline-form">
-                {% csrf_token %}
-                <select name="status" class="status-select status-select-{{ res.status }}" onchange="this.form.submit()">
-                    <option value="pending"   {% if res.status == 'pending'   %}selected{% endif %}>Pending</option>
-                    <option value="confirmed" {% if res.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
-                    <option value="completed" {% if res.status == 'completed' %}selected{% endif %}>Completed</option>
-                    <option value="cancelled" {% if res.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
-                    <option value="no_show"   {% if res.status == 'no_show'   %}selected{% endif %}>No Show</option>
-                </select>
-            </form>
-        </div>
+      </div>
+      <span class="status-badge-{{ res.status }}">{{ res.get_status_display }}</span>
     </div>
-    {% empty %}
-    <div style="text-align:center;padding:40px 20px;color:#5a5040;">
-        <i class="fas fa-calendar-times" style="font-size:2rem;display:block;margin-bottom:10px;opacity:0.3;"></i>
-        No reservations found.
+
+    <div class="rmc-details">
+      <div class="rmc-detail">
+        <span class="rmc-detail-label">Date</span>
+        <span class="rmc-detail-value">{{ res.appointment_date_display }}</span>
+      </div>
+      <div class="rmc-detail">
+        <span class="rmc-detail-label">Time</span>
+        <span class="rmc-detail-value">{{ res.appointment_time_display }}</span>
+      </div>
+      <div class="rmc-detail">
+        <span class="rmc-detail-label">Price</span>
+        <span class="rmc-detail-value" style="color:#c8a03c;font-weight:700;">₱{{ res.total_price }}</span>
+      </div>
+      <div class="rmc-detail">
+        <span class="rmc-detail-label">Service</span>
+        <span class="rmc-detail-value">{% if res.service %}{{ res.service.name|truncatechars:18 }}{% else %}—{% endif %}</span>
+      </div>
     </div>
-    {% endfor %}
+
+    <div class="rmc-footer">
+      <form method="post" action="{% url 'admin_update_reservation' res.pk %}" class="inline-form rmc-status-form">
+        {% csrf_token %}
+        <select name="status" class="status-select status-select-{{ res.status }}" onchange="this.form.submit()">
+          <option value="pending"   {% if res.status == 'pending'   %}selected{% endif %}>Pending</option>
+          <option value="confirmed" {% if res.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+          <option value="completed" {% if res.status == 'completed' %}selected{% endif %}>Completed</option>
+          <option value="cancelled" {% if res.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+          <option value="no_show"   {% if res.status == 'no_show'   %}selected{% endif %}>No Show</option>
+        </select>
+      </form>
+      <button type="button" class="btn-card-delete"
+              data-pk="{{ res.pk }}"
+              data-code="{{ res.confirmation_code }}">
+        <i class="fas fa-trash"></i> Delete
+      </button>
+    </div>
+  </div>
+  {% empty %}
+  <div style="text-align:center;padding:40px 20px;color:#5a5040;">
+    <i class="fas fa-calendar-times" style="font-size:2rem;display:block;margin-bottom:10px;opacity:0.3;"></i>
+    No reservations found.
+  </div>
+  {% endfor %}
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
 (function () {
-    'use strict';
+  'use strict';
 
-    var bulkBar       = document.getElementById('bulkBar');
-    var bulkCount     = document.getElementById('bulkCount');
-    var bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
-    var bulkClearBtn  = document.getElementById('bulkClearBtn');
-    var bulkForm      = document.getElementById('bulkDeleteForm');
-    var bulkInputs    = document.getElementById('bulkPkInputs');
-    var selectAll     = document.getElementById('selectAll');
-    var selectAllMob  = document.getElementById('selectAllMobile');
+  var bulkBar      = document.getElementById('bulkBar');
+  var bulkCount    = document.getElementById('bulkCount');
+  var bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+  var bulkClearBtn  = document.getElementById('bulkClearBtn');
+  var bulkForm      = document.getElementById('bulkDeleteForm');
+  var bulkInputs    = document.getElementById('bulkPkInputs');
+  var selectAll     = document.getElementById('selectAll');
+  var selectAllMob  = document.getElementById('selectAllMobile');
 
-    function syncRow(cb) {
-        var pk = cb.value;
-        var dRow  = document.querySelector('#resTable tr[data-pk="' + pk + '"]');
-        if (dRow)  dRow.classList.toggle('row-selected', cb.checked);
-        var mCard = document.querySelector('.res-mobile-card[data-pk="' + pk + '"]');
-        if (mCard) {
-            mCard.classList.toggle('row-selected', cb.checked);
-            mCard.querySelectorAll('.row-checkbox').forEach(function(sib) {
-                if (sib !== cb) sib.checked = cb.checked;
-            });
-        }
-        document.querySelectorAll('.row-checkbox[value="' + pk + '"]').forEach(function(sib) {
-            if (sib !== cb) sib.checked = cb.checked;
-        });
-    }
-
-    function selectedPks() {
-        var seen = new Set();
-        document.querySelectorAll('.row-checkbox:checked').forEach(function(cb) { seen.add(cb.value); });
-        return Array.from(seen);
-    }
-
-    function totalUniquePks() {
-        var seen = new Set();
-        document.querySelectorAll('.row-checkbox').forEach(function(cb) { seen.add(cb.value); });
-        return seen.size;
-    }
-
-    function updateBulkBar() {
-        var pks   = selectedPks();
-        var n     = pks.length;
-        var total = totalUniquePks();
-        bulkBar.classList.toggle('visible', n > 0);
-        bulkCount.textContent = n + ' selected';
-
-        [selectAll, selectAllMob].forEach(function(sa) {
-            if (!sa) return;
-            if (n === 0)      { sa.checked = false; sa.indeterminate = false; }
-            else if (n === total) { sa.checked = true;  sa.indeterminate = false; }
-            else              { sa.checked = false; sa.indeterminate = true; }
-        });
-    }
-
-    document.addEventListener('change', function (e) {
-        if (e.target.classList.contains('row-checkbox')) {
-            syncRow(e.target);
-            updateBulkBar();
-            return;
-        }
-        if (e.target.classList.contains('select-all-checkbox')) {
-            var chk = e.target.checked;
-            document.querySelectorAll('.row-checkbox').forEach(function(cb) {
-                cb.checked = chk; syncRow(cb);
-            });
-            [selectAll, selectAllMob].forEach(function(sa) {
-                if (sa && sa !== e.target) sa.checked = chk;
-            });
-            updateBulkBar();
-        }
+  // ── checkbox sync ───────────────
+  function syncRow(cb) {
+    var pk = cb.value;
+    var dRow  = document.querySelector('#resTable tr[data-pk="' + pk + '"]');
+    if (dRow)  dRow.classList.toggle('row-selected', cb.checked);
+    var mCard = document.querySelector('.res-mobile-card[data-pk="' + pk + '"]');
+    if (mCard) mCard.classList.toggle('row-selected', cb.checked);
+    // keep sibling checkboxes in sync
+    document.querySelectorAll('.row-checkbox[value="' + pk + '"]').forEach(function (s) {
+      if (s !== cb) s.checked = cb.checked;
     });
+  }
 
-    bulkDeleteBtn.addEventListener('click', function () {
-        var pks = selectedPks();
-        if (!pks.length) return;
-        if (!confirm('Permanently delete ' + pks.length + ' reservation(s)? This cannot be undone.')) return;
-        bulkInputs.innerHTML = '';
-        pks.forEach(function (pk) {
-            var inp = document.createElement('input');
-            inp.type = 'hidden'; inp.name = 'pks'; inp.value = pk;
-            bulkInputs.appendChild(inp);
-        });
-        bulkForm.submit();
-    });
+  function selectedPks() {
+    var seen = new Set();
+    document.querySelectorAll('.row-checkbox:checked').forEach(function (cb) { seen.add(cb.value); });
+    return Array.from(seen);
+  }
 
-    bulkClearBtn.addEventListener('click', function () {
-        document.querySelectorAll('.row-checkbox').forEach(function(cb) {
-            cb.checked = false; syncRow(cb);
-        });
-        updateBulkBar();
+  function totalUniquePks() {
+    var seen = new Set();
+    document.querySelectorAll('.row-checkbox').forEach(function (cb) { seen.add(cb.value); });
+    return seen.size;
+  }
+
+  function updateBulkBar() {
+    var pks   = selectedPks();
+    var n     = pks.length;
+    var total = totalUniquePks();
+    bulkBar.classList.toggle('visible', n > 0);
+    bulkCount.textContent = n + ' selected';
+
+    [selectAll, selectAllMob].forEach(function (sa) {
+      if (!sa) return;
+      if (n === 0)      { sa.checked = false; sa.indeterminate = false; }
+      else if (n===total){ sa.checked = true;  sa.indeterminate = false; }
+      else              { sa.checked = false; sa.indeterminate = true;  }
     });
+  }
+
+  // ── delegated change ──────────────────────────────────────
+  document.addEventListener('change', function (e) {
+    if (e.target.classList.contains('row-checkbox')) {
+      syncRow(e.target);
+      updateBulkBar();
+    }
+    if (e.target.classList.contains('select-all-checkbox') &&
+        (e.target === selectAll || e.target === selectAllMob)) {
+      var chk = e.target.checked;
+      document.querySelectorAll('.row-checkbox').forEach(function (cb) {
+        cb.checked = chk; syncRow(cb);
+      });
+      [selectAll, selectAllMob].forEach(function (sa) {
+        if (sa && sa !== e.target) sa.checked = chk;
+      });
+      updateBulkBar();
+    }
+  });
+
+  // ── bulk delete ───────────────────────────────────────────
+  bulkDeleteBtn.addEventListener('click', function () {
+    var pks = selectedPks();
+    if (!pks.length) return;
+    if (!confirm('Permanently delete ' + pks.length + ' reservation(s)? This cannot be undone.')) return;
+    bulkInputs.innerHTML = '';
+    pks.forEach(function (pk) {
+      var inp = document.createElement('input');
+      inp.type = 'hidden'; inp.name = 'pks'; inp.value = pk;
+      bulkInputs.appendChild(inp);
+    });
+    bulkForm.submit();
+  });
+
+  bulkClearBtn.addEventListener('click', function () {
+    document.querySelectorAll('.row-checkbox').forEach(function (cb) {
+      cb.checked = false; syncRow(cb);
+    });
+    updateBulkBar();
+  });
+
+  // ── per-card delete buttons ───────────────────────────────
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.btn-card-delete');
+    if (!btn) return;
+    var pk   = btn.dataset.pk;
+    var code = btn.dataset.code;
+    if (!confirm('Delete reservation ' + code + '? This cannot be undone.')) return;
+    bulkInputs.innerHTML = '';
+    var inp = document.createElement('input');
+    inp.type = 'hidden'; inp.name = 'pks'; inp.value = pk;
+    bulkInputs.appendChild(inp);
+    bulkForm.submit();
+  });
+
 }());
 </script>
 {% endblock %}
