@@ -9,12 +9,12 @@ from .models import UserProfile
 
 class RegisterForm(forms.Form):
     first_name = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'}))
-    last_name = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'}))
-    username = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}))
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'}))
-    phone = forms.CharField(max_length=15, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+63 9XX XXX XXXX'}))
-    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
-    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'}))
+    last_name  = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'}))
+    username   = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}))
+    email      = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'}))
+    phone      = forms.CharField(max_length=15, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+63 9XX XXX XXXX'}))
+    password1  = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
+    password2  = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'}))
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -36,11 +36,15 @@ class LoginForm(forms.Form):
 
 def _get_or_create_profile(user):
     """Get or create a MongoEngine UserProfile for a Django auth user."""
-    profile = UserProfile.objects(user_id=user.pk).first()
-    if not profile:
+    try:
+        profile = UserProfile.objects(user_id=user.pk).first()
+        if not profile:
+            profile = UserProfile(user_id=user.pk)
+            profile.save()
+        return profile
+    except Exception:
         profile = UserProfile(user_id=user.pk)
-        profile.save()
-    return profile
+        return profile
 
 
 def register_view(request):
@@ -56,11 +60,14 @@ def register_view(request):
                 first_name=form.cleaned_data['first_name'],
                 last_name=form.cleaned_data['last_name'],
             )
-            profile = UserProfile(
-                user_id=user.pk,
-                phone=form.cleaned_data.get('phone', ''),
-            )
-            profile.save()
+            try:
+                profile = UserProfile(
+                    user_id=user.pk,
+                    phone=form.cleaned_data.get('phone', ''),
+                )
+                profile.save()
+            except Exception:
+                pass  # non-fatal
             login(request, user)
             messages.success(request, f'Welcome, {user.first_name}! Your account has been created.')
             return redirect('home')
@@ -77,7 +84,7 @@ def login_view(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            
+
             user = authenticate(request, username=username, password=password)
             if not user:
                 try:
@@ -85,15 +92,17 @@ def login_view(request):
                     user = authenticate(request, username=user_by_email.username, password=password)
                 except User.DoesNotExist:
                     user = None
-            
+
             if user:
                 login(request, user)
                 _get_or_create_profile(user)
                 messages.success(request, f'Welcome back, {user.first_name or user.username}!')
-                next_url = request.GET.get('next', 'home')
+                next_url = request.GET.get('next', '')
+                if next_url:
+                    return redirect(next_url)
                 if user.is_staff:
-                    next_url = request.GET.get('next', 'user_dashboard')
-                return redirect(next_url)
+                    return redirect('user_dashboard')
+                return redirect('home')
             else:
                 messages.error(request, 'Invalid username or password.')
     else:
@@ -111,22 +120,31 @@ def logout_view(request):
 def user_dashboard(request):
     """User dashboard showing their reservations and profile overview."""
     from reservations.models import Reservation
+
     profile = _get_or_create_profile(request.user)
-    
-    user_reservations = Reservation.objects(user_id=request.user.pk).order_by('-created_at')
+
+    try:
+        # customer_id
+        user_reservations = list(
+            Reservation.objects(customer_id=request.user.pk).order_by('-created_at')
+        )
+    except Exception:
+        user_reservations = []
+
     upcoming = [r for r in user_reservations if r.status in ['pending', 'confirmed']]
-    past = [r for r in user_reservations if r.status in ['completed', 'cancelled']]
-    
+    past     = [r for r in user_reservations if r.status in ['completed', 'cancelled']]
+
     total_visits = len([r for r in user_reservations if r.status == 'completed'])
-    total_spent = sum(float(r.total_price or 0) for r in user_reservations if r.status == 'completed')
-    
+    total_spent  = sum(float(r.total_price or 0) for r in user_reservations if r.status == 'completed')
+
     context = {
-        'profile': profile,
-        'upcoming': upcoming[:5],
-        'past': past[:5],
-        'total_visits': total_visits,
-        'total_spent': total_spent,
+        'profile':           profile,
+        'upcoming':          upcoming[:5],
+        'past':              past[:5],
+        'total_visits':      total_visits,
+        'total_spent':       total_spent,
         'reservation_count': len(user_reservations),
+        'user':              request.user,
     }
     return render(request, 'accounts/dashboard.html', context)
 
@@ -136,12 +154,15 @@ def profile_view(request):
     profile = _get_or_create_profile(request.user)
     if request.method == 'POST':
         request.user.first_name = request.POST.get('first_name', '')
-        request.user.last_name = request.POST.get('last_name', '')
-        request.user.email = request.POST.get('email', '')
+        request.user.last_name  = request.POST.get('last_name', '')
+        request.user.email      = request.POST.get('email', '')
         request.user.save()
-        profile.phone = request.POST.get('phone', '')
-        profile.city = request.POST.get('city', '')
-        profile.save()
+        try:
+            profile.phone = request.POST.get('phone', '')
+            profile.city  = request.POST.get('city', '')
+            profile.save()
+        except Exception:
+            pass
         messages.success(request, 'Profile updated successfully!')
         return redirect('profile')
     return render(request, 'accounts/profile.html', {'profile': profile})

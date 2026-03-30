@@ -94,12 +94,27 @@ MONGODB_URI = os.environ.get('MONGODB_URI', '')
 try:
     import mongoengine
     if MONGODB_URI:
-        mongoengine.connect(host=MONGODB_URI, alias='default', serverSelectionTimeoutMS=5000)
+        mongoengine.connect(
+            host=MONGODB_URI,
+            alias='default',
+            serverSelectionTimeoutMS=5000,
+        )
         print("INFO: MongoDB connected.", file=sys.stderr)
+    elif DEBUG:
+        mongoengine.connect(
+            'velvetsteel_dev',
+            host='localhost',
+            port=27017,
+            alias='default',
+            serverSelectionTimeoutMS=1000,
+        )
+        print("INFO: MongoDB connected to localhost (dev).", file=sys.stderr)
     else:
-        print("WARNING: MONGODB_URI is not set. MongoDB features will not work.", file=sys.stderr)
-        mongoengine.connect('velvetsteel_dev', host='localhost', port=27017, alias='default',
-                            serverSelectionTimeoutMS=1000)
+        print(
+            "WARNING: MONGODB_URI is not set. "
+            "Add in Environment Variables.",
+            file=sys.stderr,
+        )
 except Exception as e:
     print(f"WARNING: MongoDB connection error: {e}", file=sys.stderr)
 
@@ -121,8 +136,10 @@ USE_TZ = True
 # ── STATIC & MEDIA ───────────────────────────────────────────
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STATIC_ROOT = Path('/tmp') / 'staticfiles'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -139,15 +156,15 @@ EMAIL_BACKEND = os.environ.get(
     'EMAIL_BACKEND',
     'django.core.mail.backends.console.EmailBackend'
 )
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST          = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT          = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_USE_TLS       = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER     = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@velvetsteel.ph')
+DEFAULT_FROM_EMAIL  = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@velvetsteel.ph')
 
 # ── BARBERSHOP INFO ──────────────────────────────────────────
-BARBERSHOP_NAME = os.environ.get('BARBERSHOP_NAME', 'Velvet Steel Barbershop')
-BARBERSHOP_PHONE = os.environ.get('BARBERSHOP_PHONE', '+63 912 345 6789')
+BARBERSHOP_NAME    = os.environ.get('BARBERSHOP_NAME',    'Velvet Steel Barbershop')
+BARBERSHOP_PHONE   = os.environ.get('BARBERSHOP_PHONE',   '+63 912 345 6789')
 BARBERSHOP_ADDRESS = os.environ.get('BARBERSHOP_ADDRESS', '123 Rizal Avenue, Quezon City, Metro Manila')
-BARBERSHOP_EMAIL = os.environ.get('BARBERSHOP_EMAIL', 'info@velvetsteel.ph')
+BARBERSHOP_EMAIL   = os.environ.get('BARBERSHOP_EMAIL',   'info@velvetsteel.ph')
