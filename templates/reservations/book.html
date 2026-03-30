@@ -123,26 +123,52 @@ const timeSelect = document.getElementById('timeSelect');
 const serviceSelect = document.getElementById('serviceSelect');
 const summary = document.getElementById('bookingSummary');
 
-// Set min date to tomorrow
-const tomorrow = new Date();
-tomorrow.setDate(tomorrow.getDate() + 1);
-dateInput.min = tomorrow.toISOString().split('T')[0];
+// Set min date to today (allow same-day booking)
+const today = new Date();
+const todayStr = today.toISOString().split('T')[0];
+dateInput.min = todayStr;
+dateInput.value = '';
+
+console.log('Booking form initialized. Min date:', todayStr);
 
 async function loadSlots() {
     const barberId = barberSelect.value;
     const date = dateInput.value;
-    if (!barberId || !date) return;
+    
+    console.log('loadSlots called - barberId:', barberId, 'date:', date);
+    
+    if (!date) {
+        timeSelect.innerHTML = '<option value="">Select date first...</option>';
+        return;
+    }
+    
+    if (!barberId) {
+        timeSelect.innerHTML = '<option value="">Select barber first...</option>';
+        return;
+    }
 
     timeSelect.innerHTML = '<option value="">Loading...</option>';
-    const res = await fetch(`${slotsUrl}?barber_id=${barberId}&date=${date}`);
-    const data = await res.json();
-    timeSelect.innerHTML = '<option value="">Select time...</option>';
-    if (data.slots.length === 0) {
-        timeSelect.innerHTML = '<option value="">No slots available</option>';
-    } else {
-        data.slots.forEach(slot => {
-            timeSelect.innerHTML += `<option value="${slot.value}">${slot.label}</option>`;
-        });
+    
+    try {
+        const res = await fetch(`${slotsUrl}?barber_id=${barberId}&date=${date}`);
+        const data = await res.json();
+        
+        console.log('Slots response:', data);
+        
+        timeSelect.innerHTML = '<option value="">Select time...</option>';
+        if (!data.slots || data.slots.length === 0) {
+            timeSelect.innerHTML = '<option value="">No slots available</option>';
+        } else {
+            data.slots.forEach(slot => {
+                const option = document.createElement('option');
+                option.value = slot.value;
+                option.textContent = slot.label;
+                timeSelect.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading slots:', error);
+        timeSelect.innerHTML = '<option value="">Error loading slots</option>';
     }
     updateSummary();
 }
@@ -164,9 +190,25 @@ function updateSummary() {
     }
 }
 
-barberSelect.addEventListener('change', () => { loadSlots(); updateSummary(); });
-dateInput.addEventListener('change', loadSlots);
-timeSelect.addEventListener('change', updateSummary);
-serviceSelect.addEventListener('change', updateSummary);
+barberSelect.addEventListener('change', () => { 
+    console.log('Barber selected:', barberSelect.value);
+    loadSlots(); 
+    updateSummary(); 
+});
+
+dateInput.addEventListener('change', () => {
+    console.log('Date selected:', dateInput.value);
+    loadSlots();
+});
+
+timeSelect.addEventListener('change', () => {
+    console.log('Time selected:', timeSelect.value);
+    updateSummary();
+});
+
+serviceSelect.addEventListener('change', () => {
+    console.log('Service selected:', serviceSelect.value);
+    updateSummary();
+});
 </script>
 {% endblock %}
