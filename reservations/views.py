@@ -10,15 +10,27 @@ import datetime
 @login_required
 def book_reservation(request):
     if request.method == 'POST':
-        barber_id          = request.POST.get('barber')
-        haircut_style_id   = request.POST.get('haircut_style')
-        appointment_date   = request.POST.get('appointment_date')
-        appointment_time   = request.POST.get('appointment_time')
-        notes              = request.POST.get('notes', '')
+        barber_id        = request.POST.get('barber', '').strip()
+        haircut_style_id = request.POST.get('haircut_style', '').strip()
+        appointment_date = request.POST.get('appointment_date', '').strip()
+        appointment_time = request.POST.get('appointment_time', '').strip()
+        notes            = request.POST.get('notes', '').strip()
 
-        errors = []
-        barber        = Barber.objects(id=barber_id).first()        if barber_id        else None
-        haircut_style = HaircutStyle.objects(id=haircut_style_id).first() if haircut_style_id else None
+        errors        = []
+        barber        = None
+        haircut_style = None
+
+        if barber_id:
+            try:
+                barber = Barber.objects(id=barber_id).first()
+            except Exception:
+                barber = None
+
+        if haircut_style_id:
+            try:
+                haircut_style = HaircutStyle.objects(id=haircut_style_id).first()
+            except Exception:
+                haircut_style = None
 
         if not barber:
             errors.append('Please select a valid barber.')
@@ -38,35 +50,51 @@ def book_reservation(request):
                 errors.append('Invalid date format.')
 
         if not errors:
-            existing = Reservation.objects(
-                barber=barber,
-                appointment_date=appointment_date,
-                appointment_time=appointment_time,
-                status__in=['pending', 'confirmed'],
-            ).first()
-            if existing:
-                errors.append('This time slot is already booked. Please choose another.')
+            try:
+                existing = Reservation.objects(
+                    barber=barber,
+                    appointment_date=appointment_date,
+                    appointment_time=appointment_time,
+                    status__in=['pending', 'confirmed'],
+                ).first()
+                if existing:
+                    errors.append('This time slot is already booked. Please choose another.')
+            except Exception:
+                pass
 
         if errors:
             for err in errors:
                 messages.error(request, err)
-        else:
-            default_service = Service.objects(is_active=True).first()
+            styles  = HaircutStyle.objects(is_active=True).order_by('category', 'price')
+            barbers = Barber.objects(is_active=True)
+            return render(request, 'reservations/book.html', {'styles': styles, 'barbers': barbers})
 
-            reservation = Reservation(
-                customer_id=request.user.pk,
-                customer_username=request.user.username,
-                customer_name=request.user.get_full_name() or request.user.username,
-                barber=barber,
-                service=default_service,
-                appointment_date=appointment_date,
-                appointment_time=appointment_time,
-                notes=notes,
-                total_price=haircut_style.price,
-            )
+        try:
+            service = Service.objects(is_active=True).first()
+        except Exception:
+            service = None
+
+        reservation = Reservation(
+            customer_id=request.user.pk,
+            customer_username=request.user.username,
+            customer_name=request.user.get_full_name() or request.user.username,
+            barber=barber,
+            service=service,
+            appointment_date=appointment_date,
+            appointment_time=appointment_time,
+            notes=notes,
+            total_price=haircut_style.price,
+        )
+        try:
             reservation.save()
-            messages.success(request, f'Reservation confirmed! Your code: {reservation.confirmation_code}')
-            return redirect('reservation_detail', pk=str(reservation.pk))
+        except Exception as e:
+            messages.error(request, 'Could not save reservation. Please try again.')
+            styles  = HaircutStyle.objects(is_active=True).order_by('category', 'price')
+            barbers = Barber.objects(is_active=True)
+            return render(request, 'reservations/book.html', {'styles': styles, 'barbers': barbers})
+
+        messages.success(request, 'Reservation confirmed! Your code: ' + reservation.confirmation_code)
+        return redirect('reservation_detail', pk=str(reservation.pk))
 
     styles  = HaircutStyle.objects(is_active=True).order_by('category', 'price')
     barbers = Barber.objects(is_active=True)
@@ -84,7 +112,10 @@ def my_reservations(request):
 
 @login_required
 def reservation_detail(request, pk):
-    reservation = Reservation.objects(id=pk, customer_id=request.user.pk).first()
+    try:
+        reservation = Reservation.objects(id=pk, customer_id=request.user.pk).first()
+    except Exception:
+        reservation = None
     if not reservation:
         messages.error(request, 'Reservation not found.')
         return redirect('my_reservations')
@@ -93,7 +124,10 @@ def reservation_detail(request, pk):
 
 @login_required
 def cancel_reservation(request, pk):
-    reservation = Reservation.objects(id=pk, customer_id=request.user.pk).first()
+    try:
+        reservation = Reservation.objects(id=pk, customer_id=request.user.pk).first()
+    except Exception:
+        reservation = None
     if reservation and reservation.status in ['pending', 'confirmed']:
         try:
             date_obj = datetime.date.fromisoformat(reservation.appointment_date)
@@ -115,16 +149,23 @@ def get_available_slots(request):
     if not barber_id or not date_str:
         return JsonResponse({'slots': []})
 
-    barber = Barber.objects(id=barber_id).first()
+    try:
+        barber = Barber.objects(id=barber_id).first()
+    except Exception:
+        return JsonResponse({'slots': []})
+
     if not barber:
         return JsonResponse({'slots': []})
 
-    booked_reservations = Reservation.objects(
-        barber=barber,
-        appointment_date=date_str,
-        status__in=['pending', 'confirmed'],
-    )
-    booked_times = set(r.appointment_time for r in booked_reservations)
+    try:
+        booked_reservations = Reservation.objects(
+            barber=barber,
+            appointment_date=date_str,
+            status__in=['pending', 'confirmed'],
+        )
+        booked_times = set(r.appointment_time for r in booked_reservations)
+    except Exception:
+        booked_times = set()
 
     slots = []
     for hour in range(8, 20):
@@ -142,8 +183,13 @@ def submit_testimonial(request):
     if request.method == 'POST':
         rating     = request.POST.get('rating', 5)
         comment    = request.POST.get('comment', '')
-        service_id = request.POST.get('service')
-        service    = Service.objects(id=service_id).first() if service_id else None
+        service_id = request.POST.get('service', '').strip()
+        service    = None
+        if service_id:
+            try:
+                service = Service.objects(id=service_id).first()
+            except Exception:
+                pass
 
         testimonial = Testimonial(
             customer_id=request.user.pk,
@@ -152,6 +198,9 @@ def submit_testimonial(request):
             comment=comment,
             service=service,
         )
-        testimonial.save()
-        messages.success(request, 'Thank you for your review! It will appear once approved.')
+        try:
+            testimonial.save()
+            messages.success(request, 'Thank you for your review! It will appear once approved.')
+        except Exception:
+            messages.error(request, 'Could not submit review. Please try again.')
     return redirect('home')
