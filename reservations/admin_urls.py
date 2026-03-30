@@ -5,6 +5,7 @@ from .views import get_available_slots
 urlpatterns = [
     path('', admin_views.admin_dashboard, name='admin_dashboard'),
     path('reservations/', admin_views.admin_reservations, name='admin_reservations'),
+    path('reservations/bulk-delete/', admin_views.admin_bulk_delete_reservations, name='admin_bulk_delete_reservations'),
     path('reservations/<str:pk>/update/', admin_views.admin_update_reservation, name='admin_update_reservation'),
     path('barbers/', admin_views.admin_barbers, name='admin_barbers'),
     path('barbers/add/', admin_views.admin_barber_add, name='admin_barber_add'),

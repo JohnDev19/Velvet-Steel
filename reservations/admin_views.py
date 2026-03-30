@@ -77,6 +77,26 @@ def admin_reservations(request):
 
 
 @admin_required
+def admin_bulk_delete_reservations(request):
+    if request.method == 'POST':
+        pks = request.POST.getlist('pks')
+        deleted = 0
+        for pk in pks:
+            try:
+                res = Reservation.objects(id=pk).first()
+                if res:
+                    res.delete()
+                    deleted += 1
+            except Exception:
+                pass
+        if deleted:
+            messages.success(request, f'{deleted} reservation(s) deleted successfully.')
+        else:
+            messages.warning(request, 'No reservations were deleted.')
+    return redirect('admin_reservations')
+
+
+@admin_required
 def admin_update_reservation(request, pk):
     try:
         reservation = Reservation.objects(id=pk).first()

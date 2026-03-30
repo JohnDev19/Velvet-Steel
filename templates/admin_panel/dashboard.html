@@ -2,6 +2,112 @@
 {% block title %}Dashboard{% endblock %}
 {% block page_title %}Dashboard{% endblock %}
 
+{% block extra_css %}
+<style>
+/* ── BULK BAR ──────────────────────── */
+.bulk-bar {
+    display: none; align-items: center; gap: 10px;
+    padding: 10px 16px;
+    background: rgba(200,160,60,0.08);
+    border: 1px solid rgba(200,160,60,0.25);
+    border-radius: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.bulk-bar.visible { display: flex; }
+.bulk-bar-count { font-size: 0.82rem; font-weight: 700; color: #c8a03c; flex: 1; }
+.btn-bulk-delete {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(224,85,85,0.15); color: #e05555;
+    border: 1px solid rgba(224,85,85,0.35);
+    padding: 6px 14px; border-radius: 4px;
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.05em;
+    cursor: pointer; transition: 0.2s ease; font-family: 'Josefin Sans', sans-serif;
+}
+.btn-bulk-delete:hover { background: #e05555; color: #fff; }
+.btn-bulk-cancel {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent; color: #8a8070;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 6px 12px; border-radius: 4px;
+    font-size: 0.78rem; font-weight: 600;
+    cursor: pointer; transition: 0.2s ease; font-family: 'Josefin Sans', sans-serif;
+}
+.btn-bulk-cancel:hover { color: #f0ebe0; border-color: rgba(255,255,255,0.25); }
+
+/* ── CHECKBOX ─────────────────────────────────────────────── */
+.cb-col { width: 36px; padding-left: 14px !important; }
+.row-checkbox, .select-all-checkbox {
+    appearance: none; -webkit-appearance: none;
+    width: 15px; height: 15px; min-width: 15px;
+    border: 1.5px solid rgba(200,160,60,0.4);
+    border-radius: 3px; background: #1c1c1c;
+    cursor: pointer; transition: 0.15s ease;
+    position: relative; vertical-align: middle; display: inline-block;
+}
+.row-checkbox:checked, .select-all-checkbox:checked {
+    background: #c8a03c; border-color: #c8a03c;
+}
+.row-checkbox:checked::after, .select-all-checkbox:checked::after {
+    content: ''; position: absolute;
+    left: 3px; top: 0px; width: 5px; height: 9px;
+    border: 2px solid #0e0e0e; border-top: none; border-left: none;
+    transform: rotate(45deg);
+}
+.select-all-checkbox:indeterminate { background: rgba(200,160,60,0.3); border-color: #c8a03c; }
+.select-all-checkbox:indeterminate::after {
+    content: ''; position: absolute;
+    left: 2px; top: 5px; width: 8px; height: 2px;
+    background: #c8a03c; border: none; transform: none;
+}
+tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
+
+/* ── TABLET ────────── */
+@media (max-width: 900px) and (min-width: 641px) {
+    .dash-col-hide { display: none; }
+}
+
+/* ── MOBILE CARD LIST ─────────────────────────────────────── */
+@media (max-width: 640px) {
+    .dash-desktop-table { display: none !important; }
+    .dash-card-list     { display: flex !important; flex-direction: column; gap: 10px; padding: 12px; }
+}
+@media (min-width: 641px) {
+    .dash-card-list { display: none !important; }
+}
+.dash-card-list { display: none; }
+
+.dash-mobile-card {
+    background: #161616; border: 1px solid rgba(200,160,60,0.15);
+    border-radius: 8px; padding: 14px 14px 12px;
+    display: flex; flex-direction: column; gap: 8px;
+    transition: border-color 0.2s;
+}
+.dash-mobile-card.row-selected { border-color: rgba(200,160,60,0.5); background: rgba(200,160,60,0.04); }
+.dmc-top  { display: flex; align-items: flex-start; gap: 10px; }
+.dmc-cb   { padding-top: 2px; flex-shrink: 0; }
+.dmc-main { flex: 1; min-width: 0; }
+.dmc-code {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+    color: #c8a03c; font-family: monospace;
+    background: rgba(200,160,60,0.1); border: 1px solid rgba(200,160,60,0.2);
+    padding: 1px 6px; border-radius: 3px; display: inline-block; margin-bottom: 4px;
+}
+.dmc-customer { font-size: 0.9rem; font-weight: 700; color: #f0ebe0; }
+.dmc-barber   { font-size: 0.78rem; color: #8a8070; margin-top: 2px; }
+.dmc-details {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px;
+    padding: 8px 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.dmc-detail { display: flex; flex-direction: column; gap: 1px; }
+.dmc-detail-label { font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #4a4a3a; }
+.dmc-detail-value { font-size: 0.8rem; color: #c0b898; }
+.dmc-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="admin-page-header">
     <div>
@@ -59,54 +165,62 @@
 
 <!-- QUICK STATUS ROW -->
 <div class="quick-status">
-    <div class="qs-item">
-        <span class="qs-dot dot-pending"></span>
-        <span>{{ pending }} Pending</span>
-    </div>
-    <div class="qs-item">
-        <span class="qs-dot dot-confirmed"></span>
-        <span>{{ confirmed }} Confirmed</span>
-    </div>
-    <div class="qs-item">
-        <span class="qs-dot dot-completed"></span>
-        <span>{{ completed }} Completed</span>
-    </div>
-    <div class="qs-item">
-        <span class="qs-dot dot-cancelled"></span>
-        <span>{{ cancelled }} Cancelled</span>
-    </div>
+    <div class="qs-item"><span class="qs-dot dot-pending"></span><span>{{ pending }} Pending</span></div>
+    <div class="qs-item"><span class="qs-dot dot-confirmed"></span><span>{{ confirmed }} Confirmed</span></div>
+    <div class="qs-item"><span class="qs-dot dot-completed"></span><span>{{ completed }} Completed</span></div>
+    <div class="qs-item"><span class="qs-dot dot-cancelled"></span><span>{{ cancelled }} Cancelled</span></div>
 </div>
 
-<!-- RECENT RESERVATIONS TABLE -->
+<!-- RECENT RESERVATIONS -->
 <div class="admin-section">
     <div class="section-toolbar">
         <h3>Recent Reservations</h3>
         <a href="{% url 'admin_reservations' %}" class="btn-outline btn-sm">View All</a>
     </div>
-    <div class="table-wrap">
-        <table class="admin-table">
+
+    <div class="bulk-bar" id="dashBulkBar" style="margin: 0 16px 0;">
+        <span class="bulk-bar-count" id="dashBulkCount">0 selected</span>
+        <button type="button" class="btn-bulk-delete" id="dashBulkDeleteBtn">
+            <i class="fas fa-trash"></i> Delete Selected
+        </button>
+        <button type="button" class="btn-bulk-cancel" id="dashBulkClearBtn">
+            <i class="fas fa-times"></i> Clear
+        </button>
+    </div>
+
+    <form method="post" action="{% url 'admin_bulk_delete_reservations' %}" id="dashBulkForm">
+        {% csrf_token %}
+        <div id="dashBulkInputs"></div>
+    </form>
+
+    <!-- ── DESKTOP TABLE ──────────────────────────────────── -->
+    <div class="table-wrap dash-desktop-table">
+        <table class="admin-table" id="dashTable">
             <thead>
                 <tr>
+                    <th class="cb-col">
+                        <input type="checkbox" class="select-all-checkbox" id="dashSelectAll" title="Select all">
+                    </th>
                     <th>Code</th>
                     <th>Customer</th>
-                    <th>Service</th>
-                    <th>Barber</th>
+                    <th class="dash-col-hide">Barber</th>
                     <th>Date &amp; Time</th>
-                    <th>Price</th>
+                    <th class="dash-col-hide">Price</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for res in recent_reservations %}
-                <tr>
+                <tr data-pk="{{ res.pk }}">
+                    <td class="cb-col">
+                        <input type="checkbox" class="dash-row-cb" value="{{ res.pk }}">
+                    </td>
                     <td><span class="code-badge">{{ res.confirmation_code }}</span></td>
                     <td>{{ res.customer_name }}</td>
-                    <td>{% if res.service %}{{ res.service.name }}{% else %}—{% endif %}</td>
-                    <td>{% if res.barber %}{{ res.barber.name }}{% else %}—{% endif %}</td>
-                    {# appointment_date / appointment_time are plain strings — use model properties #}
+                    <td class="dash-col-hide">{% if res.barber %}{{ res.barber.name }}{% else %}—{% endif %}</td>
                     <td>{{ res.appointment_date_display }}<br><small>{{ res.appointment_time_display }}</small></td>
-                    <td>₱{{ res.total_price }}</td>
+                    <td class="dash-col-hide">₱{{ res.total_price }}</td>
                     <td><span class="status-badge-{{ res.status }}">{{ res.get_status_display }}</span></td>
                     <td>
                         <form method="post" action="{% url 'admin_update_reservation' res.pk %}" class="inline-form">
@@ -127,6 +241,72 @@
             </tbody>
         </table>
     </div>
+
+    <!-- ── MOBILE CARD LIST ───────────────────────────────── -->
+    <div class="dash-card-list" id="dashMobileList">
+        {% if recent_reservations %}
+        <div style="display:flex;align-items:center;gap:8px;padding:2px 2px 6px;">
+            <input type="checkbox" class="select-all-checkbox" id="dashSelectAllMob" title="Select all">
+            <span style="font-size:0.72rem;color:#6a6050;letter-spacing:0.08em;text-transform:uppercase;">Select all</span>
+        </div>
+        {% endif %}
+
+        {% for res in recent_reservations %}
+        <div class="dash-mobile-card" data-pk="{{ res.pk }}">
+            <div class="dmc-top">
+                <div class="dmc-cb">
+                    <input type="checkbox" class="dash-row-cb" value="{{ res.pk }}">
+                </div>
+                <div class="dmc-main">
+                    <span class="dmc-code">{{ res.confirmation_code }}</span>
+                    <div class="dmc-customer">{{ res.customer_name }}</div>
+                    <div class="dmc-barber">
+                        {% if res.barber %}
+                        <i class="fas fa-user-tie" style="color:#c8a03c;margin-right:4px;font-size:0.7rem;"></i>{{ res.barber.name }}
+                        {% else %}No barber assigned{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="dmc-details">
+                <div class="dmc-detail">
+                    <span class="dmc-detail-label">Date</span>
+                    <span class="dmc-detail-value">{{ res.appointment_date_display }}</span>
+                </div>
+                <div class="dmc-detail">
+                    <span class="dmc-detail-label">Time</span>
+                    <span class="dmc-detail-value">{{ res.appointment_time_display }}</span>
+                </div>
+                <div class="dmc-detail">
+                    <span class="dmc-detail-label">Price</span>
+                    <span class="dmc-detail-value" style="color:#c8a03c;font-weight:700;">₱{{ res.total_price }}</span>
+                </div>
+                <div class="dmc-detail">
+                    <span class="dmc-detail-label">Status</span>
+                    <span class="dmc-detail-value">
+                        <span class="status-badge-{{ res.status }}">{{ res.get_status_display }}</span>
+                    </span>
+                </div>
+            </div>
+            <div class="dmc-footer">
+                <form method="post" action="{% url 'admin_update_reservation' res.pk %}" class="inline-form">
+                    {% csrf_token %}
+                    <select name="status" class="status-select status-select-{{ res.status }}" onchange="this.form.submit()">
+                        <option value="pending"   {% if res.status == 'pending'   %}selected{% endif %}>Pending</option>
+                        <option value="confirmed" {% if res.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                        <option value="completed" {% if res.status == 'completed' %}selected{% endif %}>Completed</option>
+                        <option value="cancelled" {% if res.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                        <option value="no_show"   {% if res.status == 'no_show'   %}selected{% endif %}>No Show</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div style="text-align:center;padding:40px 20px;color:#5a5040;">
+            <i class="fas fa-calendar-times" style="font-size:2rem;display:block;margin-bottom:10px;opacity:0.3;"></i>
+            No reservations yet.
+        </div>
+        {% endfor %}
+    </div>
 </div>
 
 {% if pending_testimonials %}
@@ -141,4 +321,90 @@
     </div>
 </div>
 {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    'use strict';
+
+    var bulkBar      = document.getElementById('dashBulkBar');
+    var bulkCount    = document.getElementById('dashBulkCount');
+    var bulkDelBtn   = document.getElementById('dashBulkDeleteBtn');
+    var bulkClrBtn   = document.getElementById('dashBulkClearBtn');
+    var bulkForm     = document.getElementById('dashBulkForm');
+    var bulkInputs   = document.getElementById('dashBulkInputs');
+    var selectAll    = document.getElementById('dashSelectAll');
+    var selectAllMob = document.getElementById('dashSelectAllMob');
+
+    function syncRow(cb) {
+        var pk = cb.value;
+        var dRow  = document.querySelector('#dashTable tr[data-pk="' + pk + '"]');
+        if (dRow)  dRow.classList.toggle('row-selected', cb.checked);
+        var mCard = document.querySelector('.dash-mobile-card[data-pk="' + pk + '"]');
+        if (mCard) {
+            mCard.classList.toggle('row-selected', cb.checked);
+            mCard.querySelectorAll('.dash-row-cb').forEach(function(s) { if (s !== cb) s.checked = cb.checked; });
+        }
+        document.querySelectorAll('.dash-row-cb[value="' + pk + '"]').forEach(function(s) {
+            if (s !== cb) s.checked = cb.checked;
+        });
+    }
+
+    function selectedPks() {
+        var seen = new Set();
+        document.querySelectorAll('.dash-row-cb:checked').forEach(function(cb) { seen.add(cb.value); });
+        return Array.from(seen);
+    }
+
+    function totalUnique() {
+        var seen = new Set();
+        document.querySelectorAll('.dash-row-cb').forEach(function(cb) { seen.add(cb.value); });
+        return seen.size;
+    }
+
+    function updateBar() {
+        var pks = selectedPks(); var n = pks.length; var total = totalUnique();
+        bulkBar.classList.toggle('visible', n > 0);
+        bulkCount.textContent = n + ' selected';
+        [selectAll, selectAllMob].forEach(function(sa) {
+            if (!sa) return;
+            if      (n === 0)     { sa.checked = false; sa.indeterminate = false; }
+            else if (n === total) { sa.checked = true;  sa.indeterminate = false; }
+            else                  { sa.checked = false; sa.indeterminate = true;  }
+        });
+    }
+
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('dash-row-cb')) {
+            syncRow(e.target); updateBar(); return;
+        }
+        if (e.target.classList.contains('select-all-checkbox') &&
+            (e.target === selectAll || e.target === selectAllMob)) {
+            var chk = e.target.checked;
+            document.querySelectorAll('.dash-row-cb').forEach(function(cb) { cb.checked = chk; syncRow(cb); });
+            [selectAll, selectAllMob].forEach(function(sa) { if (sa && sa !== e.target) sa.checked = chk; });
+            updateBar();
+        }
+    });
+
+    bulkDelBtn.addEventListener('click', function() {
+        var pks = selectedPks();
+        if (!pks.length) return;
+        if (!confirm('Permanently delete ' + pks.length + ' reservation(s)? This cannot be undone.')) return;
+        bulkInputs.innerHTML = '';
+        pks.forEach(function(pk) {
+            var inp = document.createElement('input');
+            inp.type = 'hidden'; inp.name = 'pks'; inp.value = pk;
+            bulkInputs.appendChild(inp);
+        });
+        bulkForm.submit();
+    });
+
+    bulkClrBtn.addEventListener('click', function() {
+        document.querySelectorAll('.dash-row-cb').forEach(function(cb) { cb.checked = false; syncRow(cb); });
+        updateBar();
+    });
+}());
+</script>
 {% endblock %}
