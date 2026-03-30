@@ -1,0 +1,591 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Live Availability{% endblock %}
+{% block page_title %}Live Availability{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ── LAYOUT ───────────────────────────────────────────── */
+.avail-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+.avail-date-input {
+    background: #1c1c1c;
+    border: 1.5px solid rgba(200,160,60,0.25);
+    color: #f0ebe0;
+    padding: 9px 14px;
+    border-radius: 4px;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    width: 180px;
+}
+.avail-date-input:focus {
+    outline: none;
+    border-color: #c8a03c;
+}
+.avail-date-nav {
+    display: flex;
+    gap: 4px;
+}
+.avail-date-nav button {
+    background: #1c1c1c;
+    border: 1px solid rgba(200,160,60,0.2);
+    color: #c8a03c;
+    width: 34px;
+    height: 34px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.avail-date-nav button:hover { background: rgba(200,160,60,0.1); }
+.avail-date-today {
+    background: rgba(200,160,60,0.1);
+    border: 1px solid rgba(200,160,60,0.25);
+    color: #c8a03c;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.avail-date-today:hover { background: rgba(200,160,60,0.18); }
+
+.avail-date-label {
+    font-size: 0.85rem;
+    color: #c8a03c;
+    font-weight: 600;
+    margin-left: 4px;
+    white-space: nowrap;
+}
+
+/* ── BARBERS GRID ─────────────────────────────────────── */
+.avail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.avail-barber-card {
+    background: #111;
+    border: 1px solid rgba(200,160,60,0.15);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+.avail-barber-card:hover { border-color: rgba(200,160,60,0.35); }
+
+.avail-barber-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(200,160,60,0.1);
+    background: rgba(200,160,60,0.04);
+}
+.avail-barber-photo {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(200,160,60,0.3);
+    flex-shrink: 0;
+}
+.avail-barber-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.avail-barber-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #242424;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5a5040;
+    font-size: 1.1rem;
+    border: 2px solid rgba(200,160,60,0.15);
+    flex-shrink: 0;
+}
+.avail-barber-info { flex: 1; min-width: 0; }
+.avail-barber-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #f0ebe0;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.avail-barber-spec {
+    font-size: 0.72rem;
+    color: #6a6050;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.avail-barber-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    flex-shrink: 0;
+}
+.avail-count-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+.avail-count-free  { background: rgba(76,175,125,0.15); color: #4caf7d; border: 1px solid rgba(76,175,125,0.25); }
+.avail-count-busy  { background: rgba(224,85,85,0.15);  color: #e05555; border: 1px solid rgba(224,85,85,0.25); }
+
+/* ── SLOT TABLE ───────────────────────────────────────── */
+.avail-slot-body { padding: 14px 18px 18px; }
+.avail-periods { display: flex; flex-direction: column; gap: 12px; }
+
+.avail-period-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #4a4a3a;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+.avail-slots-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+}
+.avail-slot {
+    padding: 7px 2px;
+    border-radius: 3px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+    transition: opacity 0.2s;
+}
+.avail-slot-free {
+    background: rgba(76,175,125,0.12);
+    color: #4caf7d;
+    border: 1px solid rgba(76,175,125,0.2);
+}
+.avail-slot-booked {
+    background: rgba(224,85,85,0.1);
+    color: #e05555;
+    border: 1px solid rgba(224,85,85,0.15);
+    position: relative;
+}
+.avail-slot-booked .slot-name-tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1c1c1c;
+    border: 1px solid rgba(200,160,60,0.3);
+    color: #f0ebe0;
+    font-size: 0.68rem;
+    padding: 4px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+}
+.avail-slot-booked:hover .slot-name-tooltip { display: block; }
+
+/* ── LOADING SKELETON ─────────────────────────────────── */
+.avail-skeleton {
+    padding: 14px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.skel-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+}
+.skel-cell {
+    height: 28px;
+    background: linear-gradient(90deg, #1c1c1c 25%, #242424 50%, #1c1c1c 75%);
+    background-size: 200% 100%;
+    border-radius: 3px;
+    animation: skelShimmer 1.5s infinite;
+}
+@keyframes skelShimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ── LEGEND ───────────────────────────────────────────── */
+.avail-legend {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: #8a8070;
+}
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+}
+.legend-free   { background: rgba(76,175,125,0.4); }
+.legend-booked { background: rgba(224,85,85,0.4); }
+
+/* ── SUMMARY STRIP ────────────────────────────────────── */
+.avail-summary-strip {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.avail-summary-card {
+    background: #111;
+    border: 1px solid rgba(200,160,60,0.15);
+    border-radius: 6px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 130px;
+}
+.avail-summary-card i {
+    font-size: 1.1rem;
+    color: #c8a03c;
+    width: 20px;
+    text-align: center;
+}
+.avail-summary-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #f0ebe0;
+    line-height: 1;
+}
+.avail-summary-lbl {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #5a5040;
+    margin-top: 2px;
+}
+
+/* ── EMPTY STATE ──────────────────────────────────────── */
+.avail-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 24px;
+    color: #5a5040;
+}
+.avail-empty i { font-size: 2.5rem; opacity: 0.3; margin-bottom: 12px; display: block; }
+.avail-empty p { font-size: 0.88rem; }
+
+/* ── RESPONSIVE ───────────────────────────────────────── */
+@media (max-width: 900px) {
+    .avail-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+    .avail-controls { flex-direction: column; align-items: stretch; }
+    .avail-date-input { width: 100%; }
+    .avail-date-nav { justify-content: center; }
+    .avail-grid { grid-template-columns: 1fr; }
+    .avail-summary-strip { flex-direction: column; }
+    .avail-slots-row { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 380px) {
+    .avail-slots-row { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+    <div>
+        <h2>Live Availability</h2>
+        <p class="subtext">Real-time slot overview for all active barbers</p>
+    </div>
+    <a href="{% url 'admin_reservations' %}" class="btn-outline btn-sm">
+        <i class="fas fa-list"></i> All Reservations
+    </a>
+</div>
+
+<!-- DATE CONTROLS -->
+<div class="avail-controls">
+    <div class="avail-date-nav">
+        <button id="prevDay" title="Previous day"><i class="fas fa-chevron-left"></i></button>
+        <button id="nextDay" title="Next day"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <input type="date" id="availDate" class="avail-date-input">
+    <button class="avail-date-today" id="todayBtn">Today</button>
+    <span class="avail-date-label" id="availDateLabel"></span>
+
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+        <button class="btn-outline btn-sm" id="refreshBtn">
+            <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+    </div>
+</div>
+
+<!-- SUMMARY STRIP -->
+<div class="avail-summary-strip" id="summaryStrip">
+    <div class="avail-summary-card">
+        <i class="fas fa-check-circle" style="color:#4caf7d;"></i>
+        <div>
+            <div class="avail-summary-num" id="sumFree">—</div>
+            <div class="avail-summary-lbl">Available Slots</div>
+        </div>
+    </div>
+    <div class="avail-summary-card">
+        <i class="fas fa-times-circle" style="color:#e05555;"></i>
+        <div>
+            <div class="avail-summary-num" id="sumBooked">—</div>
+            <div class="avail-summary-lbl">Booked Slots</div>
+        </div>
+    </div>
+    <div class="avail-summary-card">
+        <i class="fas fa-user-tie"></i>
+        <div>
+            <div class="avail-summary-num" id="sumBarbers">{{ barbers|length }}</div>
+            <div class="avail-summary-lbl">Active Barbers</div>
+        </div>
+    </div>
+    <div class="avail-summary-card">
+        <i class="fas fa-clock"></i>
+        <div>
+            <div class="avail-summary-num" id="sumNext">—</div>
+            <div class="avail-summary-lbl">Next Free Slot</div>
+        </div>
+    </div>
+</div>
+
+<!-- LEGEND -->
+<div class="avail-legend">
+    <div class="legend-item"><div class="legend-dot legend-free"></div> Available</div>
+    <div class="legend-item"><div class="legend-dot legend-booked"></div> Booked</div>
+    <span style="font-size:0.73rem;color:#4a4a3a;">Hover a booked slot to see customer name</span>
+</div>
+
+<!-- BARBER CARDS GRID -->
+<div class="avail-grid" id="availGrid">
+    {% for barber in barbers %}
+    <div class="avail-barber-card" id="barber-card-{{ barber.pk }}">
+        <div class="avail-barber-header">
+            {% if barber.photo %}
+            <div class="avail-barber-photo"><img src="{{ barber.photo }}" alt="{{ barber.name }}"></div>
+            {% else %}
+            <div class="avail-barber-avatar"><i class="fas fa-user-tie"></i></div>
+            {% endif %}
+            <div class="avail-barber-info">
+                <div class="avail-barber-name">{{ barber.name }}</div>
+                <div class="avail-barber-spec">{{ barber.specialty|truncatechars:40 }}</div>
+            </div>
+            <div class="avail-barber-stats">
+                <span class="avail-count-badge avail-count-free" id="free-{{ barber.pk }}">—</span>
+                <span class="avail-count-badge avail-count-busy" id="busy-{{ barber.pk }}">—</span>
+            </div>
+        </div>
+        <div id="slot-body-{{ barber.pk }}">
+            <div class="avail-skeleton">
+                <div class="skel-row">{% for i in "1234" %}<div class="skel-cell"></div>{% endfor %}</div>
+                <div class="skel-row">{% for i in "1234" %}<div class="skel-cell"></div>{% endfor %}</div>
+                <div class="skel-row">{% for i in "1234" %}<div class="skel-cell"></div>{% endfor %}</div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="avail-empty">
+        <i class="fas fa-user-tie"></i>
+        <p>No active barbers found. <a href="{% url 'admin_barber_add' %}" style="color:#c8a03c;">Add a barber</a> to get started.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    'use strict';
+
+    /* ── DATA ──────────────────────────────────────── */
+    const BARBERS = [
+        {% for barber in barbers %}
+        { id: '{{ barber.pk }}', name: '{{ barber.name|escapejs }}' },
+        {% endfor %}
+    ];
+    const SLOTS_URL = "{% url 'get_available_slots' %}";
+    const AVAIL_API = "{% url 'admin_availability_data' %}";
+
+    /* ── TIME LABELS ───────────────────────────────── */
+    const ALL_SLOTS = [];
+    for (let h = 8; h < 20; h++) {
+        for (let m of [0, 30]) {
+            const hh  = String(h).padStart(2,'0');
+            const mm  = String(m).padStart(2,'0');
+            const val = `${hh}:${mm}`;
+            const ampm = h < 12 ? 'AM' : 'PM';
+            const h12  = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+            ALL_SLOTS.push({ value: val, label: `${h12}:${mm}` });
+        }
+    }
+
+    const PERIODS = [
+        { label: 'Morning',   slots: ALL_SLOTS.filter(s => parseInt(s.value) < 12) },
+        { label: 'Afternoon', slots: ALL_SLOTS.filter(s => { const h = parseInt(s.value); return h >= 12 && h < 17; }) },
+        { label: 'Evening',   slots: ALL_SLOTS.filter(s => parseInt(s.value) >= 17) },
+    ];
+
+    /* ── DATE ──────────────────────────────────────── */
+    const dateInput    = document.getElementById('availDate');
+    const dateLabel    = document.getElementById('availDateLabel');
+    const prevBtn      = document.getElementById('prevDay');
+    const nextBtn      = document.getElementById('nextDay');
+    const todayBtn     = document.getElementById('todayBtn');
+    const refreshBtn   = document.getElementById('refreshBtn');
+
+    function todayStr() {
+        return new Date().toISOString().split('T')[0];
+    }
+    function setDate(str) {
+        dateInput.value = str;
+        updateLabel(str);
+        loadAll();
+    }
+    function updateLabel(str) {
+        const d = new Date(str + 'T00:00:00');
+        const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        dateLabel.textContent = d.toLocaleDateString('en-PH', opts);
+    }
+    dateInput.addEventListener('change', () => { updateLabel(dateInput.value); loadAll(); });
+    prevBtn.addEventListener('click', () => {
+        const d = new Date(dateInput.value + 'T00:00:00');
+        d.setDate(d.getDate() - 1);
+        setDate(d.toISOString().split('T')[0]);
+    });
+    nextBtn.addEventListener('click', () => {
+        const d = new Date(dateInput.value + 'T00:00:00');
+        d.setDate(d.getDate() + 1);
+        setDate(d.toISOString().split('T')[0]);
+    });
+    todayBtn.addEventListener('click', () => setDate(todayStr()));
+    refreshBtn.addEventListener('click', loadAll);
+
+    setDate(todayStr());
+
+    /* ── LOAD ALL BARBERS ──────────────────────────── */
+    let totalFree = 0, totalBooked = 0;
+
+    async function loadAll() {
+        totalFree = 0; totalBooked = 0;
+        const date = dateInput.value;
+
+        BARBERS.forEach(b => {
+            const body = document.getElementById(`slot-body-${b.id}`);
+            if (body) body.innerHTML = `
+                <div class="avail-skeleton">
+                    <div class="skel-row">${'<div class="skel-cell"></div>'.repeat(4)}</div>
+                    <div class="skel-row">${'<div class="skel-cell"></div>'.repeat(4)}</div>
+                    <div class="skel-row">${'<div class="skel-cell"></div>'.repeat(4)}</div>
+                </div>`;
+            document.getElementById(`free-${b.id}`).textContent = '…';
+            document.getElementById(`busy-${b.id}`).textContent = '…';
+        });
+        document.getElementById('sumFree').textContent   = '—';
+        document.getElementById('sumBooked').textContent = '—';
+        document.getElementById('sumNext').textContent   = '—';
+
+        await Promise.all(BARBERS.map(b => loadBarber(b, date)));
+
+        document.getElementById('sumFree').textContent   = totalFree;
+        document.getElementById('sumBooked').textContent = totalBooked;
+
+        const now = new Date();
+        const isToday = date === todayStr();
+        let nextSlot = null;
+        if (isToday) {
+            const currentTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            nextSlot = ALL_SLOTS.find(s => s.value > currentTime);
+        }
+        document.getElementById('sumNext').textContent = nextSlot ? nextSlot.label : (isToday ? 'None' : ALL_SLOTS[0]?.label || '—');
+    }
+
+    async function loadBarber(barber, date) {
+        try {
+            const res  = await fetch(`${SLOTS_URL}?barber_id=${barber.id}&date=${encodeURIComponent(date)}`);
+            const data = await res.json();
+            const availSet = new Set((data.slots || []).map(s => s.value));
+            renderBarber(barber, availSet);
+        } catch (e) {
+            console.error('Error loading barber', barber.id, e);
+            renderBarberError(barber);
+        }
+    }
+
+    function renderBarber(barber, availSet) {
+        const freeCount   = availSet.size;
+        const bookedCount = ALL_SLOTS.length - freeCount;
+        totalFree   += freeCount;
+        totalBooked += bookedCount;
+
+        document.getElementById(`free-${barber.id}`).textContent  = `${freeCount} free`;
+        document.getElementById(`busy-${barber.id}`).textContent  = `${bookedCount} booked`;
+
+        let html = '<div class="avail-slot-body"><div class="avail-periods">';
+        PERIODS.forEach(period => {
+            if (!period.slots.length) return;
+            html += `<div>
+                <div class="avail-period-label">${period.label}</div>
+                <div class="avail-slots-row">`;
+            period.slots.forEach(slot => {
+                const isFree = availSet.has(slot.value);
+                if (isFree) {
+                    html += `<div class="avail-slot avail-slot-free">${slot.label}</div>`;
+                } else {
+                    html += `<div class="avail-slot avail-slot-booked">${slot.label}<span class="slot-name-tooltip">Booked</span></div>`;
+                }
+            });
+            html += '</div></div>';
+        });
+        html += '</div></div>';
+
+        const body = document.getElementById(`slot-body-${barber.id}`);
+        if (body) body.innerHTML = html;
+    }
+
+    function renderBarberError(barber) {
+        const body = document.getElementById(`slot-body-${barber.id}`);
+        if (body) body.innerHTML = `<div style="padding:20px;text-align:center;color:#5a5040;font-size:0.8rem;"><i class="fas fa-exclamation-circle" style="color:#e05555;margin-right:4px;"></i>Could not load slots</div>`;
+    }
+
+    /* ── AUTO-REFRESH every 60s ────────────────────── */
+    setInterval(() => {
+        if (document.visibilityState === 'visible') loadAll();
+    }, 60000);
+
+})();
+</script>
+{% endblock %}

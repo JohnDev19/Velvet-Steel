@@ -43,6 +43,9 @@
             <a href="{% url 'admin_barbers' %}" class="sidebar-link {% if 'barber' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="fas fa-user-tie"></i> Barbers
             </a>
+            <a href="{% url 'admin_availability' %}" class="sidebar-link {% if 'availability' in request.resolver_match.url_name %}active{% endif %}">
+              <i class="fas fa-calendar-check"></i> Live Availability
+              </a>
             <a href="{% url 'admin_testimonials' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_testimonials' %}active{% endif %}">
                 <i class="fas fa-star"></i> Reviews
                 {% if pending_testimonials %}<span class="badge-count">{{ pending_testimonials }}</span>{% endif %}

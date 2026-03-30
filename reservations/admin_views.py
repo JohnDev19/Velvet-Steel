@@ -319,3 +319,10 @@ def admin_haircut_style_delete(request, pk):
         style.delete()
         messages.success(request, f'"{name}" deleted.')
     return redirect('admin_haircut_styles')
+    
+@admin_required
+def admin_availability(request):
+    barbers = Barber.objects(is_active=True)
+    return render(request, 'admin_panel/availability.html', {
+        'barbers': barbers,
+    })

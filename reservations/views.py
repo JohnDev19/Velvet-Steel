@@ -3,43 +3,41 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.utils import timezone
-from .models import Reservation, Service, Barber, Testimonial
+from .models import Reservation, Service, Barber, Testimonial, HaircutStyle
 import datetime
 
 
 @login_required
 def book_reservation(request):
     if request.method == 'POST':
-        barber_id = request.POST.get('barber')
-        service_id = request.POST.get('service')
-        appointment_date = request.POST.get('appointment_date')
-        appointment_time = request.POST.get('appointment_time')
-        notes = request.POST.get('notes', '')
+        barber_id          = request.POST.get('barber')
+        haircut_style_id   = request.POST.get('haircut_style')
+        appointment_date   = request.POST.get('appointment_date')
+        appointment_time   = request.POST.get('appointment_time')
+        notes              = request.POST.get('notes', '')
 
         errors = []
-        barber = Barber.objects(id=barber_id).first()
-        service = Service.objects(id=service_id).first()
+        barber        = Barber.objects(id=barber_id).first()        if barber_id        else None
+        haircut_style = HaircutStyle.objects(id=haircut_style_id).first() if haircut_style_id else None
 
         if not barber:
             errors.append('Please select a valid barber.')
-        if not service:
-            errors.append('Please select a valid service.')
+        if not haircut_style:
+            errors.append('Please select a haircut style.')
         if not appointment_date:
             errors.append('Please select a date.')
         if not appointment_time:
             errors.append('Please select a time.')
 
         if not errors:
-            # Check date is future
             try:
                 date_obj = datetime.date.fromisoformat(appointment_date)
-                if date_obj <= timezone.now().date():
-                    errors.append('Please select a future date.')
+                if date_obj < timezone.now().date():
+                    errors.append('Please select today or a future date.')
             except ValueError:
                 errors.append('Invalid date format.')
 
         if not errors:
-            # Check slot availability
             existing = Reservation.objects(
                 barber=barber,
                 appointment_date=appointment_date,
@@ -53,25 +51,27 @@ def book_reservation(request):
             for err in errors:
                 messages.error(request, err)
         else:
+            default_service = Service.objects(is_active=True).first()
+
             reservation = Reservation(
                 customer_id=request.user.pk,
                 customer_username=request.user.username,
                 customer_name=request.user.get_full_name() or request.user.username,
                 barber=barber,
-                service=service,
+                service=default_service,
                 appointment_date=appointment_date,
                 appointment_time=appointment_time,
                 notes=notes,
-                total_price=service.price,
+                total_price=haircut_style.price,
             )
             reservation.save()
             messages.success(request, f'Reservation confirmed! Your code: {reservation.confirmation_code}')
             return redirect('reservation_detail', pk=str(reservation.pk))
 
-    services = Service.objects(is_active=True)
+    styles  = HaircutStyle.objects(is_active=True).order_by('category', 'price')
     barbers = Barber.objects(is_active=True)
     return render(request, 'reservations/book.html', {
-        'services': services,
+        'styles':  styles,
         'barbers': barbers,
     })
 
@@ -97,7 +97,7 @@ def cancel_reservation(request, pk):
     if reservation and reservation.status in ['pending', 'confirmed']:
         try:
             date_obj = datetime.date.fromisoformat(reservation.appointment_date)
-            if date_obj > timezone.now().date():
+            if date_obj >= timezone.now().date():
                 reservation.status = 'cancelled'
                 reservation.save()
                 messages.success(request, 'Reservation cancelled successfully.')
@@ -109,8 +109,9 @@ def cancel_reservation(request, pk):
 
 
 def get_available_slots(request):
-    barber_id = request.GET.get('barber_id')
-    date_str = request.GET.get('date')
+    barber_id = request.GET.get('barber_id', '').strip()
+    date_str  = request.GET.get('date', '').strip()
+
     if not barber_id or not date_str:
         return JsonResponse({'slots': []})
 
@@ -118,18 +119,17 @@ def get_available_slots(request):
     if not barber:
         return JsonResponse({'slots': []})
 
-    booked = Reservation.objects(
+    booked_reservations = Reservation.objects(
         barber=barber,
         appointment_date=date_str,
         status__in=['pending', 'confirmed'],
-    ).values_list('appointment_time')
-
-    booked_times = set(booked)
+    )
+    booked_times = set(r.appointment_time for r in booked_reservations)
 
     slots = []
     for hour in range(8, 20):
         for minute in [0, 30]:
-            t = datetime.time(hour, minute)
+            t   = datetime.time(hour, minute)
             val = t.strftime('%H:%M')
             if val not in booked_times:
                 slots.append({'value': val, 'label': t.strftime('%I:%M %p')})
@@ -140,10 +140,10 @@ def get_available_slots(request):
 @login_required
 def submit_testimonial(request):
     if request.method == 'POST':
-        rating = request.POST.get('rating', 5)
-        comment = request.POST.get('comment', '')
+        rating     = request.POST.get('rating', 5)
+        comment    = request.POST.get('comment', '')
         service_id = request.POST.get('service')
-        service = Service.objects(id=service_id).first() if service_id else None
+        service    = Service.objects(id=service_id).first() if service_id else None
 
         testimonial = Testimonial(
             customer_id=request.user.pk,

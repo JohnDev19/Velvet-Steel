@@ -1,5 +1,6 @@
 from django.urls import path
 from . import admin_views
+from .views import get_available_slots
 
 urlpatterns = [
     path('', admin_views.admin_dashboard, name='admin_dashboard'),
@@ -12,6 +13,8 @@ urlpatterns = [
     path('testimonials/', admin_views.admin_testimonials, name='admin_testimonials'),
     path('testimonials/<str:pk>/approve/', admin_views.approve_testimonial, name='approve_testimonial'),
     path('analytics/', admin_views.admin_analytics, name='admin_analytics'),
+    path('availability/', admin_views.admin_availability, name='admin_availability'),          # ← add
+    path('availability/data/', get_available_slots, name='admin_availability_data'),           # ← add
     path('haircut-styles/', admin_views.admin_haircut_styles, name='admin_haircut_styles'),
     path('haircut-styles/add/', admin_views.admin_haircut_style_add, name='admin_haircut_style_add'),
     path('haircut-styles/<str:pk>/edit/', admin_views.admin_haircut_style_edit, name='admin_haircut_style_edit'),

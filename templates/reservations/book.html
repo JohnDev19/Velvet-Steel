@@ -2,13 +2,318 @@
 {% load static %}
 {% block title %}Book Appointment | Velvet Steel Barbershop{% endblock %}
 
+{% block extra_css %}
+<style>
+/* ── HAIRCUT STYLE PICKER ─────────────────────────────────── */
+.style-picker-wrap {
+  position: relative;
+}
+
+.style-picker-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--dark-4);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  min-height: 50px;
+  user-select: none;
+}
+.style-picker-trigger:hover,
+.style-picker-trigger.open {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+  background: var(--dark-3);
+}
+
+.style-picker-selected {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+.style-picker-placeholder {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+.style-picker-selected-name {
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.style-picker-selected-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.style-picker-selected-price {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+.style-picker-selected-cat {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.05);
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+.style-picker-arrow {
+  color: var(--gold);
+  font-size: 0.75rem;
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+.style-picker-trigger.open .style-picker-arrow {
+  transform: rotate(180deg);
+}
+
+/* DROPDOWN PANEL */
+.style-picker-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  z-index: 500;
+  background: #181818;
+  border: 1.5px solid var(--gold);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(200,160,60,0.1);
+  overflow: hidden;
+  animation: dropIn 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+.style-picker-dropdown.open {
+  display: block;
+}
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* SEARCH */
+.style-picker-search-row {
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid rgba(200,160,60,0.12);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.style-picker-search-row i {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.style-picker-search {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  width: 100%;
+  placeholder-color: var(--text-muted);
+}
+.style-picker-search::placeholder { color: var(--text-muted); }
+
+/* LIST */
+.style-picker-list {
+  max-height: 340px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(200,160,60,0.3) transparent;
+}
+.style-picker-list::-webkit-scrollbar { width: 4px; }
+.style-picker-list::-webkit-scrollbar-track { background: transparent; }
+.style-picker-list::-webkit-scrollbar-thumb { background: rgba(200,160,60,0.3); border-radius: 2px; }
+
+/* CATEGORY HEADER */
+.style-picker-category {
+  padding: 10px 14px 5px;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 700;
+  background: rgba(200,160,60,0.04);
+  border-top: 1px solid rgba(200,160,60,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.style-picker-category:first-child { border-top: none; }
+
+/* STYLE OPTION */
+.style-picker-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 14px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.style-picker-option:last-child { border-bottom: none; }
+.style-picker-option:hover,
+.style-picker-option.highlighted {
+  background: rgba(200,160,60,0.08);
+}
+.style-picker-option.selected {
+  background: rgba(200,160,60,0.13);
+}
+.style-picker-option.hidden { display: none; }
+
+.spo-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.spo-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.spo-desc {
+  font-size: 0.73rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spo-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.spo-price {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gold);
+  white-space: nowrap;
+}
+.spo-check {
+  color: var(--gold);
+  font-size: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.style-picker-option.selected .spo-check { opacity: 1; }
+
+.style-picker-empty {
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+#styleSelect { display: none; }
+
+/* ── TIME SLOT GRID ────────────────────────────────────────── */
+.time-slot-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(200,160,60,0.3) transparent;
+}
+.time-slot-grid::-webkit-scrollbar { width: 4px; }
+.time-slot-grid::-webkit-scrollbar-thumb { background: rgba(200,160,60,0.3); border-radius: 2px; }
+
+.time-slot-btn {
+  background: var(--dark-4);
+  border: 1.5px solid var(--border);
+  color: var(--text-secondary);
+  padding: 9px 4px;
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  white-space: nowrap;
+}
+.time-slot-btn:hover:not(.booked) {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-faint);
+}
+.time-slot-btn.selected {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--dark);
+  font-weight: 700;
+}
+.time-slot-btn.booked {
+  opacity: 0.3;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.time-slot-status {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 8px 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.time-slot-status i { color: var(--gold); }
+
+#timeSelect { display: none; }
+
+/* ── SELECTED TIME DISPLAY ─────────────────────────────────── */
+.time-display {
+  background: var(--dark-4);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 50px;
+}
+.time-display-placeholder { color: var(--text-muted); font-size: 0.88rem; }
+.time-display-value { color: var(--gold); font-weight: 700; font-size: 0.92rem; display: flex; align-items: center; gap: 6px; }
+.time-display-clear { color: var(--text-muted); cursor: pointer; font-size: 0.8rem; transition: color 0.2s; }
+.time-display-clear:hover { color: var(--red); }
+
+.slots-loading { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
+.slots-loading i { color: var(--gold); margin-right: 6px; }
+</style>
+{% endblock %}
+
 {% block content %}
 <section class="page-hero page-hero-sm">
     <div class="page-hero-bg"></div>
     <div class="container page-hero-content">
         <div class="section-badge">RESERVATION</div>
         <h1 class="page-hero-title">Book Your <em>Appointment</em></h1>
-        <p>Choose your barber, service, and preferred schedule</p>
+        <p>Choose your barber, style, and preferred schedule</p>
     </div>
 </section>
 
@@ -23,6 +328,16 @@
                     </div>
                     <form method="post" action="{% url 'book_reservation' %}" class="booking-form" id="bookingForm">
                         {% csrf_token %}
+
+                        {% if messages %}
+                        {% for message in messages %}
+                        {% if 'error' in message.tags %}
+                        <div class="form-error-msg"><i class="fas fa-exclamation-circle"></i> {{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+
+                        <!-- BARBER -->
                         <div class="form-group">
                             <label class="form-label"><i class="fas fa-user-tie"></i> Choose Barber</label>
                             <select name="barber" id="barberSelect" class="form-control" required>
@@ -35,46 +350,106 @@
                             </select>
                             <div class="barber-preview" id="barberPreview"></div>
                         </div>
+
+                        <!-- HAIRCUT STYLE -->
                         <div class="form-group">
-                            <label class="form-label"><i class="fas fa-cut"></i> Choose Service</label>
-                            <select name="service" id="serviceSelect" class="form-control" required>
-                                <option value="">Select a service...</option>
-                                {% for service in services %}
-                                <optgroup label="{{ service.get_category_display }}" id="group-{{ service.category }}">
-                                    <option value="{{ service.pk }}" data-price="{{ service.price }}" data-duration="{{ service.duration_minutes }}">
-                                        {{ service.name }} — ₱{{ service.price }} ({{ service.duration_minutes }} min)
-                                    </option>
-                                </optgroup>
+                            <label class="form-label"><i class="fas fa-cut"></i> Choose Haircut Style</label>
+
+                            <select name="haircut_style" id="styleSelect" required>
+                                <option value="">Select a style...</option>
+                                {% for style in styles %}
+                                <option value="{{ style.pk }}"
+                                        data-price="{{ style.price }}"
+                                        data-category="{{ style.get_category_display }}"
+                                        data-desc="{{ style.description|default:'' }}">
+                                    {{ style.name }}
+                                </option>
                                 {% endfor %}
                             </select>
-                            <div class="service-preview" id="servicePreview"></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-calendar"></i> Date</label>
-                                <input type="date" name="appointment_date" id="dateInput" class="form-control" required min="{{ today_min }}">
+
+                            <!-- picker UI -->
+                            <div class="style-picker-wrap" id="stylePickerWrap">
+                                <div class="style-picker-trigger" id="stylePickerTrigger" tabindex="0" role="combobox" aria-expanded="false">
+                                    <div class="style-picker-selected" id="stylePickerSelected">
+                                        <span class="style-picker-placeholder">Select a haircut style...</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down style-picker-arrow"></i>
+                                </div>
+                                <div class="style-picker-dropdown" id="stylePickerDropdown" role="listbox">
+                                    <div class="style-picker-search-row">
+                                        <i class="fas fa-search"></i>
+                                        <input type="text" class="style-picker-search" id="stylePickerSearch" placeholder="Search styles..." autocomplete="off">
+                                    </div>
+                                    <div class="style-picker-list" id="stylePickerList">
+                                        {% regroup styles by get_category_display as style_groups %}
+                                        {% for group in style_groups %}
+                                        <div class="style-picker-category">{{ group.grouper }}</div>
+                                        {% for style in group.list %}
+                                        <div class="style-picker-option"
+                                             role="option"
+                                             data-value="{{ style.pk }}"
+                                             data-price="{{ style.price }}"
+                                             data-category="{{ style.get_category_display }}"
+                                             data-name="{{ style.name }}"
+                                             data-desc="{{ style.description|default:'' }}">
+                                            <div class="spo-left">
+                                                <span class="spo-name">{{ style.name }}</span>
+                                                {% if style.description %}
+                                                <span class="spo-desc">{{ style.description|truncatechars:60 }}</span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="spo-right">
+                                                <span class="spo-price">₱{{ style.price }}</span>
+                                                <i class="fas fa-check spo-check"></i>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        {% endfor %}
+                                        <div class="style-picker-empty" id="stylePickerEmpty" style="display:none;">No styles match your search.</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-clock"></i> Time</label>
-                                <select name="appointment_time" id="timeSelect" class="form-control" required>
-                                    <option value="">Select date first...</option>
-                                </select>
+                        </div>
+
+                        <!-- DATE -->
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-calendar"></i> Date</label>
+                            <input type="date" name="appointment_date" id="dateInput" class="form-control" required>
+                        </div>
+
+                        <!-- TIME -->
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-clock"></i> Time</label>
+                            <select name="appointment_time" id="timeSelect" required></select>
+                            <div class="time-display" id="timeDisplay">
+                                <span class="time-display-placeholder" id="timeDisplayText">Select barber &amp; date first</span>
+                                <i class="fas fa-times time-display-clear" id="timeClear" style="display:none;" title="Clear time"></i>
+                            </div>
+                            <div id="slotsContainer" style="margin-top:10px;display:none;">
+                                <div id="slotsStatus" class="time-slot-status"></div>
+                                <div class="time-slot-grid" id="slotGrid"></div>
                             </div>
                         </div>
+
+                        <!-- NOTES -->
                         <div class="form-group">
                             <label class="form-label"><i class="fas fa-comment"></i> Special Requests <small>(optional)</small></label>
                             <textarea name="notes" class="form-control" rows="3" placeholder="Any special requests or notes for your barber..."></textarea>
                         </div>
+
+                        <!-- SUMMARY -->
                         <div class="booking-summary" id="bookingSummary" style="display:none;">
                             <h4><i class="fas fa-receipt"></i> Booking Summary</h4>
-                            <div class="summary-row"><span>Service:</span><span id="sum-service">—</span></div>
+                            <div class="summary-row"><span>Style:</span><span id="sum-style">—</span></div>
                             <div class="summary-row"><span>Barber:</span><span id="sum-barber">—</span></div>
-                            <div class="summary-row"><span>Date & Time:</span><span id="sum-datetime">—</span></div>
+                            <div class="summary-row"><span>Date &amp; Time:</span><span id="sum-datetime">—</span></div>
                             <div class="summary-row summary-total"><span>Total:</span><span id="sum-price">—</span></div>
                         </div>
+
                         <button type="submit" class="btn-gold btn-block btn-lg">
                             <i class="fas fa-check-circle"></i> Confirm Reservation
                         </button>
+
                         {% if not user.is_authenticated %}
                         <p class="login-note">
                             <a href="{% url 'login' %}?next={% url 'book_reservation' %}">Login</a> or <a href="{% url 'register' %}">create an account</a> to book.
@@ -84,7 +459,7 @@
                 </div>
             </div>
 
-            <!-- SIDEBAR INFO -->
+            <!-- SIDEBAR -->
             <div class="booking-sidebar">
                 <div class="sidebar-card">
                     <h4><i class="fas fa-info-circle"></i> Booking Info</h4>
@@ -116,99 +491,265 @@
 
 {% block extra_js %}
 <script>
-const slotsUrl = "{% url 'get_available_slots' %}";
-const barberSelect = document.getElementById('barberSelect');
-const dateInput = document.getElementById('dateInput');
-const timeSelect = document.getElementById('timeSelect');
-const serviceSelect = document.getElementById('serviceSelect');
-const summary = document.getElementById('bookingSummary');
+(function () {
+    'use strict';
 
-// Set min date to today (allow same-day booking)
-const today = new Date();
-const todayStr = today.toISOString().split('T')[0];
-dateInput.min = todayStr;
-dateInput.value = '';
-
-console.log('Booking form initialized. Min date:', todayStr);
-
-async function loadSlots() {
-    const barberId = barberSelect.value;
-    const date = dateInput.value;
-    
-    console.log('loadSlots called - barberId:', barberId, 'date:', date);
-    
-    if (!date) {
-        timeSelect.innerHTML = '<option value="">Select date first...</option>';
-        return;
-    }
-    
-    if (!barberId) {
-        timeSelect.innerHTML = '<option value="">Select barber first...</option>';
-        return;
-    }
-
-    timeSelect.innerHTML = '<option value="">Loading...</option>';
-    
-    try {
-        const res = await fetch(`${slotsUrl}?barber_id=${barberId}&date=${date}`);
-        const data = await res.json();
-        
-        console.log('Slots response:', data);
-        
-        timeSelect.innerHTML = '<option value="">Select time...</option>';
-        if (!data.slots || data.slots.length === 0) {
-            timeSelect.innerHTML = '<option value="">No slots available</option>';
-        } else {
-            data.slots.forEach(slot => {
-                const option = document.createElement('option');
-                option.value = slot.value;
-                option.textContent = slot.label;
-                timeSelect.appendChild(option);
-            });
+    /* ── CONSTANTS ─────────────────────────────────────── */
+    const SLOTS_URL   = "{% url 'get_available_slots' %}";
+    const ALL_SLOTS   = [];
+    for (let h = 8; h < 20; h++) {
+        for (let m of [0, 30]) {
+            const hh   = String(h).padStart(2, '0');
+            const mm   = String(m).padStart(2, '0');
+            const val  = `${hh}:${mm}`;
+            const ampm = h < 12 ? 'AM' : 'PM';
+            const h12  = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+            const label = `${h12}:${mm} ${ampm}`;
+            ALL_SLOTS.push({ value: val, label });
         }
-    } catch (error) {
-        console.error('Error loading slots:', error);
-        timeSelect.innerHTML = '<option value="">Error loading slots</option>';
     }
-    updateSummary();
-}
 
-function updateSummary() {
-    const sOpt = serviceSelect.options[serviceSelect.selectedIndex];
-    const bOpt = barberSelect.options[barberSelect.selectedIndex];
-    const tOpt = timeSelect.options[timeSelect.selectedIndex];
-    const date = dateInput.value;
+    /* ── ELEMENTS ──────────────────────────────────────── */
+    const barberSel    = document.getElementById('barberSelect');
+    const dateInput    = document.getElementById('dateInput');
+    const timeSelect   = document.getElementById('timeSelect');
+    const timeDisplay  = document.getElementById('timeDisplay');
+    const timeDispText = document.getElementById('timeDisplayText');
+    const timeClear    = document.getElementById('timeClear');
+    const slotsContainer = document.getElementById('slotsContainer');
+    const slotsStatus  = document.getElementById('slotsStatus');
+    const slotGrid     = document.getElementById('slotGrid');
+    const summary      = document.getElementById('bookingSummary');
+    const styleSelect  = document.getElementById('styleSelect');
 
-    if (serviceSelect.value && barberSelect.value && date && timeSelect.value) {
-        summary.style.display = 'block';
-        document.getElementById('sum-service').textContent = sOpt.text.split(' — ')[0];
-        document.getElementById('sum-barber').textContent = bOpt.text.split(' — ')[0];
-        document.getElementById('sum-datetime').textContent = `${date} at ${tOpt.text}`;
-        document.getElementById('sum-price').textContent = `₱${sOpt.dataset.price}`;
-    } else {
-        summary.style.display = 'none';
+    /* ── DATE MIN ──────────────────────────────────────── */
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    dateInput.min = todayStr;
+
+    /* ── SELECTED STATE ────────────────────────────────── */
+    let selectedTime = '';
+
+    /* ── TIME SLOT LOGIC ───────────────────────────────── */
+    function setSelectedTime(val, label) {
+        selectedTime = val;
+        timeSelect.innerHTML = '';
+        if (val) {
+            const opt = document.createElement('option');
+            opt.value = val;
+            opt.selected = true;
+            timeSelect.appendChild(opt);
+        }
+        if (val) {
+            timeDispText.innerHTML = `<i class="fas fa-clock" style="color:var(--gold);margin-right:4px;"></i>${label}`;
+            timeDispText.classList.add('time-display-value');
+            timeDispText.classList.remove('time-display-placeholder');
+            timeClear.style.display = 'block';
+        } else {
+            timeDispText.textContent = 'Select barber & date first';
+            timeDispText.classList.remove('time-display-value');
+            timeDispText.classList.add('time-display-placeholder');
+            timeClear.style.display = 'none';
+        }
+        updateSummary();
     }
-}
 
-barberSelect.addEventListener('change', () => { 
-    console.log('Barber selected:', barberSelect.value);
-    loadSlots(); 
-    updateSummary(); 
-});
+    timeClear.addEventListener('click', function() {
+        setSelectedTime('', '');
+        document.querySelectorAll('.time-slot-btn').forEach(b => b.classList.remove('selected'));
+    });
 
-dateInput.addEventListener('change', () => {
-    console.log('Date selected:', dateInput.value);
-    loadSlots();
-});
+    async function loadSlots() {
+        const barberId = barberSel.value;
+        const date     = dateInput.value;
 
-timeSelect.addEventListener('change', () => {
-    console.log('Time selected:', timeSelect.value);
-    updateSummary();
-});
+        if (!barberId) {
+            timeDispText.textContent = 'Select a barber first';
+            slotsContainer.style.display = 'none';
+            setSelectedTime('', '');
+            return;
+        }
+        if (!date) {
+            timeDispText.textContent = 'Select a date first';
+            slotsContainer.style.display = 'none';
+            setSelectedTime('', '');
+            return;
+        }
 
-serviceSelect.addEventListener('change', () => {
-    console.log('Service selected:', serviceSelect.value);
-    updateSummary();
-});
+        slotsContainer.style.display = 'block';
+        slotsStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading available slots…';
+        slotGrid.innerHTML = '<div class="slots-loading"><i class="fas fa-spinner fa-spin"></i> Checking availability…</div>';
+        setSelectedTime('', '');
+
+        try {
+            const res  = await fetch(`${SLOTS_URL}?barber_id=${barberId}&date=${encodeURIComponent(date)}`);
+            const data = await res.json();
+
+            const availableVals = new Set((data.slots || []).map(s => s.value));
+
+            slotGrid.innerHTML = '';
+            let availCount = 0;
+
+            ALL_SLOTS.forEach(slot => {
+                const isAvailable = availableVals.has(slot.value);
+                if (isAvailable) availCount++;
+
+                const btn = document.createElement('button');
+                btn.type        = 'button';
+                btn.className   = 'time-slot-btn' + (isAvailable ? '' : ' booked');
+                btn.textContent = slot.label;
+                btn.dataset.value = slot.value;
+                btn.dataset.label = slot.label;
+                btn.disabled    = !isAvailable;
+                btn.title       = isAvailable ? slot.label : 'Already booked';
+
+                if (isAvailable) {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('.time-slot-btn').forEach(b => b.classList.remove('selected'));
+                        btn.classList.add('selected');
+                        setSelectedTime(slot.value, slot.label);
+                    });
+                }
+                slotGrid.appendChild(btn);
+            });
+
+            slotsStatus.innerHTML = availCount > 0
+                ? `<i class="fas fa-circle" style="color:var(--green);font-size:0.5rem;"></i> ${availCount} slots available`
+                : '<i class="fas fa-circle" style="color:var(--red);font-size:0.5rem;"></i> No slots available for this date';
+
+        } catch (err) {
+            console.error('Slot fetch error:', err);
+            slotGrid.innerHTML = '<div class="slots-loading"><i class="fas fa-exclamation-circle" style="color:var(--red);"></i> Could not load slots. Please try again.</div>';
+            slotsStatus.innerHTML = '';
+        }
+    }
+
+    barberSel.addEventListener('change', loadSlots);
+    dateInput.addEventListener('change', loadSlots);
+
+    /* ── SUMMARY ───────────────────────────────────────── */
+    function updateSummary() {
+        const bOpt   = barberSel.options[barberSel.selectedIndex];
+        const sOpt   = styleSelect.options[styleSelect.selectedIndex];
+        const date   = dateInput.value;
+        const tVal   = selectedTime;
+        const tLabel = tVal ? (() => {
+            const found = ALL_SLOTS.find(s => s.value === tVal);
+            return found ? found.label : tVal;
+        })() : '';
+
+        if (styleSelect.value && barberSel.value && date && tVal) {
+            summary.style.display = 'block';
+            document.getElementById('sum-style').textContent   = sOpt ? sOpt.text : '—';
+            document.getElementById('sum-barber').textContent  = bOpt ? bOpt.text.split(' — ')[0] : '—';
+            document.getElementById('sum-datetime').textContent = `${date} at ${tLabel}`;
+            document.getElementById('sum-price').textContent   = sOpt ? `₱${sOpt.dataset.price}` : '—';
+        } else {
+            summary.style.display = 'none';
+        }
+    }
+
+    barberSel.addEventListener('change', updateSummary);
+    styleSelect.addEventListener('change', updateSummary);
+    dateInput.addEventListener('change', updateSummary);
+
+    /* ── CUSTOM STYLE PICKER ────────────────────────────── */
+    const trigger   = document.getElementById('stylePickerTrigger');
+    const dropdown  = document.getElementById('stylePickerDropdown');
+    const search    = document.getElementById('stylePickerSearch');
+    const list      = document.getElementById('stylePickerList');
+    const emptyMsg  = document.getElementById('stylePickerEmpty');
+    const selected  = document.getElementById('stylePickerSelected');
+
+    function openPicker() {
+        trigger.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+        dropdown.classList.add('open');
+        search.value = '';
+        filterOptions('');
+        setTimeout(() => search.focus(), 50);
+    }
+    function closePicker() {
+        trigger.classList.remove('open');
+        trigger.setAttribute('aria-expanded', 'false');
+        dropdown.classList.remove('open');
+    }
+
+    trigger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        trigger.classList.contains('open') ? closePicker() : openPicker();
+    });
+    trigger.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPicker(); }
+        if (e.key === 'Escape') closePicker();
+    });
+    document.addEventListener('click', function(e) {
+        if (!document.getElementById('stylePickerWrap').contains(e.target)) closePicker();
+    });
+
+    search.addEventListener('input', function() {
+        filterOptions(this.value.trim().toLowerCase());
+    });
+
+    function filterOptions(q) {
+        const options  = list.querySelectorAll('.style-picker-option');
+        const cats     = list.querySelectorAll('.style-picker-category');
+        let visibleCount = 0;
+
+        const catVisibility = {};
+        cats.forEach((c, i) => { catVisibility[i] = false; });
+
+        let catIdx = -1;
+        list.querySelectorAll('.style-picker-category, .style-picker-option').forEach(el => {
+            if (el.classList.contains('style-picker-category')) {
+                catIdx++;
+            } else {
+                const name = (el.dataset.name || '').toLowerCase();
+                const desc = (el.dataset.desc || '').toLowerCase();
+                const cat  = (el.dataset.category || '').toLowerCase();
+                const show = !q || name.includes(q) || desc.includes(q) || cat.includes(q);
+                el.classList.toggle('hidden', !show);
+                if (show) { visibleCount++; catVisibility[catIdx] = true; }
+            }
+        });
+
+        catIdx = -1;
+        list.querySelectorAll('.style-picker-category, .style-picker-option').forEach(el => {
+            if (el.classList.contains('style-picker-category')) {
+                catIdx++;
+                el.style.display = catVisibility[catIdx] ? '' : 'none';
+            }
+        });
+
+        emptyMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+
+    list.addEventListener('click', function(e) {
+        const opt = e.target.closest('.style-picker-option');
+        if (!opt || opt.classList.contains('hidden')) return;
+
+        const val   = opt.dataset.value;
+        const name  = opt.dataset.name;
+        const price = opt.dataset.price;
+        const cat   = opt.dataset.category;
+
+        styleSelect.value = val;
+        styleSelect.dispatchEvent(new Event('change'));
+
+        list.querySelectorAll('.style-picker-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+
+        selected.innerHTML = `
+            <span class="style-picker-selected-name">${name}</span>
+            <span class="style-picker-selected-meta">
+                <span class="style-picker-selected-cat">${cat}</span>
+                <span class="style-picker-selected-price">₱${price}</span>
+            </span>
+        `;
+
+        closePicker();
+        updateSummary();
+    });
+}());
 </script>
 {% endblock %}
