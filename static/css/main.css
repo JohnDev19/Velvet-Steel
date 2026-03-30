@@ -701,10 +701,29 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .haircut-styles-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 }
 
+@media (max-width: 1024px) {
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .barbers-grid { grid-template-columns: repeat(2, 1fr); }
+  .barbers-grid-full { grid-template-columns: repeat(2, 1fr); }
+  .location-grid { grid-template-columns: 1fr; gap: 40px; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .services-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .barbers-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .barbers-grid-full { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .hero-cta { gap: 12px; }
+  .cta-actions { gap: 12px; }
+  .stat-item { padding: 16px 24px; }
+}
+
 @media (max-width: 640px) {
   .section { padding: 64px 0; }
   .hero { padding: 100px 16px 60px; }
-  .services-grid, .barbers-grid, .barbers-grid-full { grid-template-columns: 1fr; }
+  .services-grid { grid-template-columns: 1fr; }
+  .barbers-grid { grid-template-columns: 1fr; }
+  .barbers-grid-full { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .features-grid { grid-template-columns: 1fr; border: 1px solid var(--border); }
   .feature-card { border-right: none; border-bottom: 1px solid var(--border); }
   .contact-grid { grid-template-columns: 1fr; }
@@ -726,6 +745,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .price-tiers-row { flex-direction: column; align-items: stretch; }
   .price-tier { flex-direction: row; justify-content: space-between; min-width: unset; text-align: left; }
   .haircut-styles-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .cta-content { flex-direction: column; text-align: center; gap: 24px; }
+  .cta-text { text-align: center; }
 }
 
 /* ============================================
