@@ -375,3 +375,92 @@ def admin_availability(request):
     return render(request, 'admin_panel/availability.html', {
         'barbers': barbers,
     })
+
+
+@admin_required
+def admin_services(request):
+    services = Service.objects().order_by('category', 'price')
+    return render(request, 'admin_panel/services.html', {'services': services})
+
+
+@admin_required
+def admin_service_add(request):
+    from .forms import ServiceForm
+    if request.method == 'POST':
+        form = ServiceForm(request.POST, request.FILES)
+        if form.is_valid():
+            data       = form.cleaned_data.copy()
+            image_file = data.pop('image', None)
+            svc = Service(
+                name=data['name'],
+                category=data['category'],
+                description=data.get('description', ''),
+                price=data['price'],
+                duration_minutes=data.get('duration_minutes', 30),
+                icon=data.get('icon', 'scissors') or 'scissors',
+                is_active=data.get('is_active', True),
+            )
+            if image_file:
+                svc.image = _image_to_data_uri(image_file)
+            try:
+                svc.save()
+                messages.success(request, f'"{svc.name}" added successfully.')
+                return redirect('admin_services')
+            except Exception as e:
+                messages.error(request, f'Could not save: {e}')
+    else:
+        form = ServiceForm()
+    return render(request, 'admin_panel/service_form.html', {'form': form, 'action': 'Add'})
+
+
+@admin_required
+def admin_service_edit(request, pk):
+    from .forms import ServiceForm
+    try:
+        svc = Service.objects(id=pk).first()
+    except Exception:
+        svc = None
+    if not svc:
+        messages.error(request, 'Service not found.')
+        return redirect('admin_services')
+    if request.method == 'POST':
+        form = ServiceForm(request.POST, request.FILES)
+        if form.is_valid():
+            data       = form.cleaned_data.copy()
+            image_file = data.pop('image', None)
+            for k, v in data.items():
+                setattr(svc, k, v)
+            if image_file:
+                svc.image = _image_to_data_uri(image_file)
+            try:
+                svc.save()
+                messages.success(request, f'"{svc.name}" updated successfully.')
+                return redirect('admin_services')
+            except Exception as e:
+                messages.error(request, f'Could not save: {e}')
+    else:
+        form = ServiceForm(initial={
+            'name':             svc.name,
+            'category':         svc.category,
+            'description':      svc.description,
+            'price':            svc.price,
+            'duration_minutes': svc.duration_minutes,
+            'icon':             svc.icon,
+            'is_active':        svc.is_active,
+        })
+    return render(request, 'admin_panel/service_form.html', {
+        'form': form, 'action': 'Edit', 'svc': svc,
+    })
+
+
+@admin_required
+def admin_service_delete(request, pk):
+    try:
+        svc = Service.objects(id=pk).first()
+    except Exception:
+        svc = None
+    if svc and request.method == 'POST':
+        name = svc.name
+        svc.delete()
+        messages.success(request, f'"{name}" deleted.')
+    return redirect('admin_services')

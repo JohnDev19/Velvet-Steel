@@ -45,6 +45,9 @@
             <a href="{% url 'admin_haircut_styles' %}" class="sidebar-link {% if 'haircut_style' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="fas fa-scissors"></i> Haircut Styles
             </a>
+            <a href="{% url 'admin_services' %}" class="sidebar-link {% if 'admin_service' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="fas fa-concierge-bell"></i> Services
+            </a>
             <a href="{% url 'admin_barbers' %}" class="sidebar-link {% if 'barber' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="fas fa-user-tie"></i> Barbers
             </a>

@@ -28,6 +28,32 @@
             <div class="price-tier pt-premium"><span class="pt-range">₱600–₱1,000+</span><span class="pt-label">Premium full service</span></div>
         </div>
 
+        {% if has_services %}
+        <div class="services-full-grid">
+            {% for svc in all_services %}
+            <div class="service-full-card">
+                {% if svc.image %}
+                <div class="sfc-icon" style="overflow:hidden;padding:0;">
+                    <img src="{{ svc.image }}" alt="{{ svc.name }}" style="width:100%;height:100%;object-fit:cover;">
+                </div>
+                {% else %}
+                <div class="sfc-icon"><i class="fas fa-{{ svc.icon|default:'cut' }}"></i></div>
+                {% endif %}
+                <div class="sfc-body">
+                    <div class="sfc-header">
+                        <div><span class="service-category">{{ svc.get_category_display }}</span><h3>{{ svc.name }}</h3></div>
+                        <div class="sfc-price">₱{{ svc.price }}</div>
+                    </div>
+                    {% if svc.description %}<p>{{ svc.description }}</p>{% endif %}
+                    <div class="sfc-footer">
+                        <span class="service-duration"><i class="fas fa-clock"></i> {{ svc.duration_minutes }} minutes</span>
+                        <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
         <div class="services-full-grid">
             <div class="service-full-card">
                 <div class="sfc-icon"><i class="fas fa-cut"></i></div>
@@ -119,6 +145,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
 </section>
 

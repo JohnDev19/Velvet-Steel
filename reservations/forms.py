@@ -56,6 +56,67 @@ class ReservationForm(forms.Form):
         return date
 
 
+class ServiceForm(forms.Form):
+    name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'e.g. Classic Haircut',
+        })
+    )
+    category = forms.ChoiceField(
+        choices=[('', '— Select a category —')] + list(Service.CATEGORY_CHOICES),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+    )
+    description = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Brief description of this service...',
+        })
+    )
+    price = forms.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'step': '0.01',
+            'placeholder': '0.00',
+        })
+    )
+    duration_minutes = forms.IntegerField(
+        min_value=1,
+        initial=30,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': '30',
+        })
+    )
+    icon = forms.CharField(
+        max_length=50,
+        required=False,
+        initial='scissors',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'e.g. scissors, cut, star',
+        })
+    )
+    image = forms.FileField(
+        required=False,
+        widget=forms.ClearableFileInput(attrs={
+            'class': 'form-control-file',
+            'accept': 'image/jpeg,image/png,image/webp',
+            'id': 'id_svc_image',
+        })
+    )
+    is_active = forms.BooleanField(
+        required=False,
+        initial=True,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+
+
 class HaircutStyleForm(forms.Form):
     name = forms.CharField(
         max_length=120,

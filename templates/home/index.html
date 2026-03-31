@@ -83,6 +83,29 @@
       <p class="section-subtitle">From signature fades to full grooming rituals. Every service is a deliberate act of craft, not a transaction.</p>
     </div>
     <div class="services-grid">
+      {% if services %}
+      {% for svc in services %}
+      <div class="service-card">
+        <div class="service-icon-wrap">
+          {% if svc.image %}
+          <img src="{{ svc.image }}" alt="{{ svc.name }}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">
+          {% else %}
+          <i class="fas fa-{{ svc.icon|default:'cut' }}"></i>
+          {% endif %}
+        </div>
+        <div class="service-info">
+          <span class="service-category">{{ svc.get_category_display }}</span>
+          <h3 class="service-name">{{ svc.name }}</h3>
+          {% if svc.description %}<p class="service-desc">{{ svc.description|truncatechars:100 }}</p>{% endif %}
+          <div class="service-meta">
+            <span class="service-price">&#8369;{{ svc.price }}</span>
+            <span class="service-duration"><i class="fas fa-clock"></i> {{ svc.duration_minutes }} min</span>
+          </div>
+        </div>
+        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
+      </div>
+      {% endfor %}
+      {% else %}
       <div class="service-card">
         <div class="service-icon-wrap"><i class="fas fa-cut"></i></div>
         <div class="service-info">
@@ -96,7 +119,6 @@
         </div>
         <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
       </div>
-
       <div class="service-card">
         <div class="service-icon-wrap"><i class="fas fa-magic"></i></div>
         <div class="service-info">
@@ -110,7 +132,6 @@
         </div>
         <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
       </div>
-
       <div class="service-card featured-service">
         <div class="featured-badge">Popular</div>
         <div class="service-icon-wrap"><i class="fas fa-crown"></i></div>
@@ -125,7 +146,6 @@
         </div>
         <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
       </div>
-
       <div class="service-card">
         <div class="service-icon-wrap"><i class="fas fa-user-ninja"></i></div>
         <div class="service-info">
@@ -167,6 +187,7 @@
         </div>
         <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
       </div>
+      {% endif %}
     </div>
     <div class="section-cta">
       <a href="{% url 'services' %}" class="btn-outline">See Full Service Menu <i class="fas fa-arrow-right"></i></a>

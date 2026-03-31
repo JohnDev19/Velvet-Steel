@@ -1,0 +1,62 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Services{% endblock %}
+{% block page_title %}Services{% endblock %}
+{% block content %}
+
+<div class="admin-page-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <h2 style="margin:0;font-size:1.2rem;color:#f0ebe0;">All Services</h2>
+    <a href="{% url 'admin_service_add' %}" class="btn-gold btn-sm">
+        <i class="fas fa-plus"></i> Add Service
+    </a>
+</div>
+
+<div class="admin-section">
+    {% if services %}
+    <div class="haircut-styles-grid">
+        {% for svc in services %}
+        <div class="style-card-admin">
+            <div class="style-card-img">
+                {% if svc.image %}
+                <img src="{{ svc.image }}" alt="{{ svc.name }}">
+                {% else %}
+                <div class="style-img-placeholder"><i class="fas fa-{{ svc.icon|default:'concierge-bell' }}"></i></div>
+                {% endif %}
+                <div class="style-card-overlay">
+                    <a href="{% url 'admin_service_edit' svc.pk %}" class="btn-gold btn-sm">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <form method="post" action="{% url 'admin_service_delete' svc.pk %}"
+                          onsubmit="return confirm('Delete {{ svc.name }}? This cannot be undone.')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</button>
+                    </form>
+                </div>
+            </div>
+            <div class="style-card-body">
+                <span class="style-category-tag">{{ svc.get_category_display }}</span>
+                <h4 class="style-name">{{ svc.name }}</h4>
+                <div class="style-meta">
+                    <span class="style-price">₱{{ svc.price }}</span>
+                    <span class="style-status {% if svc.is_active %}dot-completed{% else %}dot-cancelled{% endif %} qs-dot">
+                        {% if svc.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                </div>
+                <p style="font-size:0.72rem;color:#6a6050;margin:4px 0 0;">{{ svc.duration_minutes }} min</p>
+                {% if svc.description %}
+                <p class="style-desc-small">{{ svc.description|truncatechars:70 }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state-admin">
+        <div class="empty-icon"><i class="fas fa-concierge-bell"></i></div>
+        <h3>No services yet</h3>
+        <p>Add your first service to display it on the home and services page, and in the booking form.</p>
+        <a href="{% url 'admin_service_add' %}" class="btn-gold btn-sm"><i class="fas fa-plus"></i> Add First Service</a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

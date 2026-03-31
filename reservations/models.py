@@ -27,6 +27,7 @@ class Service(Document):
     duration_minutes = IntField(default=30)
     is_active = BooleanField(default=True)
     icon = StringField(max_length=50, default='scissors')
+    image = StringField()
     created_at = DateTimeField(default=timezone.now)
 
     meta = {

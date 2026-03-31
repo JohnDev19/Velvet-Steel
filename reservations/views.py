@@ -21,6 +21,7 @@ def book_reservation(request):
 
         barber_id        = request.POST.get('barber', '').strip()
         haircut_style_id = request.POST.get('haircut_style', '').strip()
+        service_id       = request.POST.get('service', '').strip()
         appointment_date = request.POST.get('appointment_date', '').strip()
         appointment_time = request.POST.get('appointment_time', '').strip()
         notes            = request.POST.get('notes', '').strip()
@@ -28,6 +29,7 @@ def book_reservation(request):
         errors        = []
         barber        = None
         haircut_style = None
+        service       = None
 
         if barber_id:
             try:
@@ -40,6 +42,12 @@ def book_reservation(request):
                 haircut_style = HaircutStyle.objects(id=haircut_style_id).first()
             except Exception:
                 haircut_style = None
+
+        if service_id:
+            try:
+                service = Service.objects(id=service_id).first()
+            except Exception:
+                service = None
 
         if not barber:
             errors.append('Please select a valid barber.')
@@ -74,16 +82,12 @@ def book_reservation(request):
         if errors:
             for err in errors:
                 messages.error(request, err)
-            styles  = HaircutStyle.objects(is_active=True).order_by('category', 'price')
-            barbers = Barber.objects(is_active=True)
+            styles   = HaircutStyle.objects(is_active=True).order_by('category', 'price')
+            barbers  = Barber.objects(is_active=True)
+            services = Service.objects(is_active=True).order_by('category', 'price')
             return render(request, 'reservations/book.html', {
-                'styles': styles, 'barbers': barbers,
+                'styles': styles, 'barbers': barbers, 'services': services,
             })
-
-        try:
-            service = Service.objects(is_active=True).first()
-        except Exception:
-            service = None
 
         total_price = 0
         if haircut_style and haircut_style.price is not None:
@@ -114,10 +118,11 @@ def book_reservation(request):
             reservation.save()
         except Exception as e:
             messages.error(request, f'Could not save reservation. Please try again. ({e})')
-            styles  = HaircutStyle.objects(is_active=True).order_by('category', 'price')
-            barbers = Barber.objects(is_active=True)
+            styles   = HaircutStyle.objects(is_active=True).order_by('category', 'price')
+            barbers  = Barber.objects(is_active=True)
+            services = Service.objects(is_active=True).order_by('category', 'price')
             return render(request, 'reservations/book.html', {
-                'styles': styles, 'barbers': barbers,
+                'styles': styles, 'barbers': barbers, 'services': services,
             })
 
         messages.success(
@@ -126,11 +131,11 @@ def book_reservation(request):
         )
         return redirect('reservation_detail', pk=str(reservation.pk))
 
-    # ── GET ──────────────────────────────────────────────────────────────
-    styles  = HaircutStyle.objects(is_active=True).order_by('category', 'price')
-    barbers = Barber.objects(is_active=True)
+    styles   = HaircutStyle.objects(is_active=True).order_by('category', 'price')
+    barbers  = Barber.objects(is_active=True)
+    services = Service.objects(is_active=True).order_by('category', 'price')
     return render(request, 'reservations/book.html', {
-        'styles': styles, 'barbers': barbers,
+        'styles': styles, 'barbers': barbers, 'services': services,
     })
 
 
@@ -292,3 +297,72 @@ def submit_testimonial(request):
         except Exception as e:
             messages.error(request, f'Could not submit review. ({e})')
     return redirect('user_dashboard')
+
+
+@login_required
+def review_page(request):
+    if request.method == 'POST':
+        rating         = request.POST.get('rating', 5)
+        comment        = request.POST.get('comment', '').strip()
+        reservation_id = request.POST.get('reservation_id', '').strip()
+        service        = None
+
+        if reservation_id:
+            try:
+                linked = Reservation.objects(id=reservation_id).first()
+                if linked and linked.service:
+                    service = linked.service
+            except Exception:
+                pass
+
+        if not comment:
+            messages.error(request, 'Please write a comment before submitting.')
+            my_reservations = Reservation.objects(
+                customer_username=request.user.username,
+                status='completed',
+            ).order_by('-appointment_date')
+            return render(request, 'reservations/review.html', {
+                'my_reservations': my_reservations,
+            })
+
+        already = Testimonial.objects(
+            customer_username=request.user.username,
+            reservation_id=reservation_id,
+        ).first() if reservation_id else None
+
+        if already:
+            messages.warning(request, 'You have already submitted a review for this appointment.')
+            return redirect('review_page')
+
+        try:
+            rating_int = int(rating)
+        except (ValueError, TypeError):
+            rating_int = 5
+
+        testimonial = Testimonial(
+            customer_id=request.user.pk or 0,
+            customer_username=request.user.username,
+            customer_name=request.user.get_full_name() or request.user.username,
+            reservation_id=reservation_id,
+            rating=rating_int,
+            comment=comment,
+            service=service,
+        )
+        try:
+            testimonial.save()
+            messages.success(request, 'Thank you for your review! It will appear once approved.')
+        except Exception as e:
+            messages.error(request, f'Could not submit review. ({e})')
+        return redirect('review_page')
+
+    my_reservations = Reservation.objects(
+        customer_username=request.user.username,
+        status='completed',
+    ).order_by('-appointment_date')
+    my_testimonials = Testimonial.objects(
+        customer_username=request.user.username,
+    ).order_by('-created_at')
+    return render(request, 'reservations/review.html', {
+        'my_reservations': my_reservations,
+        'my_testimonials': my_testimonials,
+    })

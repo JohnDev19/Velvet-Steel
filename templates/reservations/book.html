@@ -205,6 +205,7 @@
 .style-picker-empty { padding: 22px 14px; text-align: center; color: var(--text-muted); font-size: 0.82rem; }
 
 #styleSelect { display: none; }
+#serviceSelect { display: none; }
 
 .time-slot-grid {
   display: grid;
@@ -313,6 +314,69 @@
                                 {% endfor %}
                             </select>
                         </div>
+
+                        {% if services %}
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-concierge-bell"></i> Choose Service <small>(optional)</small></label>
+
+                            <select name="service" id="serviceSelect">
+                                <option value="">Select a service...</option>
+                                {% for svc in services %}
+                                <option value="{{ svc.pk }}"
+                                        data-price="{{ svc.price }}"
+                                        data-category="{{ svc.category }}"
+                                        data-category-display="{{ svc.get_category_display }}"
+                                        data-name="{{ svc.name }}"
+                                        data-desc="{{ svc.description|default:'' }}">
+                                    {{ svc.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+
+                            <div class="style-picker-wrap" id="svcPickerWrap">
+                                <div class="style-picker-trigger" id="svcPickerTrigger" tabindex="0" role="combobox" aria-expanded="false">
+                                    <div class="style-picker-selected" id="svcPickerSelected">
+                                        <span class="style-picker-placeholder">Select a service (optional)...</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down style-picker-arrow"></i>
+                                </div>
+                                <div class="style-picker-dropdown" id="svcPickerDropdown" role="listbox">
+                                    <div class="style-picker-search-row">
+                                        <i class="fas fa-search"></i>
+                                        <input type="text" class="style-picker-search" id="svcPickerSearch" placeholder="Search services..." autocomplete="off">
+                                    </div>
+                                    <div class="style-picker-list" id="svcPickerList">
+                                        {% regroup services by get_category_display as svc_groups %}
+                                        {% for group in svc_groups %}
+                                        <div class="style-picker-category">{{ group.grouper }}</div>
+                                        {% for svc in group.list %}
+                                        <div class="style-picker-option"
+                                             role="option"
+                                             data-value="{{ svc.pk }}"
+                                             data-price="{{ svc.price }}"
+                                             data-category="{{ svc.category }}"
+                                             data-category-display="{{ svc.get_category_display }}"
+                                             data-name="{{ svc.name }}"
+                                             data-desc="{{ svc.description|default:'' }}">
+                                            <div class="spo-left">
+                                                <span class="spo-name">{{ svc.name }}</span>
+                                                {% if svc.description %}
+                                                <span class="spo-desc">{{ svc.description|truncatechars:55 }}</span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="spo-right">
+                                                <span class="spo-price">&#8369;{{ svc.price }}</span>
+                                                <i class="fas fa-check spo-check"></i>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        {% endfor %}
+                                        <div class="style-picker-empty" id="svcPickerEmpty" style="display:none;">No services found.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
 
                         <div class="form-group">
                             <label class="form-label"><i class="fas fa-cut"></i> Choose Haircut Style</label>
@@ -769,6 +833,96 @@
     }
 
     styleSelect.addEventListener('change', updateSummary);
+}());
+
+(function () {
+    var svcWrap    = document.getElementById('svcPickerWrap');
+    if (!svcWrap) return;
+    var svcTrigger = document.getElementById('svcPickerTrigger');
+    var svcSel     = document.getElementById('svcPickerSelected');
+    var svcDropdown = document.getElementById('svcPickerDropdown');
+    var svcList    = document.getElementById('svcPickerList');
+    var svcSearch  = document.getElementById('svcPickerSearch');
+    var svcEmpty   = document.getElementById('svcPickerEmpty');
+    var svcSelect  = document.getElementById('serviceSelect');
+
+    function openSvc() {
+        svcTrigger.classList.add('open');
+        svcTrigger.setAttribute('aria-expanded', 'true');
+        svcDropdown.classList.add('open');
+        svcSearch.value = '';
+        filterSvc('');
+        setTimeout(function () { svcSearch.focus(); }, 50);
+    }
+    function closeSvc() {
+        svcTrigger.classList.remove('open');
+        svcTrigger.setAttribute('aria-expanded', 'false');
+        svcDropdown.classList.remove('open');
+    }
+
+    function filterSvc(q) {
+        var opts = svcList.querySelectorAll('.style-picker-option');
+        var anyVisible = false;
+        opts.forEach(function (opt) {
+            var name = (opt.dataset.name || '').toLowerCase();
+            var desc = (opt.dataset.desc || '').toLowerCase();
+            var show = !q || name.indexOf(q) !== -1 || desc.indexOf(q) !== -1;
+            opt.classList.toggle('hidden', !show);
+            if (show) anyVisible = true;
+        });
+        svcEmpty.style.display = anyVisible ? 'none' : 'block';
+    }
+
+    svcTrigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        svcTrigger.classList.contains('open') ? closeSvc() : openSvc();
+    });
+
+    svcTrigger.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openSvc(); }
+        if (e.key === 'Escape') closeSvc();
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!svcWrap.contains(e.target)) closeSvc();
+    });
+
+    if (svcSearch) {
+        svcSearch.addEventListener('input', function () {
+            filterSvc(this.value.trim().toLowerCase());
+        });
+    }
+
+    svcList.addEventListener('click', function (e) {
+        var opt = e.target.closest('.style-picker-option');
+        if (!opt || opt.classList.contains('hidden')) return;
+
+        var val     = opt.dataset.value;
+        var name    = opt.dataset.name;
+        var price   = opt.dataset.price;
+        var catDisp = opt.dataset.categoryDisplay;
+
+        if (svcSelect.value === val) {
+            svcSelect.value = '';
+            svcSel.innerHTML = '<span class="style-picker-placeholder">Select a service (optional)...</span>';
+            svcList.querySelectorAll('.style-picker-option').forEach(function (o) { o.classList.remove('selected'); });
+            closeSvc();
+            return;
+        }
+
+        svcSelect.value = val;
+        svcList.querySelectorAll('.style-picker-option').forEach(function (o) { o.classList.remove('selected'); });
+        opt.classList.add('selected');
+
+        svcSel.innerHTML =
+            '<span class="style-picker-selected-name">' + name + '</span>' +
+            '<span class="style-picker-selected-right">' +
+            '<span class="style-picker-selected-cat">' + catDisp + '</span>' +
+            '<span class="style-picker-selected-price">&#8369;' + price + '</span>' +
+            '</span>';
+
+        closeSvc();
+    });
 }());
 </script>
 {% endblock %}

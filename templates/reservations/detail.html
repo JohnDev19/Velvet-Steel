@@ -33,16 +33,6 @@
                     <strong>{{ reservation.appointment_time_display }}</strong>
                 </div>
                 <div class="detail-item">
-                    <label>Duration</label>
-                    <strong>
-                        {% if reservation.service %}
-                            {{ reservation.service.duration_minutes }} minutes
-                        {% else %}
-                            —
-                        {% endif %}
-                    </strong>
-                </div>
-                <div class="detail-item">
                     <label>Total Price</label>
                     <strong class="price-highlight">₱{{ reservation.total_price }}</strong>
                 </div>

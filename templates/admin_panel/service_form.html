@@ -1,0 +1,158 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}{{ action }} Service{% endblock %}
+{% block page_title %}{{ action }} Service{% endblock %}
+{% block content %}
+
+<div class="admin-page-header">
+    <h2>{{ action }} Service</h2>
+    <a href="{% url 'admin_services' %}" class="btn-outline btn-sm">
+        <i class="fas fa-arrow-left"></i> Back to Services
+    </a>
+</div>
+
+<div class="admin-section">
+    <div class="form-card">
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-error">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.name.id_for_label }}">Service Name</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<small class="field-error">{{ form.name.errors|join:", " }}</small>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.price.id_for_label }}">Price (₱)</label>
+                    {{ form.price }}
+                    {% if form.price.errors %}<small class="field-error">{{ form.price.errors|join:", " }}</small>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.category.id_for_label }}">Category</label>
+                    {{ form.category }}
+                    {% if form.category.errors %}<small class="field-error">{{ form.category.errors|join:", " }}</small>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.duration_minutes.id_for_label }}">Duration (minutes)</label>
+                    {{ form.duration_minutes }}
+                    {% if form.duration_minutes.errors %}<small class="field-error">{{ form.duration_minutes.errors|join:", " }}</small>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="{{ form.icon.id_for_label }}">Icon Name <small style="color:#6a6050;">(Font Awesome icon name, e.g. cut, star, spa)</small></label>
+                {{ form.icon }}
+                {% if form.icon.errors %}<small class="field-error">{{ form.icon.errors|join:", " }}</small>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="{{ form.description.id_for_label }}">Description</label>
+                {{ form.description }}
+                {% if form.description.errors %}<small class="field-error">{{ form.description.errors|join:", " }}</small>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Photo</label>
+
+                {% if action == 'Edit' and svc.image %}
+                <div class="current-photo-row" id="currentPhotoRow">
+                    <img src="{{ svc.image }}" alt="Current photo">
+                    <div class="current-photo-meta">
+                        <strong>Current Photo</strong>
+                        <span>Upload a new image below to replace it.</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="upload-zone" id="uploadZone">
+                    {{ form.image }}
+                    <div class="upload-zone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <span class="upload-zone-title">Click or drag to upload</span>
+                    <span class="upload-zone-hint">JPG, PNG or WebP — max 5 MB</span>
+                </div>
+
+                <div class="upload-preview-wrap" id="uploadPreviewWrap">
+                    <img class="upload-preview-img" id="uploadPreviewImg" src="" alt="Preview">
+                    <button type="button" class="upload-preview-clear" id="uploadPreviewClear" title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <span class="upload-preview-name" id="uploadPreviewName"></span>
+                </div>
+
+                {% if form.image.errors %}<small class="field-error">{{ form.image.errors|join:", " }}</small>{% endif %}
+            </div>
+
+            <div class="form-group form-check-group">
+                <label class="check-label">
+                    {{ form.is_active }}
+                    <span>Active <small>(shows on site and in booking form)</small></span>
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-gold">
+                    <i class="fas fa-save"></i> {{ action }} Service
+                </button>
+                <a href="{% url 'admin_services' %}" class="btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+(function () {
+    var zone    = document.getElementById('uploadZone');
+    var input   = document.getElementById('id_svc_image');
+    var wrap    = document.getElementById('uploadPreviewWrap');
+    var img     = document.getElementById('uploadPreviewImg');
+    var clear   = document.getElementById('uploadPreviewClear');
+    var nameEl  = document.getElementById('uploadPreviewName');
+
+    if (!zone || !input) return;
+
+    zone.addEventListener('click', function (e) {
+        if (!e.target.closest('input')) input.click();
+    });
+
+    zone.addEventListener('dragover', function (e) { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', function () { zone.classList.remove('drag-over'); });
+    zone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        if (e.dataTransfer.files[0]) {
+            var dt = new DataTransfer();
+            dt.items.add(e.dataTransfer.files[0]);
+            input.files = dt.files;
+            input.dispatchEvent(new Event('change'));
+        }
+    });
+
+    input.addEventListener('change', function () {
+        var file = input.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            img.src = e.target.result;
+            nameEl.textContent = file.name;
+            wrap.style.display = 'flex';
+            zone.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    if (clear) {
+        clear.addEventListener('click', function () {
+            input.value = '';
+            wrap.style.display = 'none';
+            zone.style.display = '';
+        });
+    }
+}());
+</script>
+{% endblock %}

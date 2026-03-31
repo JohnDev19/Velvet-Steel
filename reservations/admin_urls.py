@@ -20,4 +20,8 @@ urlpatterns = [
     path('haircut-styles/add/', admin_views.admin_haircut_style_add, name='admin_haircut_style_add'),
     path('haircut-styles/<str:pk>/edit/', admin_views.admin_haircut_style_edit, name='admin_haircut_style_edit'),
     path('haircut-styles/<str:pk>/delete/', admin_views.admin_haircut_style_delete, name='admin_haircut_style_delete'),
+    path('services/', admin_views.admin_services, name='admin_services'),
+    path('services/add/', admin_views.admin_service_add, name='admin_service_add'),
+    path('services/<str:pk>/edit/', admin_views.admin_service_edit, name='admin_service_edit'),
+    path('services/<str:pk>/delete/', admin_views.admin_service_delete, name='admin_service_delete'),
 ]
