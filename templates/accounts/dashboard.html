@@ -231,6 +231,140 @@
     margin-bottom: 16px;
 }
 
+/* ── REVIEWS ────────────────────────────────────────────────── */
+.review-section {
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    padding: 0 20px;
+}
+
+.review-form-card {
+    background: #1a1a1a;
+    border: 1px solid rgba(200,160,60,0.2);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+}
+
+.review-form-card h5 {
+    color: #c8a03c;
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.review-form-card .rfc-meta {
+    color: #9a9a9a;
+    font-size: 0.82rem;
+    margin-bottom: 16px;
+}
+
+.star-rating {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.star-rating input[type="radio"] { display: none; }
+
+.star-rating label {
+    font-size: 1.6rem;
+    color: rgba(200,160,60,0.25);
+    cursor: pointer;
+    transition: color 0.15s ease;
+    line-height: 1;
+}
+
+.star-rating input[type="radio"]:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #c8a03c;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: #c8a03c;
+}
+
+.rfc-textarea {
+    width: 100%;
+    background: #111;
+    border: 1px solid rgba(200,160,60,0.2);
+    border-radius: 8px;
+    color: #e8e0d0;
+    padding: 12px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 80px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.rfc-textarea:focus {
+    outline: none;
+    border-color: #c8a03c;
+}
+
+.rfc-textarea::placeholder { color: #555; }
+
+.submitted-review-card {
+    background: #1a1a1a;
+    border: 1px solid rgba(200,160,60,0.12);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 12px;
+}
+
+.src-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.src-stars { color: #c8a03c; font-size: 0.9rem; letter-spacing: 2px; }
+.src-stars .star-empty { color: rgba(200,160,60,0.2); }
+
+.src-date {
+    color: #9a9a9a;
+    font-size: 0.8rem;
+    margin-left: auto;
+}
+
+.src-status {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.src-status.approved  { background: rgba(76,175,80,0.15);  color: #4caf50; }
+.src-status.pending   { background: rgba(255,193,7,0.15);  color: #ffc107; }
+
+.src-comment {
+    color: #c0b89a;
+    font-size: 0.9rem;
+    font-style: italic;
+    line-height: 1.6;
+}
+
+.src-service {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: #9a9a9a;
+}
+
 /* ── CTA STRIP ─────────────────────────────────────────────── */
 .dash-cta {
     text-align: center;
@@ -483,6 +617,67 @@
 <div class="dash-empty">
     <i class="fas fa-inbox"></i>
     <p>No past appointments yet</p>
+</div>
+{% endif %}
+
+<!-- REVIEWS -->
+{% if reviewable or my_testimonials %}
+<h2 class="dash-section-title">
+    <i class="fas fa-star"></i> My Reviews
+</h2>
+<div class="review-section">
+
+    {% if reviewable %}
+    <p style="color:#9a9a9a; font-size:0.85rem; margin-bottom:16px;">
+        Share your experience for your completed appointments — your feedback means a lot.
+    </p>
+    {% for res in reviewable %}
+    <div class="review-form-card">
+        <h5>{% if res.service %}{{ res.service.name }}{% else %}Appointment{% endif %}</h5>
+        <p class="rfc-meta">
+            {% if res.barber %}with {{ res.barber.name }} · {% endif %}{{ res.appointment_date_display }} · ₱{{ res.total_price }}
+        </p>
+        <form method="post" action="{% url 'submit_testimonial' %}">
+            {% csrf_token %}
+            <input type="hidden" name="reservation_id" value="{{ res.pk }}">
+            <div class="star-rating">
+                <input type="radio" name="rating" id="star5-{{ forloop.counter }}" value="5">
+                <label for="star5-{{ forloop.counter }}">&#9733;</label>
+                <input type="radio" name="rating" id="star4-{{ forloop.counter }}" value="4">
+                <label for="star4-{{ forloop.counter }}">&#9733;</label>
+                <input type="radio" name="rating" id="star3-{{ forloop.counter }}" value="3" checked>
+                <label for="star3-{{ forloop.counter }}">&#9733;</label>
+                <input type="radio" name="rating" id="star2-{{ forloop.counter }}" value="2">
+                <label for="star2-{{ forloop.counter }}">&#9733;</label>
+                <input type="radio" name="rating" id="star1-{{ forloop.counter }}" value="1">
+                <label for="star1-{{ forloop.counter }}">&#9733;</label>
+            </div>
+            <textarea name="comment" class="rfc-textarea" placeholder="How was your experience? Tell us about your visit..."></textarea>
+            <button type="submit" class="btn-gold btn-sm">Submit Review</button>
+        </form>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if my_testimonials %}
+    <h3 style="color:#fff; font-size:1rem; margin: 24px 0 12px; font-family: inherit; font-weight:600;">Submitted Reviews</h3>
+    {% for t in my_testimonials %}
+    <div class="submitted-review-card">
+        <div class="src-header">
+            <div class="src-stars">
+                {% for i in "12345" %}{% if forloop.counter <= t.rating %}&#9733;{% else %}<span class="star-empty">&#9733;</span>{% endif %}{% endfor %}
+            </div>
+            <span class="src-status {% if t.is_approved %}approved{% else %}pending{% endif %}">
+                {% if t.is_approved %}Approved{% else %}Pending{% endif %}
+            </span>
+            <span class="src-date">{{ t.created_at|date:"M d, Y" }}</span>
+        </div>
+        <p class="src-comment">"{{ t.comment }}"</p>
+        {% if t.service %}<p class="src-service"><i class="fas fa-scissors"></i> {{ t.service.name }}</p>{% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+
 </div>
 {% endif %}
 

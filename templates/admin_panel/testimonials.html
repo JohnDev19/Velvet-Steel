@@ -21,6 +21,7 @@
             <p class="rac-comment">"{{ t.comment }}"</p>
             <div class="rac-footer">
                 <strong>{{ t.customer_name }}</strong>
+                {% if t.customer_username %}<span style="color:#9a9a9a; font-size:0.8rem;">@{{ t.customer_username }}</span>{% endif %}
                 {% if t.service %}<span>· {{ t.service.name }}</span>{% endif %}
                 <a href="{% url 'approve_testimonial' t.pk %}" class="btn-outline btn-sm ml-auto">
                     {% if t.is_approved %}Unapprove{% else %}Approve{% endif %}

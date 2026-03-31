@@ -175,7 +175,7 @@ def logout_view(request):
 
 @login_required
 def user_dashboard(request):
-    from reservations.models import Reservation
+    from reservations.models import Reservation, Testimonial
 
     profile = _get_or_create_profile(request.user)
 
@@ -188,8 +188,19 @@ def user_dashboard(request):
 
     upcoming     = [r for r in user_reservations if r.status in ['pending', 'confirmed']]
     past         = [r for r in user_reservations if r.status in ['completed', 'cancelled']]
-    total_visits = len([r for r in user_reservations if r.status == 'completed'])
-    total_spent  = sum(float(r.total_price or 0) for r in user_reservations if r.status == 'completed')
+    completed    = [r for r in user_reservations if r.status == 'completed']
+    total_visits = len(completed)
+    total_spent  = sum(float(r.total_price or 0) for r in completed)
+
+    try:
+        my_testimonials = list(
+            Testimonial.objects(customer_username=request.user.username).order_by('-created_at')
+        )
+    except Exception:
+        my_testimonials = []
+
+    reviewed_ids = {t.reservation_id for t in my_testimonials if t.reservation_id}
+    reviewable   = [r for r in completed if str(r.pk) not in reviewed_ids][:5]
 
     return render(request, 'accounts/dashboard.html', {
         'profile':           profile,
@@ -199,6 +210,8 @@ def user_dashboard(request):
         'total_spent':       total_spent,
         'reservation_count': len(user_reservations),
         'user':              request.user,
+        'my_testimonials':   my_testimonials,
+        'reviewable':        reviewable,
     })
 
 

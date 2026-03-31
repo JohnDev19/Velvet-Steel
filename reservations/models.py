@@ -162,7 +162,9 @@ class Reservation(Document):
 
 class Testimonial(Document):
     customer_id = IntField(null=True)
+    customer_username = StringField(max_length=150)
     customer_name = StringField(max_length=100)
+    reservation_id = StringField(max_length=50)
     rating = IntField(min_value=1, max_value=5, default=5)
     comment = StringField()
     service = ReferenceField(Service, null=True)

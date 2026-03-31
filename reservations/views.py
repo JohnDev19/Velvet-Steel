@@ -251,23 +251,37 @@ def get_available_slots(request):
 @login_required
 def submit_testimonial(request):
     if request.method == 'POST':
-        rating     = request.POST.get('rating', 5)
-        comment    = request.POST.get('comment', '').strip()
-        service_id = request.POST.get('service', '').strip()
-        service    = None
-        if service_id:
+        rating         = request.POST.get('rating', 5)
+        comment        = request.POST.get('comment', '').strip()
+        reservation_id = request.POST.get('reservation_id', '').strip()
+        service        = None
+
+        if reservation_id:
             try:
-                service = Service.objects(id=service_id).first()
+                linked = Reservation.objects(id=reservation_id).first()
+                if linked and linked.service:
+                    service = linked.service
             except Exception:
                 pass
 
         if not comment:
-            messages.error(request, 'Please write a comment.')
-            return redirect('home')
+            messages.error(request, 'Please write a comment before submitting.')
+            return redirect('user_dashboard')
+
+        already = Testimonial.objects(
+            customer_username=request.user.username,
+            reservation_id=reservation_id,
+        ).first() if reservation_id else None
+
+        if already:
+            messages.warning(request, 'You have already submitted a review for this appointment.')
+            return redirect('user_dashboard')
 
         testimonial = Testimonial(
             customer_id=request.user.pk or 0,
+            customer_username=request.user.username,
             customer_name=request.user.get_full_name() or request.user.username,
+            reservation_id=reservation_id,
             rating=int(rating),
             comment=comment,
             service=service,
@@ -277,4 +291,4 @@ def submit_testimonial(request):
             messages.success(request, 'Thank you for your review! It will appear once approved.')
         except Exception as e:
             messages.error(request, f'Could not submit review. ({e})')
-    return redirect('home')
+    return redirect('user_dashboard')
