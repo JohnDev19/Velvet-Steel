@@ -249,8 +249,8 @@ tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
             <td><span class="code-badge">{{ res.confirmation_code }}</span></td>
             <td>
               <div class="cust-cell">
-                {% if res._cust_photo %}
-                <img src="{{ res._cust_photo }}" class="cust-avatar" alt="">
+                {% if res.cust_photo %}
+                <img src="{{ res.cust_photo }}" class="cust-avatar" alt="">
                 {% else %}
                 <div class="cust-initials">{{ res.customer_name|first|upper }}</div>
                 {% endif %}
@@ -301,8 +301,8 @@ tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
         <div class="rmc-body">
           <span class="rmc-code">{{ res.confirmation_code }}</span>
           <div class="rmc-customer" style="display:flex;align-items:center;gap:7px;">
-            {% if res._cust_photo %}
-            <img src="{{ res._cust_photo }}" class="cust-avatar" alt="">
+            {% if res.cust_photo %}
+            <img src="{{ res.cust_photo }}" class="cust-avatar" alt="">
             {% else %}
             <div class="cust-initials">{{ res.customer_name|first|upper }}</div>
             {% endif %}
