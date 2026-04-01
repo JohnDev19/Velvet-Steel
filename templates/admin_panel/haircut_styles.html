@@ -40,7 +40,7 @@
                         <i class="fas fa-edit"></i> Edit
                     </a>
                     <form method="post" action="{% url 'admin_haircut_style_delete' style.pk %}"
-                          onsubmit="return confirm('Delete {{ style.name }}? This cannot be undone.')">
+                          data-confirm="Delete {{ style.name }}? This cannot be undone.">
                         {% csrf_token %}
                         <button type="submit" class="btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</button>
                     </form>

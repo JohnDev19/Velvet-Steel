@@ -336,10 +336,6 @@
 
 <!-- DATE CONTROLS -->
 <div class="avail-controls">
-    <div class="avail-date-nav">
-        <button id="prevDay" title="Previous day"><i class="fas fa-chevron-left"></i></button>
-        <button id="nextDay" title="Next day"><i class="fas fa-chevron-right"></i></button>
-    </div>
     <input type="date" id="availDate" class="avail-date-input">
     <button class="avail-date-today" id="todayBtn">Today</button>
     <span class="avail-date-label" id="availDateLabel"></span>
@@ -462,8 +458,6 @@
     /* ── DATE ──────────────────────────────────────── */
     const dateInput    = document.getElementById('availDate');
     const dateLabel    = document.getElementById('availDateLabel');
-    const prevBtn      = document.getElementById('prevDay');
-    const nextBtn      = document.getElementById('nextDay');
     const todayBtn     = document.getElementById('todayBtn');
     const refreshBtn   = document.getElementById('refreshBtn');
 
@@ -481,16 +475,6 @@
         dateLabel.textContent = d.toLocaleDateString('en-PH', opts);
     }
     dateInput.addEventListener('change', () => { updateLabel(dateInput.value); loadAll(); });
-    prevBtn.addEventListener('click', () => {
-        const d = new Date(dateInput.value + 'T00:00:00');
-        d.setDate(d.getDate() - 1);
-        setDate(d.toISOString().split('T')[0]);
-    });
-    nextBtn.addEventListener('click', () => {
-        const d = new Date(dateInput.value + 'T00:00:00');
-        d.setDate(d.getDate() + 1);
-        setDate(d.toISOString().split('T')[0]);
-    });
     todayBtn.addEventListener('click', () => setDate(todayStr()));
     refreshBtn.addEventListener('click', loadAll);
 

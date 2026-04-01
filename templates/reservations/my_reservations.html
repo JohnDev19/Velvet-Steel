@@ -55,7 +55,7 @@
                         <a href="{% url 'reservation_detail' res.pk %}" class="btn-outline btn-sm">View</a>
                         {% if res.status == 'pending' or res.status == 'confirmed' %}
                         <form method="post" action="{% url 'cancel_reservation' res.pk %}"
-                              onsubmit="return confirm('Cancel this reservation?')">
+                              data-confirm="Cancel this reservation? This cannot be undone.">
                             {% csrf_token %}
                             <button type="submit" class="btn-danger btn-sm">Cancel</button>
                         </form>

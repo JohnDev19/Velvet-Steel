@@ -26,7 +26,7 @@
                         <i class="fas fa-edit"></i> Edit
                     </a>
                     <form method="post" action="{% url 'admin_service_delete' svc.pk %}"
-                          onsubmit="return confirm('Delete {{ svc.name }}? This cannot be undone.')">
+                          data-confirm="Delete {{ svc.name }}? This cannot be undone.">
                         {% csrf_token %}
                         <button type="submit" class="btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</button>
                     </form>

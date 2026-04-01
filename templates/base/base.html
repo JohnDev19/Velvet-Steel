@@ -163,6 +163,18 @@
     </div>
 </footer>
 
+<div id="vsConfirmModal" class="vs-confirm-overlay">
+  <div class="vs-confirm-box">
+    <div class="vs-confirm-icon"><i class="fas fa-exclamation-triangle"></i></div>
+    <h3 class="vs-confirm-title">Are you sure?</h3>
+    <p class="vs-confirm-msg"></p>
+    <div class="vs-confirm-actions">
+      <button type="button" class="vs-confirm-cancel">Cancel</button>
+      <button type="button" class="vs-confirm-ok">Delete</button>
+    </div>
+  </div>
+</div>
+
 <script src="{% static 'js/main.js' %}"></script>
 {% block extra_js %}{% endblock %}
 </body>
