@@ -1,15 +1,37 @@
 from django.shortcuts import render
 from django.conf import settings
-from reservations.models import Barber, HaircutStyle, Service
+from reservations.models import Barber, HaircutStyle, Service, Testimonial
+from accounts.models import UserProfile
+from django.contrib.auth.models import User
 from collections import defaultdict
+
+
+def _testimonial_photos(testimonials):
+    photos = {}
+    for t in testimonials:
+        if t.customer_username:
+            try:
+                dj = User.objects.filter(username=t.customer_username).first()
+                if dj:
+                    prof = UserProfile.objects(user_id=dj.pk).first()
+                    if prof and prof.photo:
+                        photos[t.customer_username] = prof.photo
+            except Exception:
+                pass
+    return photos
 
 
 def home(request):
     barbers  = Barber.objects(is_active=True)
     services = Service.objects(is_active=True).order_by('category', 'price')
+    testimonials = list(Testimonial.objects(is_approved=True).order_by('-created_at')[:9])
+    photos = _testimonial_photos(testimonials)
+    for t in testimonials:
+        t.cust_photo = photos.get(t.customer_username, '')
     context = {
         'barbers':      barbers,
         'services':     services,
+        'testimonials': testimonials,
         'shop_name':    settings.BARBERSHOP_NAME,
         'shop_phone':   settings.BARBERSHOP_PHONE,
         'shop_address': settings.BARBERSHOP_ADDRESS,

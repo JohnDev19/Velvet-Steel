@@ -3,13 +3,20 @@
 {% block page_title %}Customer Reviews{% endblock %}
 {% block content %}
 <div class="admin-page-header">
-    <h2>Reviews <span class="count-badge">{{ testimonials.count }}</span></h2>
+    <h2>Reviews <span class="count-badge">{{ testimonials_count }}</span></h2>
 </div>
 <div class="admin-section">
     <div class="reviews-admin-list">
         {% for t in testimonials %}
         <div class="review-admin-card {% if not t.is_approved %}review-pending{% endif %}">
             <div class="rac-header">
+                <div class="rac-customer-avatar">
+                    {% if t.cust_photo %}
+                    <img src="{{ t.cust_photo }}" alt="{{ t.customer_name }}">
+                    {% else %}
+                    <span>{{ t.customer_name|first|upper }}</span>
+                    {% endif %}
+                </div>
                 <div class="rac-stars">
                     {% for i in "12345" %}
                     <i class="fas fa-star {% if forloop.counter <= t.rating %}star-active{% endif %}"></i>

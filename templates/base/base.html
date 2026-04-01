@@ -38,18 +38,30 @@
             <li><a href="{% url 'book_reservation' %}" class="nav-link nav-book">Book Now</a></li>
             {% if user.is_authenticated %}
             <li class="nav-dropdown">
-                <a href="#" class="nav-link nav-user">
+                <a href="#" class="nav-link nav-user" aria-label="Account menu">
                     {% if user_profile and user_profile.photo %}
                     <img src="{{ user_profile.photo }}" class="nav-avatar" alt="Profile">
                     {% else %}
-                    <i class="fas fa-user-circle"></i>
+                    <i class="fas fa-user-circle nav-user-icon"></i>
                     {% endif %}
-                    {{ user.first_name|default:user.username }}
                 </a>
                 <div class="dropdown-menu">
+                    <div class="dropdown-user-header">
+                        <div class="dropdown-user-avatar">
+                            {% if user_profile and user_profile.photo %}
+                            <img src="{{ user_profile.photo }}" alt="Profile">
+                            {% else %}
+                            <span>{{ user.first_name|first|upper|default:user.username|first|upper }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="dropdown-user-info">
+                            <strong>{{ user.get_full_name|default:user.username }}</strong>
+                            <span>{{ user.email }}</span>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
                     {% if user.is_staff %}
                     <a href="{% url 'admin_dashboard' %}"><i class="fas fa-tachometer-alt"></i> Admin Panel</a>
-                    <div class="dropdown-divider"></div>
                     <a href="{% url 'profile' %}"><i class="fas fa-user-cog"></i> Profile</a>
                     {% else %}
                     <a href="{% url 'user_dashboard' %}"><i class="fas fa-chart-line"></i> My Dashboard</a>

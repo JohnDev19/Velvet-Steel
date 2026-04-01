@@ -234,6 +234,50 @@
   </div>
 </section>
 
+{% if testimonials %}
+<section class="section testimonials-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">CLIENT STORIES</div>
+      <h2 class="section-title">What They <em>Say</em></h2>
+      <p class="section-subtitle">Real words from real clients. Every review is a reflection of the craft, care, and consistency we bring to every cut.</p>
+    </div>
+    <div class="tslider-wrap" id="tsliderWrap">
+      <div class="tslider-track" id="tsliderTrack">
+        {% for t in testimonials %}
+        <div class="tcard">
+          <div class="tcard-quote-mark">&ldquo;</div>
+          <p class="tcard-body">{{ t.comment }}</p>
+          <div class="tcard-footer">
+            <div class="tcard-avatar">
+              {% if t.cust_photo %}
+              <img src="{{ t.cust_photo }}" alt="{{ t.customer_name }}">
+              {% else %}
+              <span>{{ t.customer_name|first|upper }}</span>
+              {% endif %}
+            </div>
+            <div class="tcard-meta">
+              <strong class="tcard-name">{{ t.customer_name }}</strong>
+              <div class="tcard-stars">
+                {% for i in "12345" %}
+                <i class="fas fa-star{% if forloop.counter > t.rating %} tstar-off{% endif %}"></i>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="tslider-dots" id="tsliderDots"></div>
+    <div class="tslider-controls">
+      <button class="tslider-btn" id="tsliderPrev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+      <button class="tslider-btn" id="tsliderNext" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+</section>
+{% endif %}
+
 <section class="cta-banner">
   <div class="cta-banner-bg"></div>
   <div class="container cta-content">
@@ -294,4 +338,83 @@
   </div>
 </section>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+  var wrap = document.getElementById('tsliderWrap');
+  var track = document.getElementById('tsliderTrack');
+  var dotsEl = document.getElementById('tsliderDots');
+  var prevBtn = document.getElementById('tsliderPrev');
+  var nextBtn = document.getElementById('tsliderNext');
+  if (!track || !wrap) return;
+
+  var cards = Array.from(track.querySelectorAll('.tcard'));
+  var total = cards.length;
+  var current = 0;
+  var perPage = 1;
+  var totalGroups = 1;
+  var timer = null;
+
+  function getPerPage() { return window.innerWidth >= 900 ? 3 : 1; }
+
+  function layout() {
+    perPage = getPerPage();
+    totalGroups = Math.ceil(total / perPage);
+    if (current >= totalGroups) current = totalGroups - 1;
+    var cardW = wrap.offsetWidth / perPage;
+    cards.forEach(function(c) { c.style.flexShrink = '0'; c.style.width = cardW + 'px'; });
+    track.style.width = (cardW * total) + 'px';
+    slide(false);
+    buildDots();
+  }
+
+  function slide(animate) {
+    var cardW = wrap.offsetWidth / perPage;
+    var x = current * perPage * cardW;
+    if (!animate) {
+      track.style.transition = 'none';
+      track.style.transform = 'translateX(-' + x + 'px)';
+      void track.offsetWidth;
+      track.style.transition = '';
+    } else {
+      track.style.transform = 'translateX(-' + x + 'px)';
+    }
+    var dots = dotsEl.querySelectorAll('.tdot');
+    dots.forEach(function(d, i) { d.classList.toggle('tdot-active', i === current); });
+  }
+
+  function buildDots() {
+    dotsEl.innerHTML = '';
+    for (var i = 0; i < totalGroups; i++) {
+      (function(idx) {
+        var d = document.createElement('button');
+        d.className = 'tdot' + (idx === current ? ' tdot-active' : '');
+        d.setAttribute('aria-label', 'Slide ' + (idx + 1));
+        d.addEventListener('click', function() { stopTimer(); current = idx; slide(true); buildDots(); startTimer(); });
+        dotsEl.appendChild(d);
+      })(i);
+    }
+  }
+
+  function goTo(dir) {
+    current = (current + dir + totalGroups) % totalGroups;
+    slide(true);
+    buildDots();
+  }
+
+  function startTimer() { timer = setInterval(function() { goTo(1); }, 5000); }
+  function stopTimer() { clearInterval(timer); }
+
+  layout();
+  startTimer();
+
+  prevBtn.addEventListener('click', function() { stopTimer(); goTo(-1); startTimer(); });
+  nextBtn.addEventListener('click', function() { stopTimer(); goTo(1); startTimer(); });
+  wrap.addEventListener('mouseenter', stopTimer);
+  wrap.addEventListener('mouseleave', startTimer);
+  window.addEventListener('resize', function() { stopTimer(); layout(); startTimer(); });
+})();
+</script>
 {% endblock %}

@@ -1,6 +1,13 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block title %}My Reservations | Velvet Steel{% endblock %}
+{% block extra_css %}
+<style>
+@media (max-width: 560px) {
+    .res-header .btn-gold { padding: 7px 13px; font-size: 0.74rem; }
+}
+</style>
+{% endblock %}
 {% block content %}
 
 <section class="page-hero page-hero-sm">

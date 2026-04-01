@@ -118,6 +118,14 @@
 .src-comment { font-size: 0.88rem; color: #c8c0b0; line-height: 1.5; margin-bottom: 4px; }
 .src-service { font-size: 0.75rem; color: #6a6050; }
 .src-service i { color: var(--gold); margin-right: 4px; }
+.src-reviewer-avatar {
+    width: 36px; height: 36px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+    border: 1.5px solid rgba(200,160,60,0.4);
+    background: rgba(200,160,60,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: var(--gold);
+}
+.src-reviewer-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
 .standalone-form-card {
     background: #1a1a1a;
@@ -233,6 +241,13 @@
             {% for t in my_testimonials %}
             <div class="submitted-review-card">
                 <div class="src-header">
+                    <div class="src-reviewer-avatar">
+                        {% if user_profile and user_profile.photo %}
+                        <img src="{{ user_profile.photo }}" alt="Your photo">
+                        {% else %}
+                        <span>{{ request.user.first_name|first|upper|default:request.user.username|first|upper }}</span>
+                        {% endif %}
+                    </div>
                     <div class="src-stars">
                         {% for i in "12345" %}{% if forloop.counter <= t.rating %}&#9733;{% else %}<span class="star-empty">&#9733;</span>{% endif %}{% endfor %}
                     </div>

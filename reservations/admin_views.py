@@ -229,8 +229,22 @@ def admin_barber_delete(request, pk):
 
 @admin_required
 def admin_testimonials(request):
+    from accounts.models import UserProfile
+    testimonials = list(Testimonial.objects().order_by('-created_at'))
+    for t in testimonials:
+        t.cust_photo = ''
+        if t.customer_username:
+            try:
+                dj = User.objects.filter(username=t.customer_username).first()
+                if dj:
+                    prof = UserProfile.objects(user_id=dj.pk).first()
+                    if prof and prof.photo:
+                        t.cust_photo = prof.photo
+            except Exception:
+                pass
     return render(request, 'admin_panel/testimonials.html', {
-        'testimonials': Testimonial.objects().order_by('-created_at')
+        'testimonials': testimonials,
+        'testimonials_count': len(testimonials),
     })
 
 
