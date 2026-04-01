@@ -35,7 +35,7 @@
                 {% if barber.specialty %}<p class="style-desc-small">{{ barber.specialty }}</p>{% endif %}
                 <div class="style-meta">
                     <span class="style-price"><i class="fas fa-award"></i> {{ barber.experience_years }} yrs &nbsp; <i class="fas fa-star"></i> {{ barber.rating }}</span>
-                    <span class="style-status {% if barber.is_active %}dot-completed{% else %}dot-cancelled{% endif %} qs-dot">
+                    <span class="style-status {% if barber.is_active %}style-status-active{% else %}style-status-inactive{% endif %}">
                         {% if barber.is_active %}Active{% else %}Inactive{% endif %}
                     </span>
                 </div>

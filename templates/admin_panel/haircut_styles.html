@@ -51,7 +51,7 @@
                 <h4 class="style-name">{{ style.name }}</h4>
                 <div class="style-meta">
                     <span class="style-price">₱{{ style.price }}</span>
-                    <span class="style-status {% if style.is_active %}dot-completed{% else %}dot-cancelled{% endif %} qs-dot">
+                    <span class="style-status {% if style.is_active %}style-status-active{% else %}style-status-inactive{% endif %}">
                         {% if style.is_active %}Active{% else %}Inactive{% endif %}
                     </span>
                 </div>

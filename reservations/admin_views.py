@@ -1,10 +1,27 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils import timezone
+from django.contrib.auth.models import User
 from functools import wraps
 from .models import Reservation, Service, Barber, Testimonial, GalleryImage, HaircutStyle
+from accounts.models import UserProfile
 import datetime
 import base64
+
+
+def _customer_photos(reservations):
+    usernames = {r.customer_username for r in reservations if r.customer_username}
+    photos = {}
+    for uname in usernames:
+        try:
+            dj = User.objects.filter(username=uname).first()
+            if dj:
+                prof = UserProfile.objects(user_id=dj.pk).first()
+                if prof and prof.photo:
+                    photos[uname] = prof.photo
+        except Exception:
+            pass
+    return photos
 
 
 def admin_required(view_func):
@@ -42,8 +59,11 @@ def admin_dashboard(request):
     )
     revenue_month = sum(float(r.total_price or 0) for r in completed_month)
 
-    recent_reservations  = Reservation.objects().order_by('-created_at')[:10]
+    recent_reservations  = list(Reservation.objects().order_by('-created_at')[:10])
     pending_testimonials = Testimonial.objects(is_approved=False).count()
+    photos = _customer_photos(recent_reservations)
+    for res in recent_reservations:
+        res._cust_photo = photos.get(res.customer_username, '')
 
     return render(request, 'admin_panel/dashboard.html', {
         'total_reservations':  total_reservations,
@@ -69,8 +89,12 @@ def admin_reservations(request):
         qs = qs.filter(status=status_filter)
     if date_filter:
         qs = qs.filter(appointment_date=date_filter)
+    reservations = list(qs)
+    photos = _customer_photos(reservations)
+    for res in reservations:
+        res._cust_photo = photos.get(res.customer_username, '')
     return render(request, 'admin_panel/reservations.html', {
-        'reservations':  qs,
+        'reservations':  reservations,
         'status_filter': status_filter,
         'date_filter':   date_filter,
     })
@@ -397,7 +421,6 @@ def admin_service_add(request):
                 description=data.get('description', ''),
                 price=data['price'],
                 duration_minutes=data.get('duration_minutes', 30),
-                icon=data.get('icon', 'scissors') or 'scissors',
                 is_active=data.get('is_active', True),
             )
             if image_file:
@@ -445,7 +468,6 @@ def admin_service_edit(request, pk):
             'description':      svc.description,
             'price':            svc.price,
             'duration_minutes': svc.duration_minutes,
-            'icon':             svc.icon,
             'is_active':        svc.is_active,
         })
     return render(request, 'admin_panel/service_form.html', {

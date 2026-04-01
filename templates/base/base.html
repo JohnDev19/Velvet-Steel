@@ -19,7 +19,13 @@
 <nav class="navbar" id="navbar">
     <div class="nav-container">
         <a href="{% url 'home' %}" class="nav-brand">
-            <div class="brand-icon"><i class="fas fa-cut"></i></div>
+            <div class="brand-icon">
+                {% if user.is_authenticated and user.is_staff and user_profile and user_profile.photo %}
+                <img src="{{ user_profile.photo }}" class="brand-avatar" alt="Admin">
+                {% else %}
+                <i class="fas fa-cut"></i>
+                {% endif %}
+            </div>
             <div class="brand-text">
                 <span class="brand-name">Velvet Steel</span>
                 <span class="brand-sub">BARBERSHOP</span>
@@ -33,7 +39,12 @@
             {% if user.is_authenticated %}
             <li class="nav-dropdown">
                 <a href="#" class="nav-link nav-user">
-                    <i class="fas fa-user-circle"></i> {{ user.first_name|default:user.username }}
+                    {% if user_profile and user_profile.photo %}
+                    <img src="{{ user_profile.photo }}" class="nav-avatar" alt="Profile">
+                    {% else %}
+                    <i class="fas fa-user-circle"></i>
+                    {% endif %}
+                    {{ user.first_name|default:user.username }}
                 </a>
                 <div class="dropdown-menu">
                     {% if user.is_staff %}
@@ -82,7 +93,13 @@
         <div class="footer-container">
             <div class="footer-brand">
                 <div class="footer-logo">
-                    <div class="brand-icon"><i class="fas fa-cut"></i></div>
+                    <div class="brand-icon">
+                        {% if user.is_authenticated and user.is_staff and user_profile and user_profile.photo %}
+                        <img src="{{ user_profile.photo }}" class="brand-avatar" alt="Admin">
+                        {% else %}
+                        <i class="fas fa-cut"></i>
+                        {% endif %}
+                    </div>
                     <div class="brand-text">
                         <span class="brand-name">Velvet Steel</span>
                         <span class="brand-sub">BARBERSHOP</span>

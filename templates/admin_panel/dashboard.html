@@ -247,7 +247,16 @@ tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
               <input type="checkbox" class="dash-row-cb" value="{{ res.pk }}">
             </td>
             <td><span class="code-badge">{{ res.confirmation_code }}</span></td>
-            <td>{{ res.customer_name }}</td>
+            <td>
+              <div class="cust-cell">
+                {% if res._cust_photo %}
+                <img src="{{ res._cust_photo }}" class="cust-avatar" alt="">
+                {% else %}
+                <div class="cust-initials">{{ res.customer_name|first|upper }}</div>
+                {% endif %}
+                {{ res.customer_name }}
+              </div>
+            </td>
             <td class="dash-hide-tab">{% if res.barber %}{{ res.barber.name }}{% else %}—{% endif %}</td>
             <td>{{ res.appointment_date_display }}<br><small>{{ res.appointment_time_display }}</small></td>
             <td class="dash-hide-tab">₱{{ res.total_price }}</td>
@@ -291,7 +300,14 @@ tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
         </div>
         <div class="rmc-body">
           <span class="rmc-code">{{ res.confirmation_code }}</span>
-          <div class="rmc-customer">{{ res.customer_name }}</div>
+          <div class="rmc-customer" style="display:flex;align-items:center;gap:7px;">
+            {% if res._cust_photo %}
+            <img src="{{ res._cust_photo }}" class="cust-avatar" alt="">
+            {% else %}
+            <div class="cust-initials">{{ res.customer_name|first|upper }}</div>
+            {% endif %}
+            {{ res.customer_name }}
+          </div>
           <div class="rmc-barber">
             {% if res.barber %}
               <i class="fas fa-user-tie" style="color:#c8a03c;margin-right:4px;font-size:0.7rem;"></i>{{ res.barber.name }}

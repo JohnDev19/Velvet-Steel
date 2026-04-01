@@ -1,5 +1,87 @@
 {% extends 'base/base.html' %}
+{% load static %}
 {% block title %}My Profile | Velvet Steel{% endblock %}
+
+{% block extra_css %}
+<style>
+.profile-page { padding: 60px 0 80px; }
+.profile-wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+.profile-card-header {
+    display: flex; align-items: center; gap: 24px;
+    background: var(--dark-3); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 32px; margin-bottom: 28px;
+}
+.profile-avatar-wrap { position: relative; flex-shrink: 0; }
+.profile-avatar-circle {
+    width: 88px; height: 88px; border-radius: 50%;
+    border: 2px solid var(--gold); overflow: hidden;
+    background: var(--gold-faint); display: flex; align-items: center; justify-content: center;
+}
+.profile-avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+.profile-avatar-initials {
+    font-family: var(--font-display); font-size: 2rem;
+    font-weight: 700; color: var(--gold);
+}
+.profile-header-meta h3 {
+    font-family: var(--font-display); font-size: 1.4rem;
+    color: var(--text-primary); margin: 0 0 4px;
+}
+.profile-header-meta p { font-size: 0.85rem; color: var(--text-muted); margin: 0 0 8px; }
+.loyalty-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(200,160,60,0.12); color: var(--gold);
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;
+    padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(200,160,60,0.25);
+}
+.profile-form-card {
+    background: var(--dark-3); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 32px;
+}
+.profile-section-title {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold); margin: 0 0 18px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+.profile-upload-zone {
+    border: 2px dashed rgba(200,160,60,0.3); border-radius: var(--radius);
+    padding: 32px; text-align: center; cursor: pointer;
+    transition: var(--transition); position: relative;
+    background: var(--gold-faint);
+}
+.profile-upload-zone:hover, .profile-upload-zone.drag-over {
+    border-color: var(--gold); background: rgba(200,160,60,0.08);
+}
+.profile-upload-zone input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.profile-upload-icon { font-size: 2rem; color: var(--gold); margin-bottom: 8px; }
+.profile-upload-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); }
+.profile-upload-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+.profile-upload-preview {
+    display: none; align-items: center; gap: 16px;
+    padding: 12px; background: var(--dark-2); border-radius: var(--radius);
+    margin-top: 12px; border: 1px solid var(--border);
+}
+.profile-preview-thumb {
+    width: 52px; height: 52px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+    border: 2px solid var(--gold);
+}
+.profile-preview-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.profile-preview-name { font-size: 0.82rem; color: var(--text-secondary); flex: 1; }
+.profile-preview-clear {
+    background: none; border: none; color: var(--text-muted); cursor: pointer;
+    font-size: 0.9rem; padding: 4px 8px; border-radius: var(--radius);
+    transition: var(--transition);
+}
+.profile-preview-clear:hover { color: #e05555; }
+@media (max-width: 560px) {
+    .profile-card-header { flex-direction: column; text-align: center; }
+    .profile-avatar-circle { width: 72px; height: 72px; }
+    .profile-avatar-initials { font-size: 1.6rem; }
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <section class="page-hero page-hero-sm">
     <div class="page-hero-bg"></div>
@@ -8,25 +90,34 @@
         <h1 class="page-hero-title">My <em>Profile</em></h1>
     </div>
 </section>
-<section class="section">
-    <div class="container container-sm">
-        <div class="profile-card">
-            <div class="profile-header">
-                <div class="profile-avatar">
+
+<div class="profile-page">
+    <div class="profile-wrap">
+
+        <div class="profile-card-header">
+            <div class="profile-avatar-wrap">
+                <div class="profile-avatar-circle">
                     {% if profile.photo %}
-                    <img src="{{ profile.photo.url }}" alt="Profile">
+                    <img src="{{ profile.photo }}" alt="Profile photo">
                     {% else %}
-                    <div class="avatar-placeholder">{{ request.user.first_name|first|default:request.user.username|first }}</div>
+                    <span class="profile-avatar-initials">{{ request.user.first_name|first|upper|default:request.user.username|first|upper }}</span>
                     {% endif %}
                 </div>
-                <div class="profile-meta">
-                    <h3>{{ request.user.get_full_name|default:request.user.username }}</h3>
-                    <p>{{ request.user.email }}</p>
-                    <span class="loyalty-badge"><i class="fas fa-star"></i> {{ profile.loyalty_points }} Loyalty Points</span>
-                </div>
             </div>
-            <form method="post" enctype="multipart/form-data" class="profile-form">
+            <div class="profile-header-meta">
+                <h3>{{ request.user.get_full_name|default:request.user.username }}</h3>
+                <p>{{ request.user.email }}</p>
+                {% if not request.user.is_staff %}
+                <span class="loyalty-badge"><i class="fas fa-star"></i> {{ profile.loyalty_points }} Loyalty Points</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="profile-form-card">
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
+
+                <p class="profile-section-title">Personal Information</p>
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">First Name</label>
@@ -41,6 +132,7 @@
                     <label class="form-label">Email</label>
                     <input type="email" name="email" class="form-control" value="{{ request.user.email }}">
                 </div>
+                {% if not request.user.is_staff %}
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Phone</label>
@@ -51,16 +143,89 @@
                         <input type="text" name="city" class="form-control" value="{{ profile.city }}">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Profile Photo</label>
-                    <input type="file" name="photo" class="form-control" accept="image/*">
+                {% endif %}
+
+                <p class="profile-section-title" style="margin-top:24px;">Profile Photo</p>
+                <div class="profile-upload-zone" id="profileUploadZone">
+                    <input type="file" name="photo" id="profilePhotoInput" accept="image/jpeg,image/png,image/webp">
+                    <div class="profile-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="profile-upload-title">Click or drag to upload photo</div>
+                    <div class="profile-upload-hint">JPG, PNG or WebP — max 5 MB</div>
                 </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn-gold">Save Changes</button>
+                <div class="profile-upload-preview" id="profileUploadPreview">
+                    <div class="profile-preview-thumb"><img id="profilePreviewImg" src="" alt=""></div>
+                    <span class="profile-preview-name" id="profilePreviewName"></span>
+                    <button type="button" class="profile-preview-clear" id="profilePreviewClear" title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="form-actions" style="margin-top:28px;">
+                    <button type="submit" class="btn-gold">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    {% if not request.user.is_staff %}
                     <a href="{% url 'my_reservations' %}" class="btn-outline">My Reservations</a>
+                    {% endif %}
                 </div>
             </form>
         </div>
+
     </div>
-</section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    var zone  = document.getElementById('profileUploadZone');
+    var input = document.getElementById('profilePhotoInput');
+    var prev  = document.getElementById('profileUploadPreview');
+    var img   = document.getElementById('profilePreviewImg');
+    var name  = document.getElementById('profilePreviewName');
+    var clear = document.getElementById('profilePreviewClear');
+
+    if (!zone || !input) return;
+
+    zone.addEventListener('click', function (e) {
+        if (!e.target.closest('input')) input.click();
+    });
+
+    zone.addEventListener('dragover', function (e) {
+        e.preventDefault(); zone.classList.add('drag-over');
+    });
+    zone.addEventListener('dragleave', function () {
+        zone.classList.remove('drag-over');
+    });
+    zone.addEventListener('drop', function (e) {
+        e.preventDefault(); zone.classList.remove('drag-over');
+        if (e.dataTransfer.files[0]) {
+            var dt = new DataTransfer();
+            dt.items.add(e.dataTransfer.files[0]);
+            input.files = dt.files;
+            input.dispatchEvent(new Event('change'));
+        }
+    });
+
+    input.addEventListener('change', function () {
+        var file = input.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            img.src = e.target.result;
+            name.textContent = file.name;
+            prev.style.display = 'flex';
+            zone.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    clear.addEventListener('click', function () {
+        input.value = '';
+        prev.style.display = 'none';
+        zone.style.display = '';
+        img.src = '';
+    });
+}());
+</script>
 {% endblock %}

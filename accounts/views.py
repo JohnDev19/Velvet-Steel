@@ -217,6 +217,7 @@ def user_dashboard(request):
 
 @login_required
 def profile_view(request):
+    import base64
     profile = _get_or_create_profile(request.user)
     if request.method == 'POST':
         request.user.first_name = request.POST.get('first_name', '')
@@ -227,6 +228,12 @@ def profile_view(request):
         try:
             profile.phone = request.POST.get('phone', '')
             profile.city  = request.POST.get('city', '')
+            photo_file = request.FILES.get('photo')
+            if photo_file:
+                raw  = photo_file.read()
+                mime = photo_file.content_type or 'image/jpeg'
+                b64  = base64.b64encode(raw).decode()
+                profile.photo = f"data:{mime};base64,{b64}"
             profile.save()
         except Exception:
             pass
