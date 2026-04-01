@@ -63,7 +63,7 @@ def admin_dashboard(request):
     pending_testimonials = Testimonial.objects(is_approved=False).count()
     photos = _customer_photos(recent_reservations)
     for res in recent_reservations:
-        res._cust_photo = photos.get(res.customer_username, '')
+        res.cust_photo = photos.get(res.customer_username, '')
 
     return render(request, 'admin_panel/dashboard.html', {
         'total_reservations':  total_reservations,
@@ -92,7 +92,7 @@ def admin_reservations(request):
     reservations = list(qs)
     photos = _customer_photos(reservations)
     for res in reservations:
-        res._cust_photo = photos.get(res.customer_username, '')
+        res.cust_photo = photos.get(res.customer_username, '')
     return render(request, 'admin_panel/reservations.html', {
         'reservations':  reservations,
         'status_filter': status_filter,
