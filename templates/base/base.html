@@ -19,7 +19,7 @@
 <nav class="navbar" id="navbar">
     <div class="nav-container">
         <a href="{% url 'home' %}" class="nav-brand">
-            <div class="brand-icon">
+            <div class="brand-icon{% if user.is_authenticated and user.is_staff and user_profile and user_profile.photo %} brand-icon--photo{% endif %}">
                 {% if user.is_authenticated and user.is_staff and user_profile and user_profile.photo %}
                 <img src="{{ user_profile.photo }}" class="brand-avatar" alt="Admin">
                 {% else %}
@@ -93,7 +93,7 @@
         <div class="footer-container">
             <div class="footer-brand">
                 <div class="footer-logo">
-                    <div class="brand-icon">
+                    <div class="brand-icon{% if user.is_authenticated and user.is_staff and user_profile and user_profile.photo %} brand-icon--photo{% endif %}">
                         {% if user.is_authenticated and user.is_staff and user_profile and user_profile.photo %}
                         <img src="{{ user_profile.photo }}" class="brand-avatar" alt="Admin">
                         {% else %}

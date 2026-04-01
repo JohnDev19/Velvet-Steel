@@ -21,7 +21,13 @@
     <!-- Sidebar -->
     <aside class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-brand">
-            <div class="brand-icon-sm"><i class="fas fa-cut"></i></div>
+            <div class="brand-icon-sm{% if user_profile and user_profile.photo %} brand-icon-sm--photo{% endif %}">
+                {% if user_profile and user_profile.photo %}
+                <img src="{{ user_profile.photo }}" class="brand-avatar" alt="Admin">
+                {% else %}
+                <i class="fas fa-cut"></i>
+                {% endif %}
+            </div>
             <div>
                 <span class="sidebar-name">Velvet Steel</span>
                 <span class="sidebar-sub">Admin Panel</span>
@@ -79,7 +85,11 @@
             </button>
             <div class="topbar-title">{% block page_title %}Dashboard{% endblock %}</div>
             <div class="topbar-user">
+                {% if user_profile and user_profile.photo %}
+                <img src="{{ user_profile.photo }}" class="topbar-avatar" alt="Profile">
+                {% else %}
                 <i class="fas fa-user-circle"></i>
+                {% endif %}
                 <span>{{ request.user.get_full_name|default:request.user.username }}</span>
             </div>
         </header>

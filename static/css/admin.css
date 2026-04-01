@@ -45,7 +45,12 @@
   background: #c8a03c;
   border-radius: 4px;
   display: flex; align-items: center; justify-content: center;
-  color: #0e0e0e; font-size: 1rem; flex-shrink: 0;
+  color: #0e0e0e; font-size: 1rem; flex-shrink: 0; overflow: hidden;
+}
+.brand-icon-sm--photo { background: transparent; }
+.topbar-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  object-fit: cover; border: 1.5px solid #c8a03c; flex-shrink: 0;
 }
 .sidebar-name {
   display: block;
