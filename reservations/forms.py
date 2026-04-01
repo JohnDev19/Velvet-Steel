@@ -93,15 +93,6 @@ class ServiceForm(forms.Form):
             'placeholder': '30',
         })
     )
-    icon = forms.CharField(
-        max_length=50,
-        required=False,
-        initial='scissors',
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'e.g. scissors, cut, star',
-        })
-    )
     image = forms.FileField(
         required=False,
         widget=forms.ClearableFileInput(attrs={

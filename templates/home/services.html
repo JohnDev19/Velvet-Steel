@@ -33,11 +33,11 @@
             {% for svc in all_services %}
             <div class="service-full-card">
                 {% if svc.image %}
-                <div class="sfc-icon" style="overflow:hidden;padding:0;">
+                <div class="sfc-icon sfc-has-image" style="overflow:hidden;padding:0;">
                     <img src="{{ svc.image }}" alt="{{ svc.name }}" style="width:100%;height:100%;object-fit:cover;">
                 </div>
                 {% else %}
-                <div class="sfc-icon"><i class="fas fa-{{ svc.icon|default:'cut' }}"></i></div>
+                <div class="sfc-icon sfc-icon-only"><i class="fas fa-{{ svc.icon|default:'cut' }}"></i></div>
                 {% endif %}
                 <div class="sfc-body">
                     <div class="sfc-header">

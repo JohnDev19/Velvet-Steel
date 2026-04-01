@@ -737,6 +737,10 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .hero-stats { display: none; }
   .service-full-card { flex-direction: column; gap: 16px; padding: 20px; }
   .sfc-icon { width: 48px; height: 48px; font-size: 1.2rem; }
+  .sfc-icon.sfc-icon-only { display: none; }
+  .sfc-icon.sfc-has-image { width: 100%; height: 200px; border-radius: var(--radius) var(--radius) 0 0; border: none; background: none; margin: -20px -20px 0; width: calc(100% + 40px); }
+  .service-icon-wrap:not(.service-icon-has-image) { display: none; }
+  .service-icon-wrap.service-icon-has-image { width: calc(100% + 64px); margin: -32px -32px 0; height: 180px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; border: none; background: none; }
   .sfc-header { flex-direction: column; gap: 6px; align-items: flex-start; }
   .sfc-price { font-size: 1.4rem; }
   .sfc-footer { flex-direction: column; align-items: flex-start; gap: 12px; }

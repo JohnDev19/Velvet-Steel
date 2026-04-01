@@ -86,7 +86,7 @@
       {% if services %}
       {% for svc in services %}
       <div class="service-card">
-        <div class="service-icon-wrap">
+        <div class="service-icon-wrap{% if svc.image %} service-icon-has-image{% endif %}">
           {% if svc.image %}
           <img src="{{ svc.image }}" alt="{{ svc.name }}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">
           {% else %}

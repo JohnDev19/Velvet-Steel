@@ -46,12 +46,6 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="{{ form.icon.id_for_label }}">Icon Name <small style="color:#6a6050;">(Font Awesome icon name, e.g. cut, star, spa)</small></label>
-                {{ form.icon }}
-                {% if form.icon.errors %}<small class="field-error">{{ form.icon.errors|join:", " }}</small>{% endif %}
-            </div>
-
-            <div class="form-group">
                 <label class="form-label" for="{{ form.description.id_for_label }}">Description</label>
                 {{ form.description }}
                 {% if form.description.errors %}<small class="field-error">{{ form.description.errors|join:", " }}</small>{% endif %}
