@@ -1003,7 +1003,7 @@ select.form-control-tier {
 }
 
 /* ============================================================
-   HAIRCUT STYLE FORM — RESPONSIVE
+   HAIRCUT STYLE FORM
    ============================================================ */
 @media (max-width: 720px) {
   .form-row-2 { grid-template-columns: 1fr !important; }
