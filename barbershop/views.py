@@ -50,6 +50,7 @@ def about(request):
         'shop_phone':   settings.BARBERSHOP_PHONE,
         'shop_address': settings.BARBERSHOP_ADDRESS,
         'shop_email':   settings.BARBERSHOP_EMAIL,
+        'svc_page':     svc_page,
     }
     return render(request, 'about/index.html', context)
 
