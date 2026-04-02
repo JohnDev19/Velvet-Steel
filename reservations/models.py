@@ -274,6 +274,7 @@ class HomePage(Document):
 
     # CTA banner
     cta_subtitle         = StringField(default='Reserve your slot online in seconds. Real-time availability, confirmed instantly. Walk in ready, walk out sharp.')
+    cta_phone            = StringField(default='+639123456789')
 
     # Location section
     loc_address          = StringField(default='123 Rizal Avenue, Quezon City\nMetro Manila, Philippines')
