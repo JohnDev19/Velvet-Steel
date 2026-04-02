@@ -37,11 +37,6 @@
                        value="{{ about.page_hero_subtitle|default:'Fifteen years of craftsmanship, passion, and Filipino pride' }}">
             </div>
         </div>
-        <div class="form-group" style="margin:0;">
-            <label class="form-label">Story Section Title <small style="text-transform:none;letter-spacing:0;color:#6a6050;">(HTML allowed, use &lt;em&gt; for gold italic)</small></label>
-            <input type="text" name="story_section_title" class="form-control"
-                   value="{{ about.story_section_title|default:'The &lt;em&gt;Legacy&lt;/em&gt; of Velvet Steel' }}">
-        </div>
     </div>
 </div>
 
@@ -82,6 +77,11 @@
                 <input type="text" name="established_year" class="form-control"
                        value="{{ about.established_year|default:'2010' }}" placeholder="2010">
             </div>
+            <div class="form-group" style="margin:0;">
+            <label class="form-label">Story Section Title <small style="text-transform:none;letter-spacing:0;color:#6a6050;">(HTML allowed, use &lt;em&gt; for gold italic)</small></label>
+            <input type="text" name="story_section_title" class="form-control"
+                   value="{{ about.story_section_title|default:'The &lt;em&gt;Legacy&lt;/em&gt; of Velvet Steel' }}">
+        </div>
             <div class="form-group">
                 <label class="form-label">Years Stat (e.g. 15+)</label>
                 <input type="text" name="stat_years" class="form-control"
