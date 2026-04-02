@@ -1,0 +1,178 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Edit Home Page{% endblock %}
+{% block page_title %}Home Page{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+    <div>
+        <h2>Edit Home Page</h2>
+        <p class="subtext">Changes are reflected live on the public Home page.</p>
+    </div>
+    <a href="/" target="_blank" class="btn-outline btn-sm">
+        <i class="fas fa-external-link-alt"></i> View Page
+    </a>
+</div>
+
+<form method="post" novalidate>
+{% csrf_token %}
+
+<!-- HERO -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-star"></i> Hero Section</h3></div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:20px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Location Badge</label>
+            <input type="text" name="hero_location" class="form-control"
+                   value="{{ page.hero_location|default:'QUEZON CITY — METRO MANILA' }}">
+        </div>
+        <div class="form-row-2">
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Small Title</label>
+                <input type="text" name="hero_small_title" class="form-control"
+                       value="{{ page.hero_small_title|default:'Precision. Craft.' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Large Title</label>
+                <input type="text" name="hero_large_title" class="form-control"
+                       value="{{ page.hero_large_title|default:'Velvet Steel' }}">
+            </div>
+        </div>
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Hero Subtitle</label>
+            <textarea name="hero_subtitle" class="form-control" rows="2">{{ page.hero_subtitle|default:'Premium barbershop grooming in the heart of Metro Manila. Old-world technique, uncompromising standards, modern sensibility.' }}</textarea>
+        </div>
+    </div>
+</div>
+
+<!-- FEATURES -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-check-circle"></i> Features Strip</h3></div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:20px;">
+        <div class="form-row-2">
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Feature 1 Title</label>
+                <input type="text" name="feat1_title" class="form-control" value="{{ page.feat1_title|default:'Premium Standard' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Feature 1 Description</label>
+                <textarea name="feat1_desc" class="form-control" rows="2">{{ page.feat1_desc|default:'Every service uses imported professional-grade products. No shortcuts. No compromise on quality from the first cut to the last finish.' }}</textarea>
+            </div>
+        </div>
+        <div class="form-row-2">
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Feature 2 Title</label>
+                <input type="text" name="feat2_title" class="form-control" value="{{ page.feat2_title|default:'Certified Barbers' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Feature 2 Description</label>
+                <textarea name="feat2_desc" class="form-control" rows="2">{{ page.feat2_desc|default:'Our team of master barbers has trained and refined their craft across Manila, Spain, and Japan. Technique is never left to chance.' }}</textarea>
+            </div>
+        </div>
+        <div class="form-row-2">
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Feature 3 Title</label>
+                <input type="text" name="feat3_title" class="form-control" value="{{ page.feat3_title|default:'Online Booking' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Feature 3 Description</label>
+                <textarea name="feat3_desc" class="form-control" rows="2">{{ page.feat3_desc|default:'Reserve your exact slot in seconds. Real-time availability, instant confirmation, no phone calls required. Your time is valued.' }}</textarea>
+            </div>
+        </div>
+        <div class="form-row-2">
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Feature 4 Title</label>
+                <input type="text" name="feat4_title" class="form-control" value="{{ page.feat4_title|default:'Strict Hygiene' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Feature 4 Description</label>
+                <textarea name="feat4_desc" class="form-control" rows="2">{{ page.feat4_desc|default:'Full tool sterilization between every client. A clean, orderly environment is not optional — it is the baseline at Velvet Steel.' }}</textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION SUBTITLES -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-align-left"></i> Section Subtitles</h3></div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:20px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Services Section Subtitle</label>
+            <textarea name="services_subtitle" class="form-control" rows="2">{{ page.services_subtitle|default:'From signature fades to full grooming rituals. Every service is a deliberate act of craft, not a transaction.' }}</textarea>
+        </div>
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Barbers Section Subtitle</label>
+            <textarea name="barbers_subtitle" class="form-control" rows="2">{{ page.barbers_subtitle|default:'Specialists, not generalists. Every barber at Velvet Steel has a defined craft and years of deliberate practice behind it.' }}</textarea>
+        </div>
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Testimonials Section Subtitle</label>
+            <textarea name="testimonials_subtitle" class="form-control" rows="2">{{ page.testimonials_subtitle|default:'Real words from real clients. Every review is a reflection of the craft, care, and consistency we bring to every cut.' }}</textarea>
+        </div>
+    </div>
+</div>
+
+<!-- CTA BANNER -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-bullhorn"></i> CTA Banner</h3></div>
+    <div style="padding:24px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">CTA Subtitle</label>
+            <input type="text" name="cta_subtitle" class="form-control"
+                   value="{{ page.cta_subtitle|default:'Reserve your slot online in seconds. Real-time availability, confirmed instantly. Walk in ready, walk out sharp.' }}">
+        </div>
+    </div>
+</div>
+
+<!-- LOCATION -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-map-marker-alt"></i> Location Section</h3></div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:20px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Address <small style="text-transform:none;letter-spacing:0;color:#6a6050;">(use line breaks for new lines)</small></label>
+            <textarea name="loc_address" class="form-control" rows="2">{{ page.loc_address|default:'123 Rizal Avenue, Quezon City\nMetro Manila, Philippines' }}</textarea>
+        </div>
+        <div class="form-row-2">
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Weekday Hours</label>
+                <input type="text" name="loc_hours_weekday" class="form-control"
+                       value="{{ page.loc_hours_weekday|default:'Monday – Saturday: 8:00 AM – 8:00 PM' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Sunday Hours</label>
+                <input type="text" name="loc_hours_sunday" class="form-control"
+                       value="{{ page.loc_hours_sunday|default:'Sunday: 9:00 AM – 6:00 PM' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Phone</label>
+                <input type="text" name="loc_phone" class="form-control"
+                       value="{{ page.loc_phone|default:'+63 912 345 6789' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Email</label>
+                <input type="email" name="loc_email" class="form-control"
+                       value="{{ page.loc_email|default:'info@velvetsteel.ph' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Map City Label</label>
+                <input type="text" name="loc_map_city" class="form-control"
+                       value="{{ page.loc_map_city|default:'Quezon City, Metro Manila' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Map Country Label</label>
+                <input type="text" name="loc_map_country" class="form-control"
+                       value="{{ page.loc_map_country|default:'Philippines' }}">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display:flex;gap:12px;padding-bottom:40px;">
+    <button type="submit" class="btn-gold">
+        <i class="fas fa-save"></i> Save Home Page
+    </button>
+    <a href="/" target="_blank" class="btn-outline">
+        <i class="fas fa-eye"></i> Preview
+    </a>
+</div>
+
+</form>
+{% endblock %}
