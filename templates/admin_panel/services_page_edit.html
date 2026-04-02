@@ -1,0 +1,54 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Edit Services Page{% endblock %}
+{% block page_title %}Services Page{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+    <div>
+        <h2>Edit Services Page</h2>
+        <p class="subtext">Changes are reflected live on the public Services page.</p>
+    </div>
+    <a href="/services/" target="_blank" class="btn-outline btn-sm">
+        <i class="fas fa-external-link-alt"></i> View Page
+    </a>
+</div>
+
+<form method="post" novalidate>
+{% csrf_token %}
+
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-align-left"></i> Page Text</h3></div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:20px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Hero Subtitle</label>
+            <input type="text" name="hero_subtitle" class="form-control"
+                   value="{{ page.hero_subtitle|default:'Premium grooming crafted for the modern Filipino gentleman' }}">
+        </div>
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Section Badge (e.g. GROOMING MENU)</label>
+            <input type="text" name="section_badge" class="form-control"
+                   value="{{ page.section_badge|default:'GROOMING MENU' }}">
+        </div>
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Section Subtitle</label>
+            <textarea name="section_subtitle" class="form-control" rows="2">{{ page.section_subtitle|default:'Every service follows our quality tiers — from traditional basics to full premium experiences.' }}</textarea>
+        </div>
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">CTA Text (bottom banner)</label>
+            <input type="text" name="cta_text" class="form-control"
+                   value="{{ page.cta_text|default:'Book your appointment now and let our masters work their magic.' }}">
+        </div>
+    </div>
+</div>
+
+<div style="display:flex;gap:12px;padding-bottom:40px;">
+    <button type="submit" class="btn-gold">
+        <i class="fas fa-save"></i> Save Services Page
+    </button>
+    <a href="/services/" target="_blank" class="btn-outline">
+        <i class="fas fa-eye"></i> Preview
+    </a>
+</div>
+
+</form>
+{% endblock %}
