@@ -303,7 +303,7 @@ if (serviceSelectEl && servicePreview) {
         trigText.textContent = cur.textContent.trim();
         if (!isStatus) trigText.style.color = '';
       } else {
-        trigText.textContent = cur ? cur.textContent.trim() : 'Select…';
+        trigText.textContent = cur ? cur.textContent.trim() : 'Select\u2026';
         if (!isStatus) trigText.style.color = 'var(--text-muted, #7a7060)';
       }
     }
@@ -335,24 +335,42 @@ if (serviceSelectEl && servicePreview) {
       });
     }
 
+    function positionDropdown() {
+      var rect = trigger.getBoundingClientRect();
+      var spaceBelow = window.innerHeight - rect.bottom;
+      dropdown.style.position = 'fixed';
+      dropdown.style.width = rect.width + 'px';
+      dropdown.style.left = rect.left + 'px';
+      dropdown.style.zIndex = '99999';
+      if (spaceBelow < 280 && rect.top > 280) {
+        dropdown.classList.add('cs-open-up');
+        dropdown.style.top = '';
+        dropdown.style.bottom = (window.innerHeight - rect.top) + 'px';
+      } else {
+        dropdown.classList.remove('cs-open-up');
+        dropdown.style.top = rect.bottom + 'px';
+        dropdown.style.bottom = '';
+      }
+    }
+
     function openDropdown() {
       document.querySelectorAll('.cs-dropdown.cs-open').forEach(function(d) {
         d.classList.remove('cs-open', 'cs-open-up');
-        var t = d.parentNode.querySelector('.cs-trigger');
-        if (t) { t.classList.remove('open'); t.setAttribute('aria-expanded', 'false'); }
+        if (d._csWrap) {
+          var t = d._csWrap.querySelector('.cs-trigger');
+          if (t) { t.classList.remove('open'); t.setAttribute('aria-expanded', 'false'); }
+          d._csWrap.appendChild(d);
+          delete d._csWrap;
+        }
+        d.style.cssText = '';
       });
 
       buildOptions();
       refreshTrigger();
 
-      var rect = trigger.getBoundingClientRect();
-      var spaceBelow = window.innerHeight - rect.bottom;
-      var dropMaxHeight = 280;
-      if (spaceBelow < dropMaxHeight) {
-        dropdown.classList.add('cs-open-up');
-      } else {
-        dropdown.classList.remove('cs-open-up');
-      }
+      document.body.appendChild(dropdown);
+      dropdown._csWrap = wrap;
+      positionDropdown();
 
       dropdown.classList.add('cs-open');
       trigger.classList.add('open');
@@ -363,15 +381,16 @@ if (serviceSelectEl && servicePreview) {
       dropdown.classList.remove('cs-open', 'cs-open-up');
       trigger.classList.remove('open');
       trigger.setAttribute('aria-expanded', 'false');
+      if (dropdown.parentNode === document.body) {
+        dropdown.style.cssText = '';
+        wrap.appendChild(dropdown);
+        delete dropdown._csWrap;
+      }
     }
 
     trigger.addEventListener('click', function(e) {
       e.stopPropagation();
-      if (dropdown.classList.contains('cs-open')) {
-        closeDropdown();
-      } else {
-        openDropdown();
-      }
+      dropdown.classList.contains('cs-open') ? closeDropdown() : openDropdown();
     });
 
     trigger.addEventListener('keydown', function(e) {
@@ -383,7 +402,15 @@ if (serviceSelectEl && servicePreview) {
     });
 
     document.addEventListener('click', function(e) {
-      if (!wrap.contains(e.target)) closeDropdown();
+      if (!wrap.contains(e.target) && !dropdown.contains(e.target)) closeDropdown();
+    });
+
+    window.addEventListener('scroll', function() {
+      if (dropdown.classList.contains('cs-open')) positionDropdown();
+    }, true);
+
+    window.addEventListener('resize', function() {
+      if (dropdown.classList.contains('cs-open')) positionDropdown();
     });
 
     refreshTrigger();
