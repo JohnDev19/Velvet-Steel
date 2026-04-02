@@ -197,6 +197,10 @@ class GalleryImage(Document):
         return self.title
 
 class AboutPage(Document):
+    page_badge       = StringField(default='OUR STORY')
+    page_hero_title  = StringField(default='About <em>Velvet Steel</em>')
+    page_hero_subtitle = StringField(default='Fifteen years of craftsmanship, passion, and Filipino pride')
+    
     # Shop image
     shop_image       = StringField()
 
@@ -209,6 +213,7 @@ class AboutPage(Document):
     stat_barbers     = StringField(default='8+')
 
     # Story text
+    story_section_title  = StringField(default='The <em>Legacy</em> of Velvet Steel')
     story_lead       = StringField(default='Founded in 2010 by master barber Rico Villanueva in the heart of Quezon City, Velvet Steel was built on a single conviction: that Filipino men deserve a genuinely premium grooming experience.')
     story_body_1     = StringField(default='What started as a small, humble shop on Rizal Avenue has grown into Metro Manila\'s most respected premium barbershop — a place where tradition meets modernity, and where every client is treated like royalty.')
     story_body_2     = StringField(default='We believe that a great haircut is more than just a trim — it\'s an expression of identity, a confidence booster, and a moment of self-care that every man deserves. That\'s why we pour passion, precision, and artistry into every single appointment.')

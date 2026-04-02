@@ -13,9 +13,9 @@
 <section class="page-hero">
     <div class="page-hero-bg"></div>
     <div class="container page-hero-content">
-        <div class="section-badge">OUR STORY</div>
-        <h1 class="page-hero-title">About <em>Velvet Steel</em></h1>
-        <p>Fifteen years of craftsmanship, passion, and Filipino pride</p>
+        <div class="section-badge">{{ about.page_badge|default:"OUR STORY" }}</div>
+        <h1 class="page-hero-title">{{ about.page_hero_title|default:"About Velvet Steel"|safe }}</h1>
+        <p>{{ about.page_hero_subtitle|default:"Fifteen years of craftsmanship, passion, and Filipino pride" }}</p>
     </div>
 </section>
 
@@ -56,7 +56,7 @@
             <!-- STORY TEXT -->
             <div class="about-text">
                 <div class="section-badge">EST. {{ about.established_year|default:"2010" }}</div>
-                <h2 class="section-title">The <em>Legacy</em> of Velvet Steel</h2>
+                <h2 class="section-title">{{ about.story_section_title|default:"The Legacy of Velvet Steel"|safe }}</h2>
                 <p class="about-lead">{{ about.story_lead|default:"Founded in 2010 by master barber Rico Villanueva in the heart of Quezon City, Velvet Steel was built on a single conviction: that Filipino men deserve a genuinely premium grooming experience." }}</p>
                 {% if about and about.story_body_1 %}
                 <p>{{ about.story_body_1 }}</p>

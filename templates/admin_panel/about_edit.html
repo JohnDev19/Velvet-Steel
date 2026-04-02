@@ -3,6 +3,35 @@
 {% block page_title %}About Page{% endblock %}
 
 {% block content %}
+<!-- ── HERO TEXT ────────────────────────────────────────────── -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-star"></i> Page Hero</h3></div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:20px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Badge (e.g. OUR STORY)</label>
+            <input type="text" name="page_badge" class="form-control"
+                   value="{{ about.page_badge|default:'OUR STORY' }}">
+        </div>
+        <div class="form-row-2">
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Hero Title <small style="text-transform:none;letter-spacing:0;color:#6a6050;">(HTML allowed, use &lt;em&gt; for gold italic)</small></label>
+                <input type="text" name="page_hero_title" class="form-control"
+                       value="{{ about.page_hero_title|default:'About &lt;em&gt;Velvet Steel&lt;/em&gt;' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Hero Subtitle</label>
+                <input type="text" name="page_hero_subtitle" class="form-control"
+                       value="{{ about.page_hero_subtitle|default:'Fifteen years of craftsmanship, passion, and Filipino pride' }}">
+            </div>
+        </div>
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Story Section Title <small style="text-transform:none;letter-spacing:0;color:#6a6050;">(HTML allowed, use &lt;em&gt; for gold italic)</small></label>
+            <input type="text" name="story_section_title" class="form-control"
+                   value="{{ about.story_section_title|default:'The &lt;em&gt;Legacy&lt;/em&gt; of Velvet Steel' }}">
+        </div>
+    </div>
+</div>
+
 <div class="admin-page-header">
     <div>
         <h2>Edit About Page</h2>
