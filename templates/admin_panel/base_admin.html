@@ -64,6 +64,9 @@
                 <i class="fas fa-star"></i> Reviews
                 {% if pending_testimonials %}<span class="badge-count">{{ pending_testimonials }}</span>{% endif %}
             </a>
+            <a href="{% url 'admin_home_page_edit' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_home_page_edit' %}active{% endif %}">
+              <i class="fas fa-home"></i> Home Page
+            </a>
             <a href="{% url 'admin_about_edit' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_about_edit' %}active{% endif %}">
               <i class="fas fa-file-alt"></i> About Page
               </a>
