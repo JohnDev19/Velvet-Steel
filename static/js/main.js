@@ -97,12 +97,16 @@ function animateOnScroll() {
 animateOnScroll();
 
 document.querySelectorAll('a[href^="#"]').forEach(a => {
+  const href = a.getAttribute('href');
+  if (!href || href === '#') return;
   a.addEventListener('click', e => {
-    const target = document.querySelector(a.getAttribute('href'));
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
+    try {
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    } catch(err) {}
   });
 });
 
@@ -131,10 +135,10 @@ const rippleStyle = document.createElement('style');
 rippleStyle.textContent = '@keyframes ripple { to { transform: scale(30); opacity: 0; } }';
 document.head.appendChild(rippleStyle);
 
-const barberSelect = document.getElementById('barberSelect');
+const barberSelectEl = document.getElementById('barberSelect');
 const barberPreview = document.getElementById('barberPreview');
-if (barberSelect && barberPreview) {
-  barberSelect.addEventListener('change', function() {
+if (barberSelectEl && barberPreview) {
+  barberSelectEl.addEventListener('change', function() {
     const opt = this.options[this.selectedIndex];
     if (this.value && opt) {
       barberPreview.innerHTML = `
@@ -150,10 +154,10 @@ if (barberSelect && barberPreview) {
   });
 }
 
-const serviceSelect = document.getElementById('serviceSelect');
+const serviceSelectEl = document.getElementById('serviceSelect');
 const servicePreview = document.getElementById('servicePreview');
-if (serviceSelect && servicePreview) {
-  serviceSelect.addEventListener('change', function() {
+if (serviceSelectEl && servicePreview) {
+  serviceSelectEl.addEventListener('change', function() {
     const opt = this.options[this.selectedIndex];
     if (this.value && opt) {
       servicePreview.innerHTML = `
@@ -173,51 +177,214 @@ if (serviceSelect && servicePreview) {
 (function() {
   var overlay = document.getElementById('vsConfirmModal');
   if (!overlay) return;
-  var msgEl = overlay.querySelector('.vs-confirm-msg');
-  var cancelBtn = overlay.querySelector('.vs-confirm-cancel');
-  var okBtn = overlay.querySelector('.vs-confirm-ok');
+  var msgEl = document.getElementById('vsConfirmMsg');
+  var cancelBtn = document.querySelector('.vs-confirm-cancel');
+  var okBtn = document.querySelector('.vs-confirm-ok');
   var pendingForm = null;
+  var pendingCb = null;
 
-  document.querySelectorAll('form[data-confirm]').forEach(function(form) {
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      if (msgEl) msgEl.textContent = this.dataset.confirm;
-      pendingForm = this;
-      overlay.classList.add('active');
-    });
-  });
-
-  if (cancelBtn) {
-    cancelBtn.addEventListener('click', function() {
-      overlay.classList.remove('active');
-      pendingForm = null;
-    });
+  function showModal(msg) {
+    if (msgEl) msgEl.textContent = msg;
+    overlay.style.display = 'flex';
   }
+
+  function closeModal() {
+    overlay.style.display = 'none';
+    pendingForm = null;
+    pendingCb = null;
+  }
+
+  document.addEventListener('submit', function(e) {
+    var form = e.target;
+    if (!form || !form.hasAttribute('data-confirm')) return;
+    e.preventDefault();
+    e.stopPropagation();
+    pendingForm = form;
+    pendingCb = null;
+    showModal(form.getAttribute('data-confirm'));
+  }, true);
+
+  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
 
   if (okBtn) {
     okBtn.addEventListener('click', function() {
-      overlay.classList.remove('active');
-      if (pendingForm) {
-        var f = pendingForm;
-        pendingForm = null;
-        f.submit();
-      }
+      var f = pendingForm;
+      var cb = pendingCb;
+      closeModal();
+      if (f) f.submit();
+      if (cb) cb();
     });
   }
 
   overlay.addEventListener('click', function(e) {
-    if (e.target === overlay) {
-      overlay.classList.remove('active');
-      pendingForm = null;
-    }
+    if (e.target === overlay) closeModal();
   });
 
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      overlay.classList.remove('active');
-      pendingForm = null;
-    }
+    if (e.key === 'Escape' && overlay.style.display === 'flex') closeModal();
   });
+
+  window.vsConfirm = function(msg, onOk) {
+    pendingForm = null;
+    pendingCb = onOk || null;
+    showModal(msg);
+  };
+})();
+
+(function() {
+  function buildCustomSelect(sel) {
+    if (sel.dataset.csInit) return;
+    sel.dataset.csInit = '1';
+
+    var wrap = document.createElement('div');
+    wrap.className = 'cs-wrap';
+    sel.parentNode.insertBefore(wrap, sel);
+    wrap.appendChild(sel);
+    sel.style.display = 'none';
+
+    var trigger = document.createElement('div');
+    trigger.className = 'cs-trigger';
+    trigger.setAttribute('tabindex', '0');
+    trigger.setAttribute('role', 'combobox');
+    trigger.setAttribute('aria-haspopup', 'listbox');
+    trigger.setAttribute('aria-expanded', 'false');
+
+    var trigText = document.createElement('span');
+    trigText.className = 'cs-trigger-text';
+
+    var arrow = document.createElement('span');
+    arrow.className = 'cs-arrow';
+    arrow.innerHTML = '<i class="fas fa-chevron-down"></i>';
+
+    trigger.appendChild(trigText);
+    trigger.appendChild(arrow);
+    wrap.insertBefore(trigger, sel);
+
+    var dropdown = document.createElement('div');
+    dropdown.className = 'cs-dropdown';
+    dropdown.setAttribute('role', 'listbox');
+    wrap.appendChild(dropdown);
+
+    var statusColors = {
+      pending: 'rgba(200,160,60,0.5)',
+      confirmed: 'rgba(76,175,125,0.5)',
+      completed: 'rgba(74,144,200,0.5)',
+      cancelled: 'rgba(224,85,85,0.5)',
+      no_show: 'rgba(120,100,60,0.5)'
+    };
+    var statusTextColors = {
+      pending: '#c8a03c',
+      confirmed: '#4caf7d',
+      completed: '#4a90c8',
+      cancelled: '#e05555',
+      no_show: '#8a6040'
+    };
+
+    var isStatus = sel.classList.contains('status-select');
+    if (isStatus) {
+      wrap.classList.add('cs-compact');
+      function updateStatusBorder() {
+        trigger.style.borderColor = statusColors[sel.value] || 'rgba(200,160,60,0.3)';
+        trigger.style.color = statusTextColors[sel.value] || '';
+      }
+      sel.addEventListener('change', updateStatusBorder);
+      updateStatusBorder();
+    }
+
+    function refreshTrigger() {
+      var cur = sel.options[sel.selectedIndex];
+      if (cur && cur.value !== '') {
+        trigText.textContent = cur.textContent.trim();
+        if (!isStatus) trigText.style.color = '';
+      } else {
+        trigText.textContent = cur ? cur.textContent.trim() : 'Select…';
+        if (!isStatus) trigText.style.color = 'var(--text-muted, #7a7060)';
+      }
+    }
+
+    function buildOptions() {
+      dropdown.innerHTML = '';
+      Array.from(sel.options).forEach(function(opt) {
+        var item = document.createElement('div');
+        item.className = 'cs-option';
+        if (opt.value === '') item.classList.add('cs-option-placeholder');
+        if (opt.selected) item.classList.add('selected');
+        item.textContent = opt.textContent.trim();
+        item.dataset.value = opt.value;
+        if (isStatus && statusTextColors[opt.value]) {
+          item.style.color = statusTextColors[opt.value];
+        }
+        item.addEventListener('click', function(e) {
+          e.stopPropagation();
+          sel.value = opt.value;
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+          if (isStatus) {
+            trigger.style.borderColor = statusColors[opt.value] || 'rgba(200,160,60,0.3)';
+            trigger.style.color = statusTextColors[opt.value] || '';
+          }
+          refreshTrigger();
+          closeDropdown();
+        });
+        dropdown.appendChild(item);
+      });
+    }
+
+    function openDropdown() {
+      document.querySelectorAll('.cs-dropdown.cs-open').forEach(function(d) {
+        d.classList.remove('cs-open');
+        var t = d.parentNode.querySelector('.cs-trigger');
+        if (t) { t.classList.remove('open'); t.setAttribute('aria-expanded', 'false'); }
+      });
+      buildOptions();
+      refreshTrigger();
+      dropdown.classList.add('cs-open');
+      trigger.classList.add('open');
+      trigger.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeDropdown() {
+      dropdown.classList.remove('cs-open');
+      trigger.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    trigger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (dropdown.classList.contains('cs-open')) {
+        closeDropdown();
+      } else {
+        openDropdown();
+      }
+    });
+
+    trigger.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        dropdown.classList.contains('cs-open') ? closeDropdown() : openDropdown();
+      }
+      if (e.key === 'Escape') closeDropdown();
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!wrap.contains(e.target)) closeDropdown();
+    });
+
+    refreshTrigger();
+  }
+
+  function initCustomSelects() {
+    document.querySelectorAll(
+      'select.form-control:not([data-no-custom]), ' +
+      'select.form-control-sm:not([data-no-custom]), ' +
+      'select.res-link-select:not([data-no-custom]), ' +
+      'select.status-select:not([data-no-custom])'
+    ).forEach(function(sel) {
+      if (window.getComputedStyle(sel).display === 'none') return;
+      buildCustomSelect(sel);
+    });
+  }
+
+  initCustomSelects();
 })();
 
 (function() {

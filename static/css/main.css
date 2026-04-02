@@ -1093,14 +1093,48 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 }
 .vs-confirm-actions { display: flex; gap: 10px; }
 .vs-confirm-actions .vs-confirm-cancel,
-.vs-confirm-actions .vs-confirm-ok { flex: 1; padding: 11px 16px; border-radius: var(--radius); font-family: var(--font-body); font-size: 0.83rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; border: none; transition: var(--transition); }
+.vs-confirm-actions .vs-confirm-ok { flex: 1; padding: 11px 16px; border-radius: var(--radius); font-family: var(--font-sans); font-size: 0.83rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; border: none; transition: var(--transition); }
 .vs-confirm-cancel { background: transparent; border: 1.5px solid var(--border) !important; color: var(--text-secondary); }
 .vs-confirm-cancel:hover { border-color: var(--gold) !important; color: var(--gold); }
 .vs-confirm-ok { background: #e05555; color: #fff; }
 .vs-confirm-ok:hover { background: #c93f3f; }
 
-/* ============================================ STYLE PICKER BACKGROUNDS */
-.style-picker-category { background: var(--dark-2); }
-.style-picker-option { background: var(--dark-2); }
-.style-picker-option:hover { background: rgba(200,160,60,0.08) !important; }
-.style-picker-option.selected { background: rgba(200,160,60,0.13) !important; }
+/* ============================================ CUSTOM SELECT DROPDOWN */
+.cs-wrap { position: relative; width: 100%; }
+.cs-trigger {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  background: var(--dark-3); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 11px 14px;
+  cursor: pointer; transition: var(--transition);
+  font-family: var(--font-sans); font-size: 0.88rem;
+  color: var(--text-primary); min-height: 44px; user-select: none;
+}
+.cs-trigger:hover,
+.cs-trigger.open { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
+.cs-trigger-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cs-arrow { color: var(--gold); font-size: 0.68rem; flex-shrink: 0; transition: transform 0.2s; line-height: 1; }
+.cs-trigger.open .cs-arrow { transform: rotate(180deg); }
+.cs-dropdown {
+  display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 600;
+  background: var(--dark-3); border: 1.5px solid var(--gold);
+  border-radius: var(--radius-lg); box-shadow: 0 16px 48px rgba(0,0,0,0.7);
+  overflow: hidden; max-height: 260px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: rgba(200,160,60,0.3) transparent;
+}
+.cs-dropdown.cs-open { display: block; animation: csDropIn 0.15s ease; }
+@keyframes csDropIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.cs-option {
+  padding: 10px 14px; cursor: pointer;
+  font-family: var(--font-sans); font-size: 0.85rem;
+  color: var(--text-secondary); transition: background 0.12s, color 0.12s;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.cs-option:last-child { border-bottom: none; }
+.cs-option:hover { background: var(--gold-faint); color: var(--gold); }
+.cs-option.selected { background: rgba(200,160,60,0.12); color: var(--gold); font-weight: 600; }
+.cs-option.cs-option-placeholder { color: var(--text-muted); font-style: italic; }
+.cs-dropdown::-webkit-scrollbar { width: 4px; }
+.cs-dropdown::-webkit-scrollbar-thumb { background: rgba(200,160,60,0.3); border-radius: 2px; }
