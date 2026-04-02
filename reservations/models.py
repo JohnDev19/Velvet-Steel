@@ -196,6 +196,46 @@ class GalleryImage(Document):
     def __str__(self):
         return self.title
 
+class AboutPage(Document):
+    # Shop image
+    shop_image       = StringField()
+
+    # Hero / badge
+    established_year = StringField(default='2010')
+
+    # Stats row
+    stat_years       = StringField(default='15+')
+    stat_clients     = StringField(default='5K+')
+    stat_barbers     = StringField(default='8+')
+
+    # Story text
+    story_lead       = StringField(default='Founded in 2010 by master barber Rico Villanueva in the heart of Quezon City, Velvet Steel was built on a single conviction: that Filipino men deserve a genuinely premium grooming experience.')
+    story_body_1     = StringField(default='What started as a small, humble shop on Rizal Avenue has grown into Metro Manila\'s most respected premium barbershop — a place where tradition meets modernity, and where every client is treated like royalty.')
+    story_body_2     = StringField(default='We believe that a great haircut is more than just a trim — it\'s an expression of identity, a confidence booster, and a moment of self-care that every man deserves. That\'s why we pour passion, precision, and artistry into every single appointment.')
+
+    # checklist
+    value_1          = StringField(default='Certified Master Barbers')
+    value_2          = StringField(default='Premium Imported Products')
+    value_3          = StringField(default='Strict Hygiene Standards')
+    value_4          = StringField(default='100% Filipino-Owned Business')
+
+    # Contact
+    address          = StringField(default='123 Rizal Avenue, Quezon City, Metro Manila, Philippines 1100')
+    phone_1          = StringField(default='+63 912 345 6789')
+    phone_2          = StringField(default='+63 2 8123 4567')
+    email_1          = StringField(default='info@velvetsteel.ph')
+    email_2          = StringField(default='bookings@velvetsteel.ph')
+    hours_weekday    = StringField(default='Mon–Sat: 8:00 AM – 8:00 PM')
+    hours_sunday     = StringField(default='Sunday: 9:00 AM – 6:00 PM')
+
+    updated_at       = DateTimeField(default=timezone.now)
+
+    meta = {'collection': 'about_page_content'}
+
+    @classmethod
+    def get_singleton(cls):
+        obj = cls.objects().first()
+        return obj  # None
 
 class HaircutStyle(Document):
     CATEGORY_CHOICES = (
