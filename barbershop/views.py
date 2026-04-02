@@ -53,8 +53,9 @@ def about(request):
     }
     return render(request, 'about/index.html', context)
 
-
 def services(request):
+    from reservations.models import ServicesPage
+    svc_page = ServicesPage.objects().first()
     all_styles = HaircutStyle.objects(is_active=True)
 
     styles_by_category = defaultdict(list)
