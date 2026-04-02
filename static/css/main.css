@@ -714,7 +714,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0);
-  z-index: 1001;
+  z-index: 666;
   transition: background 0.35s ease;
   pointer-events: none;
 }
@@ -736,7 +736,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .auth-container { grid-template-columns: 1fr; }
   .auth-side { display: none; }
 
-  /* ── SIDEBAR NAV ──────────────────────────────────────────── */
+  /* ── V ──────────────────────────────────────────── */
   .nav-links {
     display: flex;
     flex-direction: column;
@@ -750,7 +750,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
     border-right: 1px solid rgba(200,160,60,0.18);
     padding: 0;
     gap: 0;
-    z-index: 9999;
+    z-index: 1002;
     overflow-y: auto;
     overflow-x: hidden;
     transform: translateX(-100%);
