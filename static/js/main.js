@@ -174,6 +174,9 @@ if (serviceSelectEl && servicePreview) {
   });
 }
 
+/* ============================================================
+   VS CONFIRM MODAL
+   ============================================================ */
 (function() {
   var overlay = document.getElementById('vsConfirmModal');
   if (!overlay) return;
@@ -231,6 +234,9 @@ if (serviceSelectEl && servicePreview) {
   };
 })();
 
+/* ============================================================
+   CUSTOM SELECT DROPDOWN
+   ============================================================ */
 (function() {
   function buildCustomSelect(sel) {
     if (sel.dataset.csInit) return;
@@ -331,19 +337,30 @@ if (serviceSelectEl && servicePreview) {
 
     function openDropdown() {
       document.querySelectorAll('.cs-dropdown.cs-open').forEach(function(d) {
-        d.classList.remove('cs-open');
+        d.classList.remove('cs-open', 'cs-open-up');
         var t = d.parentNode.querySelector('.cs-trigger');
         if (t) { t.classList.remove('open'); t.setAttribute('aria-expanded', 'false'); }
       });
+
       buildOptions();
       refreshTrigger();
+
+      var rect = trigger.getBoundingClientRect();
+      var spaceBelow = window.innerHeight - rect.bottom;
+      var dropMaxHeight = 280;
+      if (spaceBelow < dropMaxHeight) {
+        dropdown.classList.add('cs-open-up');
+      } else {
+        dropdown.classList.remove('cs-open-up');
+      }
+
       dropdown.classList.add('cs-open');
       trigger.classList.add('open');
       trigger.setAttribute('aria-expanded', 'true');
     }
 
     function closeDropdown() {
-      dropdown.classList.remove('cs-open');
+      dropdown.classList.remove('cs-open', 'cs-open-up');
       trigger.classList.remove('open');
       trigger.setAttribute('aria-expanded', 'false');
     }
@@ -387,6 +404,9 @@ if (serviceSelectEl && servicePreview) {
   initCustomSelects();
 })();
 
+/* ============================================================
+   TESTIMONIALS SLIDER
+   ============================================================ */
 (function() {
   var wrap = document.getElementById('tsliderWrap');
   var track = document.getElementById('tsliderTrack');

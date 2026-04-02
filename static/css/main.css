@@ -1121,9 +1121,19 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   overflow: hidden; max-height: 260px; overflow-y: auto;
   scrollbar-width: thin; scrollbar-color: rgba(200,160,60,0.3) transparent;
 }
+.cs-dropdown.cs-open-up {
+  top: auto;
+  bottom: calc(100% + 4px);
+  box-shadow: 0 -16px 48px rgba(0,0,0,0.7);
+}
 .cs-dropdown.cs-open { display: block; animation: csDropIn 0.15s ease; }
+.cs-dropdown.cs-open-up.cs-open { animation: csDropUp 0.15s ease; }
 @keyframes csDropIn {
   from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes csDropUp {
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .cs-option {

@@ -350,9 +350,9 @@ tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
           </select>
         </form>
 
-        <!-- Delete button -->
+        <!-- Delete — use data-confirm so vsConfirmModal handles it -->
         <form method="post" action="{% url 'admin_bulk_delete_reservations' %}"
-              onsubmit="return confirm('Delete {{ res.confirmation_code }}? This cannot be undone.')">
+              data-confirm="Delete {{ res.confirmation_code }}? This cannot be undone.">
           {% csrf_token %}
           <input type="hidden" name="pks" value="{{ res.pk }}">
           <button type="submit" class="btn-mob-delete">
@@ -450,14 +450,18 @@ tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
   bulkDelBtn.addEventListener('click', function() {
     var pks = selectedPks();
     if (!pks.length) return;
-    if (!confirm('Permanently delete ' + pks.length + ' reservation(s)? This cannot be undone.')) return;
-    bulkInputs.innerHTML = '';
-    pks.forEach(function(pk) {
-      var inp = document.createElement('input');
-      inp.type = 'hidden'; inp.name = 'pks'; inp.value = pk;
-      bulkInputs.appendChild(inp);
-    });
-    bulkForm.submit();
+    vsConfirm(
+      'Permanently delete ' + pks.length + ' reservation(s)? This cannot be undone.',
+      function () {
+        bulkInputs.innerHTML = '';
+        pks.forEach(function(pk) {
+          var inp = document.createElement('input');
+          inp.type = 'hidden'; inp.name = 'pks'; inp.value = pk;
+          bulkInputs.appendChild(inp);
+        });
+        bulkForm.submit();
+      }
+    );
   });
 
   bulkClrBtn.addEventListener('click', function() {

@@ -339,14 +339,13 @@ tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
   var selectAll     = document.getElementById('selectAll');
   var selectAllMob  = document.getElementById('selectAllMobile');
 
-  // ── checkbox sync ───────────────
+  /* ── checkbox sync ───────────────────────────────────── */
   function syncRow(cb) {
     var pk = cb.value;
     var dRow  = document.querySelector('#resTable tr[data-pk="' + pk + '"]');
     if (dRow)  dRow.classList.toggle('row-selected', cb.checked);
     var mCard = document.querySelector('.res-mobile-card[data-pk="' + pk + '"]');
     if (mCard) mCard.classList.toggle('row-selected', cb.checked);
-    // keep sibling checkboxes in sync
     document.querySelectorAll('.row-checkbox[value="' + pk + '"]').forEach(function (s) {
       if (s !== cb) s.checked = cb.checked;
     });
@@ -373,13 +372,11 @@ tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
 
     [selectAll, selectAllMob].forEach(function (sa) {
       if (!sa) return;
-      if (n === 0)      { sa.checked = false; sa.indeterminate = false; }
+      if (n === 0)       { sa.checked = false; sa.indeterminate = false; }
       else if (n===total){ sa.checked = true;  sa.indeterminate = false; }
-      else              { sa.checked = false; sa.indeterminate = true;  }
+      else               { sa.checked = false; sa.indeterminate = true;  }
     });
   }
-
-  // ── delegated change ──────────────────────────────────────
   document.addEventListener('change', function (e) {
     if (e.target.classList.contains('row-checkbox')) {
       syncRow(e.target);
@@ -397,19 +394,21 @@ tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
       updateBulkBar();
     }
   });
-
-  // ── bulk delete ───────────────────────────────────────────
   bulkDeleteBtn.addEventListener('click', function () {
     var pks = selectedPks();
     if (!pks.length) return;
-    if (!confirm('Permanently delete ' + pks.length + ' reservation(s)? This cannot be undone.')) return;
-    bulkInputs.innerHTML = '';
-    pks.forEach(function (pk) {
-      var inp = document.createElement('input');
-      inp.type = 'hidden'; inp.name = 'pks'; inp.value = pk;
-      bulkInputs.appendChild(inp);
-    });
-    bulkForm.submit();
+    vsConfirm(
+      'Permanently delete ' + pks.length + ' reservation(s)? This cannot be undone.',
+      function () {
+        bulkInputs.innerHTML = '';
+        pks.forEach(function (pk) {
+          var inp = document.createElement('input');
+          inp.type = 'hidden'; inp.name = 'pks'; inp.value = pk;
+          bulkInputs.appendChild(inp);
+        });
+        bulkForm.submit();
+      }
+    );
   });
 
   bulkClearBtn.addEventListener('click', function () {
@@ -418,19 +417,21 @@ tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
     });
     updateBulkBar();
   });
-
-  // ── per-card delete buttons ───────────────────────────────
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('.btn-card-delete');
     if (!btn) return;
     var pk   = btn.dataset.pk;
     var code = btn.dataset.code;
-    if (!confirm('Delete reservation ' + code + '? This cannot be undone.')) return;
-    bulkInputs.innerHTML = '';
-    var inp = document.createElement('input');
-    inp.type = 'hidden'; inp.name = 'pks'; inp.value = pk;
-    bulkInputs.appendChild(inp);
-    bulkForm.submit();
+    vsConfirm(
+      'Delete reservation ' + code + '? This cannot be undone.',
+      function () {
+        bulkInputs.innerHTML = '';
+        var inp = document.createElement('input');
+        inp.type = 'hidden'; inp.name = 'pks'; inp.value = pk;
+        bulkInputs.appendChild(inp);
+        bulkForm.submit();
+      }
+    );
   });
 
 }());
