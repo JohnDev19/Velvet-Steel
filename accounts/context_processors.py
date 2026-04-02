@@ -9,3 +9,12 @@ def user_profile(request):
             profile = None
         return {'user_profile': profile}
     return {'user_profile': None}
+
+
+def site_settings(request):
+    try:
+        from reservations.models import SiteSettings
+        settings = SiteSettings.get()
+    except Exception:
+        settings = None
+    return {'site_settings': settings}

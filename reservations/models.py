@@ -325,3 +325,41 @@ class HaircutStyle(Document):
 
     def get_category_display(self):
         return dict(self.CATEGORY_CHOICES).get(self.category, self.category)
+
+
+class SiteSettings(Document):
+    # Identity
+    shop_name        = StringField(default='Velvet Steel')
+    shop_sub         = StringField(default='BARBERSHOP')
+    shop_tagline     = StringField(default='Premium grooming. Deliberate craft.')
+    shop_since       = StringField(default="Quezon City's finest since 2010.")
+
+    # Footer contact block
+    footer_address   = StringField(default='123 Rizal Avenue, Quezon City, Metro Manila')
+    footer_phone     = StringField(default='+63 912 345 6789')
+    footer_email     = StringField(default='info@velvetsteel.ph')
+    footer_hours_wd  = StringField(default='Mon\u2013Sat: 8:00 AM \u2013 8:00 PM')
+    footer_hours_sun = StringField(default='Sunday: 9:00 AM \u2013 6:00 PM')
+    footer_copyright = StringField(default='\u00a9 2025 Velvet Steel Barbershop. Quezon City, Philippines.')
+
+    # Social links (label|url pairs stored as JSON string)
+    social_links     = StringField(default='[{"icon":"fab fa-facebook-f","label":"Facebook","url":"#"},{"icon":"fab fa-instagram","label":"Instagram","url":"#"},{"icon":"fab fa-tiktok","label":"TikTok","url":"#"}]')
+
+    updated_at       = DateTimeField(default=timezone.now)
+
+    meta = {'collection': 'site_settings'}
+
+    @classmethod
+    def get(cls):
+        obj = cls.objects().first()
+        if obj is None:
+            obj = cls()
+            obj.save()
+        return obj
+
+    def social_list(self):
+        import json
+        try:
+            return json.loads(self.social_links or '[]')
+        except Exception:
+            return []

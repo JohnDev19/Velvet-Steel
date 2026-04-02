@@ -1,0 +1,156 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Site Settings{% endblock %}
+{% block og_image %}{% load static %}{% static 'img/logo.png' %}{% endblock %}
+{% block twitter_image %}{% load static %}{% static 'img/logo.png' %}{% endblock %}
+{% block page_title %}Site Settings{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+    <div>
+        <h2>Site Settings</h2>
+        <p class="subtext">Controls the shop name, footer content, and social links across the entire site.</p>
+    </div>
+    <a href="/" target="_blank" class="btn-outline btn-sm">
+        <i class="fas fa-external-link-alt"></i> View Site
+    </a>
+</div>
+
+<form method="post" novalidate>
+{% csrf_token %}
+
+<!-- IDENTITY -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-store"></i> Shop Identity</h3></div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:20px;">
+        <div class="form-row-2">
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Shop Name <small style="text-transform:none;letter-spacing:0;color:#6a6050;">(replaces "Velvet Steel" everywhere)</small></label>
+                <input type="text" name="shop_name" class="form-control" value="{{ settings.shop_name|default:'Velvet Steel' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Sub-label <small style="text-transform:none;letter-spacing:0;color:#6a6050;">(e.g. BARBERSHOP)</small></label>
+                <input type="text" name="shop_sub" class="form-control" value="{{ settings.shop_sub|default:'BARBERSHOP' }}">
+            </div>
+        </div>
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Tagline <small style="text-transform:none;letter-spacing:0;color:#6a6050;">(first line under logo in footer)</small></label>
+            <input type="text" name="shop_tagline" class="form-control" value="{{ settings.shop_tagline|default:'Premium grooming. Deliberate craft.' }}">
+        </div>
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Since Line <small style="text-transform:none;letter-spacing:0;color:#6a6050;">(second line under logo in footer)</small></label>
+            <input type="text" name="shop_since" class="form-control" value="{{ settings.shop_since|default:&quot;Quezon City's finest since 2010.&quot; }}">
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER CONTACT -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-map-marker-alt"></i> Footer Contact Block</h3></div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:20px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Address</label>
+            <input type="text" name="footer_address" class="form-control" value="{{ settings.footer_address|default:'123 Rizal Avenue, Quezon City, Metro Manila' }}">
+        </div>
+        <div class="form-row-2">
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Phone</label>
+                <input type="text" name="footer_phone" class="form-control" value="{{ settings.footer_phone|default:'+63 912 345 6789' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Email</label>
+                <input type="email" name="footer_email" class="form-control" value="{{ settings.footer_email|default:'info@velvetsteel.ph' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Weekday Hours</label>
+                <input type="text" name="footer_hours_wd" class="form-control" value="{{ settings.footer_hours_wd|default:'Mon–Sat: 8:00 AM – 8:00 PM' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">Sunday Hours</label>
+                <input type="text" name="footer_hours_sun" class="form-control" value="{{ settings.footer_hours_sun|default:'Sunday: 9:00 AM – 6:00 PM' }}">
+            </div>
+        </div>
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Copyright Line</label>
+            <input type="text" name="footer_copyright" class="form-control" value="{{ settings.footer_copyright|default:'© 2025 Velvet Steel Barbershop. Quezon City, Philippines.' }}">
+        </div>
+    </div>
+</div>
+
+<!-- SOCIAL LINKS -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar">
+        <h3><i class="fas fa-share-alt"></i> Social Links</h3>
+        <button type="button" class="btn-outline btn-sm" id="addSocialBtn">
+            <i class="fas fa-plus"></i> Add Link
+        </button>
+    </div>
+    <div style="padding:24px;">
+        <p style="font-size:0.78rem;color:#6a6050;margin-bottom:16px;">
+            Icon: use Font Awesome class e.g. <code style="background:#1c1c1c;padding:2px 6px;border-radius:3px;color:#c8a03c;">fab fa-facebook-f</code>&nbsp;
+            <code style="background:#1c1c1c;padding:2px 6px;border-radius:3px;color:#c8a03c;">fab fa-instagram</code>&nbsp;
+            <code style="background:#1c1c1c;padding:2px 6px;border-radius:3px;color:#c8a03c;">fab fa-tiktok</code>&nbsp;
+            <code style="background:#1c1c1c;padding:2px 6px;border-radius:3px;color:#c8a03c;">fab fa-twitter</code>&nbsp;
+            <code style="background:#1c1c1c;padding:2px 6px;border-radius:3px;color:#c8a03c;">fab fa-youtube</code>
+        </p>
+        <div id="socialLinksContainer">
+            {% for s in settings.social_list %}
+            <div class="social-row" style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;margin-bottom:10px;align-items:center;">
+                <input type="text" name="social_icon" class="form-control form-control-sm" placeholder="fab fa-facebook-f" value="{{ s.icon }}">
+                <input type="text" name="social_label" class="form-control form-control-sm" placeholder="Facebook" value="{{ s.label }}">
+                <input type="text" name="social_url" class="form-control form-control-sm" placeholder="https://..." value="{{ s.url }}">
+                <button type="button" class="btn-danger btn-sm remove-social-btn" style="padding:6px 10px;"><i class="fas fa-trash"></i></button>
+            </div>
+            {% empty %}
+            <div class="social-row" style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;margin-bottom:10px;align-items:center;">
+                <input type="text" name="social_icon" class="form-control form-control-sm" placeholder="fab fa-facebook-f" value="fab fa-facebook-f">
+                <input type="text" name="social_label" class="form-control form-control-sm" placeholder="Facebook" value="Facebook">
+                <input type="text" name="social_url" class="form-control form-control-sm" placeholder="https://..." value="#">
+                <button type="button" class="btn-danger btn-sm remove-social-btn" style="padding:6px 10px;"><i class="fas fa-trash"></i></button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div style="display:flex;gap:12px;padding-bottom:40px;">
+    <button type="submit" class="btn-gold">
+        <i class="fas fa-save"></i> Save Site Settings
+    </button>
+    <a href="/" target="_blank" class="btn-outline">
+        <i class="fas fa-eye"></i> Preview
+    </a>
+</div>
+
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    var container  = document.getElementById('socialLinksContainer');
+    var addBtn     = document.getElementById('addSocialBtn');
+
+    function addRow(icon, label, url) {
+        var row = document.createElement('div');
+        row.className = 'social-row';
+        row.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;margin-bottom:10px;align-items:center;';
+        row.innerHTML =
+            '<input type="text" name="social_icon" class="form-control form-control-sm" placeholder="fab fa-facebook-f" value="' + (icon||'') + '">' +
+            '<input type="text" name="social_label" class="form-control form-control-sm" placeholder="Facebook" value="' + (label||'') + '">' +
+            '<input type="text" name="social_url" class="form-control form-control-sm" placeholder="https://..." value="' + (url||'') + '">' +
+            '<button type="button" class="btn-danger btn-sm remove-social-btn" style="padding:6px 10px;"><i class="fas fa-trash"></i></button>';
+        container.appendChild(row);
+        attachRemove(row.querySelector('.remove-social-btn'));
+    }
+
+    function attachRemove(btn) {
+        btn.addEventListener('click', function () {
+            btn.closest('.social-row').remove();
+        });
+    }
+
+    document.querySelectorAll('.remove-social-btn').forEach(attachRemove);
+    addBtn.addEventListener('click', function () { addRow('', '', ''); });
+}());
+</script>
+{% endblock %}

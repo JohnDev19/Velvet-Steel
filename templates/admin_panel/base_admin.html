@@ -21,7 +21,7 @@
     <!-- Sidebar -->
     <aside class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-brand">
-            <div class="brand-icon-sm{% if user_profile and user_profile.photo %} brand-icon-sm--photo{% endif %}">
+        <div class="brand-icon-sm{% if user_profile and user_profile.photo %} brand-icon-sm--photo{% endif %}">
                 {% if user_profile and user_profile.photo %}
                 <img src="{{ user_profile.photo }}" class="brand-avatar" alt="Admin">
                 {% else %}
@@ -29,7 +29,7 @@
                 {% endif %}
             </div>
             <div>
-                <span class="sidebar-name">Velvet Steel</span>
+                <span class="sidebar-name">{{ site_settings.shop_name|default:"Velvet Steel" }}</span>
                 <span class="sidebar-sub">Admin Panel</span>
             </div>
             <button class="sidebar-close-btn" id="sidebarCloseBtn" title="Close sidebar">
@@ -66,6 +66,9 @@
             </a>
             <a href="{% url 'admin_home_page_edit' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_home_page_edit' %}active{% endif %}">
               <i class="fas fa-home"></i> Home Page
+            </a>
+            <a href="{% url 'admin_site_settings_edit' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_site_settings_edit' %}active{% endif %}">
+              <i class="fas fa-cog"></i> Site Settings
             </a>
             <a href="{% url 'admin_about_edit' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_about_edit' %}active{% endif %}">
               <i class="fas fa-file-alt"></i> About Page

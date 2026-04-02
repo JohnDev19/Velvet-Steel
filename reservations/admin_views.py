@@ -560,6 +560,46 @@ def admin_services_page_edit(request):
     return render(request, 'admin_panel/services_page_edit.html', {'page': page})
 
 @admin_required
+def admin_site_settings_edit(request):
+    import json
+    from .models import SiteSettings
+    settings = SiteSettings.get()
+
+    if request.method == 'POST':
+        fields = [
+            'shop_name', 'shop_sub', 'shop_tagline', 'shop_since',
+            'footer_address', 'footer_phone', 'footer_email',
+            'footer_hours_wd', 'footer_hours_sun', 'footer_copyright',
+        ]
+        for f in fields:
+            val = request.POST.get(f, '').strip()
+            if val:
+                setattr(settings, f, val)
+
+        # Social links — rebuild from posted arrays
+        icons   = request.POST.getlist('social_icon')
+        labels  = request.POST.getlist('social_label')
+        urls    = request.POST.getlist('social_url')
+        socials = []
+        for icon, label, url in zip(icons, labels, urls):
+            icon  = icon.strip()
+            label = label.strip()
+            url   = url.strip()
+            if icon or label or url:
+                socials.append({'icon': icon, 'label': label, 'url': url or '#'})
+        settings.social_links = json.dumps(socials)
+        settings.updated_at   = timezone.now()
+        try:
+            settings.save()
+            messages.success(request, 'Site settings updated successfully.')
+        except Exception as e:
+            messages.error(request, f'Could not save: {e}')
+        return redirect('admin_site_settings_edit')
+
+    return render(request, 'admin_panel/site_settings_edit.html', {'settings': settings})
+
+
+@admin_required
 def admin_home_page_edit(request):
     from .models import HomePage
     page = HomePage.objects().first()

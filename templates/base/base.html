@@ -61,8 +61,8 @@
                 {% endif %}
             </div>
             <div class="brand-text">
-                <span class="brand-name">Velvet Steel</span>
-                <span class="brand-sub">BARBERSHOP</span>
+                <span class="brand-name">{{ site_settings.shop_name|default:"Velvet Steel" }}</span>
+                <span class="brand-sub">{{ site_settings.shop_sub|default:"BARBERSHOP" }}</span>
             </div>
         </a>
         <ul class="nav-links" id="navLinks">
@@ -147,15 +147,13 @@
                         {% endif %}
                     </div>
                     <div class="brand-text">
-                        <span class="brand-name">Velvet Steel</span>
-                        <span class="brand-sub">BARBERSHOP</span>
+                        <span class="brand-name">{{ site_settings.shop_name|default:"Velvet Steel" }}</span>
+                        <span class="brand-sub">{{ site_settings.shop_sub|default:"BARBERSHOP" }}</span>
                     </div>
                 </div>
-                <p class="footer-tagline">Premium grooming. Deliberate craft.<br>Quezon City's finest since 2010.</p>
+                <p class="footer-tagline">{{ site_settings.shop_tagline|default:"Premium grooming. Deliberate craft." }}<br>{{ site_settings.shop_since|default:"Quezon City's finest since 2010." }}</p>
                 <div class="footer-socials">
-                    <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="social-btn" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    {% if site_settings %}{% for s in site_settings.social_list %}<a href="{{ s.url }}" class="social-btn" aria-label="{{ s.label }}"><i class="{{ s.icon }}"></i></a>{% endfor %}{% else %}<a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a><a href="#" class="social-btn"><i class="fab fa-instagram"></i></a><a href="#" class="social-btn"><i class="fab fa-tiktok"></i></a>{% endif %}
                 </div>
             </div>
             <div class="footer-links">
@@ -183,17 +181,17 @@
             <div class="footer-contact">
                 <h4>Visit Us</h4>
                 <ul>
-                    <li><i class="fas fa-map-marker-alt"></i> 123 Rizal Avenue, Quezon City, Metro Manila</li>
-                    <li><i class="fas fa-phone"></i> +63 912 345 6789</li>
-                    <li><i class="fas fa-envelope"></i> info@velvetsteel.ph</li>
-                    <li><i class="fas fa-clock"></i> Mon&ndash;Sat: 8:00 AM &ndash; 8:00 PM</li>
-                    <li><i class="fas fa-clock"></i> Sunday: 9:00 AM &ndash; 6:00 PM</li>
+                    <li><i class="fas fa-map-marker-alt"></i> {{ site_settings.footer_address|default:"123 Rizal Avenue, Quezon City, Metro Manila" }}</li>
+                    <li><i class="fas fa-phone"></i> {{ site_settings.footer_phone|default:"+63 912 345 6789" }}</li>
+                    <li><i class="fas fa-envelope"></i> {{ site_settings.footer_email|default:"info@velvetsteel.ph" }}</li>
+                    <li><i class="fas fa-clock"></i> {{ site_settings.footer_hours_wd|default:"Mon–Sat: 8:00 AM – 8:00 PM" }}</li>
+                    <li><i class="fas fa-clock"></i> {{ site_settings.footer_hours_sun|default:"Sunday: 9:00 AM – 6:00 PM" }}</li>
                 </ul>
             </div>
         </div>
     </div>
     <div class="footer-bottom">
-        <p>&copy; 2025 Velvet Steel Barbershop. All rights reserved. Quezon City, Philippines.</p>
+        <p>{{ site_settings.footer_copyright|default:"© 2025 Velvet Steel Barbershop. All rights reserved. Quezon City, Philippines." }}</p>
     </div>
 </footer>
 
