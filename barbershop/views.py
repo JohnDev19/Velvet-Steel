@@ -22,6 +22,8 @@ def _testimonial_photos(testimonials):
 
 
 def home(request):
+    from reservations.models import HomePage
+    home_page = HomePage.objects().first()
     barbers  = Barber.objects(is_active=True)
     services = Service.objects(is_active=True).order_by('category', 'price')
     testimonials = list(Testimonial.objects(is_approved=True).order_by('-created_at')[:9])
