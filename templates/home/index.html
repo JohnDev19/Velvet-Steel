@@ -82,110 +82,117 @@
       <h2 class="section-title">What We <em>Offer</em></h2>
       <p class="section-subtitle">From signature fades to full grooming rituals. Every service is a deliberate act of craft, not a transaction.</p>
     </div>
-    <div class="services-grid">
+    <div class="services-full-grid">
       {% if services %}
       {% for svc in services %}
-      <div class="service-card">
-        <div class="service-icon-wrap{% if svc.image %} service-icon-has-image{% endif %}">
-          {% if svc.image %}
-          <img src="{{ svc.image }}" alt="{{ svc.name }}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">
-          {% else %}
-          <i class="fas fa-{{ svc.icon|default:'cut' }}"></i>
-          {% endif %}
+      <div class="service-full-card">
+        {% if svc.image %}
+        <div class="sfc-icon sfc-has-image" style="overflow:hidden;padding:0;">
+          <img src="{{ svc.image }}" alt="{{ svc.name }}" style="width:100%;height:100%;object-fit:cover;">
         </div>
-        <div class="service-info">
-          <span class="service-category">{{ svc.get_category_display }}</span>
-          <h3 class="service-name">{{ svc.name }}</h3>
-          {% if svc.description %}<p class="service-desc">{{ svc.description|truncatechars:100 }}</p>{% endif %}
-          <div class="service-meta">
-            <span class="service-price">&#8369;{{ svc.price }}</span>
-            <span class="service-duration"><i class="fas fa-clock"></i> {{ svc.duration_minutes }} min</span>
+        {% else %}
+        <div class="sfc-icon sfc-icon-only"><i class="fas fa-{{ svc.icon|default:'cut' }}"></i></div>
+        {% endif %}
+        <div class="sfc-body">
+          <div class="sfc-header">
+            <div>
+              <span class="service-category">{{ svc.get_category_display }}</span>
+              <h3>{{ svc.name }}</h3>
+            </div>
+            <div class="sfc-price">&#8369;{{ svc.price }}</div>
+          </div>
+          {% if svc.description %}<p>{{ svc.description|truncatechars:120 }}</p>{% endif %}
+          <div class="sfc-footer">
+            <span class="service-duration"><i class="fas fa-clock"></i> {{ svc.duration_minutes }} minutes</span>
+            <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
           </div>
         </div>
-        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
       </div>
       {% endfor %}
       {% else %}
-      <div class="service-card">
-        <div class="service-icon-wrap"><i class="fas fa-cut"></i></div>
-        <div class="service-info">
-          <span class="service-category">Haircut</span>
-          <h3 class="service-name">Classic Haircut</h3>
-          <p class="service-desc">Traditional scissor and clipper cut with a clean finish. Timeless, precise, and built on old-world technique.</p>
-          <div class="service-meta">
-            <span class="service-price">&#8369;70–150</span>
-            <span class="service-duration"><i class="fas fa-clock"></i> 30 min</span>
+      <div class="service-full-card">
+        <div class="sfc-icon sfc-icon-only"><i class="fas fa-cut"></i></div>
+        <div class="sfc-body">
+          <div class="sfc-header">
+            <div><span class="service-category">Haircut</span><h3>Classic Haircut</h3></div>
+            <div class="sfc-price">&#8369;70–150</div>
+          </div>
+          <p>Traditional scissor and clipper cut with a clean finish. Timeless, precise, and built on old-world technique. Includes neck cleanup and styling finish.</p>
+          <div class="sfc-footer">
+            <span class="service-duration"><i class="fas fa-clock"></i> 30 minutes</span>
+            <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
           </div>
         </div>
-        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
       </div>
-      <div class="service-card">
-        <div class="service-icon-wrap"><i class="fas fa-magic"></i></div>
-        <div class="service-info">
-          <span class="service-category">Haircut</span>
-          <h3 class="service-name">Skin Fade</h3>
-          <p class="service-desc">Advanced fade with razor-sharp taper and seamless blend. From low to bald — each fade is a signature.</p>
-          <div class="service-meta">
-            <span class="service-price">&#8369;350–600</span>
-            <span class="service-duration"><i class="fas fa-clock"></i> 45 min</span>
+      <div class="service-full-card">
+        <div class="sfc-icon sfc-icon-only"><i class="fas fa-magic"></i></div>
+        <div class="sfc-body">
+          <div class="sfc-header">
+            <div><span class="service-category">Haircut</span><h3>Skin Fade</h3></div>
+            <div class="sfc-price">&#8369;350–600</div>
+          </div>
+          <p>Advanced fade with razor-sharp taper and seamless blend from skin to length. From low to bald — each fade is a signature of our craft and precision.</p>
+          <div class="sfc-footer">
+            <span class="service-duration"><i class="fas fa-clock"></i> 45 minutes</span>
+            <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
           </div>
         </div>
-        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
       </div>
-      <div class="service-card featured-service">
-        <div class="featured-badge">Popular</div>
-        <div class="service-icon-wrap"><i class="fas fa-crown"></i></div>
-        <div class="service-info">
-          <span class="service-category">Combo Package</span>
-          <h3 class="service-name">Combo Package</h3>
-          <p class="service-desc">Full haircut, hot towel straight razor shave, and scalp treatment in one session. The complete Velvet Steel experience.</p>
-          <div class="service-meta">
-            <span class="service-price">&#8369;500–800</span>
-            <span class="service-duration"><i class="fas fa-clock"></i> 75 min</span>
+      <div class="service-full-card">
+        <div class="sfc-icon sfc-icon-only"><i class="fas fa-crown"></i></div>
+        <div class="sfc-body">
+          <div class="sfc-header">
+            <div><span class="service-category">Combo Package</span><h3>Combo Package</h3></div>
+            <div class="sfc-price">&#8369;500–800</div>
+          </div>
+          <p>Full haircut, hot towel straight razor shave, and scalp treatment in one session. The complete Velvet Steel experience, start to finish.</p>
+          <div class="sfc-footer">
+            <span class="service-duration"><i class="fas fa-clock"></i> 75 minutes</span>
+            <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
           </div>
         </div>
-        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
       </div>
-      <div class="service-card">
-        <div class="service-icon-wrap"><i class="fas fa-user-ninja"></i></div>
-        <div class="service-info">
-          <span class="service-category">Shave &amp; Beard</span>
-          <h3 class="service-name">Straight Razor Shave</h3>
-          <p class="service-desc">Hot towel prep, lather, and a straight razor shave for the smoothest finish possible. A ritual, not just a shave.</p>
-          <div class="service-meta">
-            <span class="service-price">&#8369;150–250</span>
-            <span class="service-duration"><i class="fas fa-clock"></i> 30 min</span>
+      <div class="service-full-card">
+        <div class="sfc-icon sfc-icon-only"><i class="fas fa-user-ninja"></i></div>
+        <div class="sfc-body">
+          <div class="sfc-header">
+            <div><span class="service-category">Shave &amp; Beard</span><h3>Straight Razor Shave</h3></div>
+            <div class="sfc-price">&#8369;150–250</div>
+          </div>
+          <p>Hot towel prep, professional lather, and a straight razor shave for the smoothest, closest finish possible. A ritual, not just a shave. Aftershave balm included.</p>
+          <div class="sfc-footer">
+            <span class="service-duration"><i class="fas fa-clock"></i> 30 minutes</span>
+            <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
           </div>
         </div>
-        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
       </div>
-
-      <div class="service-card">
-        <div class="service-icon-wrap"><i class="fas fa-spa"></i></div>
-        <div class="service-info">
-          <span class="service-category">Hair Treatment</span>
-          <h3 class="service-name">Hair Treatment</h3>
-          <p class="service-desc">Deep conditioning, scalp massage, and professional-grade treatment to restore health and shine to your hair.</p>
-          <div class="service-meta">
-            <span class="service-price">&#8369;250–400</span>
-            <span class="service-duration"><i class="fas fa-clock"></i> 45 min</span>
+      <div class="service-full-card">
+        <div class="sfc-icon sfc-icon-only"><i class="fas fa-spa"></i></div>
+        <div class="sfc-body">
+          <div class="sfc-header">
+            <div><span class="service-category">Hair Treatment</span><h3>Hair Treatment</h3></div>
+            <div class="sfc-price">&#8369;250–400</div>
+          </div>
+          <p>Deep conditioning scalp treatment using imported professional-grade products. Restores moisture, reduces breakage, and leaves your hair with visible health and shine.</p>
+          <div class="sfc-footer">
+            <span class="service-duration"><i class="fas fa-clock"></i> 45 minutes</span>
+            <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
           </div>
         </div>
-        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
       </div>
-
-      <div class="service-card">
-        <div class="service-icon-wrap"><i class="fas fa-child"></i></div>
-        <div class="service-info">
-          <span class="service-category">Kids&#39; Cut</span>
-          <h3 class="service-name">Kids&#39; Cut</h3>
-          <p class="service-desc">A gentle, patient haircut experience for boys ages 2–12. Clean, tidy, and stress-free — for kids and parents alike.</p>
-          <div class="service-meta">
-            <span class="service-price">&#8369;70–120</span>
-            <span class="service-duration"><i class="fas fa-clock"></i> 20 min</span>
+      <div class="service-full-card">
+        <div class="sfc-icon sfc-icon-only"><i class="fas fa-child"></i></div>
+        <div class="sfc-body">
+          <div class="sfc-header">
+            <div><span class="service-category">Kids&#39; Cut</span><h3>Kids&#39; Cut</h3></div>
+            <div class="sfc-price">&#8369;70–120</div>
+          </div>
+          <p>A gentle, patient haircut experience for boys ages 2–12. Clean, tidy, and stress-free — for kids and parents alike. Our barbers are experienced with young clients.</p>
+          <div class="sfc-footer">
+            <span class="service-duration"><i class="fas fa-clock"></i> 20 minutes</span>
+            <a href="{% url 'book_reservation' %}" class="btn-gold btn-sm">Book Now</a>
           </div>
         </div>
-        <a href="{% url 'book_reservation' %}" class="service-book-btn">Book Now</a>
       </div>
       {% endif %}
     </div>
