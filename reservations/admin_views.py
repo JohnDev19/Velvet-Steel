@@ -515,7 +515,7 @@ def admin_about_edit(request):
             about.shop_image = _image_to_data_uri(image_file)
 
         fields = [
-            'established_year', 'stat_years', 'stat_clients', 'stat_barbers',
+           'page_badge', 'page_hero_title', 'page_hero_subtitle', 'established_year', 'stat_years', 'stat_clients', 'stat_barbers',
             'story_lead', 'story_body_1', 'story_body_2',
             'value_1', 'value_2', 'value_3', 'value_4',
             'address', 'phone_1', 'phone_2',
