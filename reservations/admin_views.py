@@ -558,3 +558,34 @@ def admin_services_page_edit(request):
         return redirect('admin_services_page_edit')
 
     return render(request, 'admin_panel/services_page_edit.html', {'page': page})
+
+@admin_required
+def admin_home_page_edit(request):
+    from .models import HomePage
+    page = HomePage.objects().first()
+
+    if request.method == 'POST':
+        if not page:
+            page = HomePage()
+        fields = [
+            'hero_location', 'hero_small_title', 'hero_large_title', 'hero_subtitle',
+            'feat1_title', 'feat1_desc', 'feat2_title', 'feat2_desc',
+            'feat3_title', 'feat3_desc', 'feat4_title', 'feat4_desc',
+            'services_subtitle', 'barbers_subtitle', 'testimonials_subtitle',
+            'cta_subtitle',
+            'loc_address', 'loc_hours_weekday', 'loc_hours_sunday',
+            'loc_phone', 'loc_email', 'loc_map_city', 'loc_map_country',
+        ]
+        for f in fields:
+            val = request.POST.get(f, '').strip()
+            if val:
+                setattr(page, f, val)
+        page.updated_at = timezone.now()
+        try:
+            page.save()
+            messages.success(request, 'Home page updated successfully.')
+        except Exception as e:
+            messages.error(request, f'Could not save: {e}')
+        return redirect('admin_home_page_edit')
+
+    return render(request, 'admin_panel/home_page_edit.html', {'page': page})

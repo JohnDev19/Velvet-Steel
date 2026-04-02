@@ -26,4 +26,5 @@ urlpatterns = [
     path('services/<str:pk>/delete/', admin_views.admin_service_delete, name='admin_service_delete'),
     path('about/', admin_views.admin_about_edit, name='admin_about_edit'),
     path('services-page/', admin_views.admin_services_page_edit, name='admin_services_page_edit'),
+    path('home-page/', admin_views.admin_home_page_edit, name='admin_home_page_edit'),
 ]
