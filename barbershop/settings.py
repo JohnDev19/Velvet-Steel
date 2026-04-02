@@ -15,20 +15,12 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    # Replit
-    '.replit.dev',
-    '.replit.app',
-    '.repl.co',
     # Vercel
     '.vercel.app',
     'velvet-steel-ph.vercel.app',
 ] + [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h.strip()]
 
 CSRF_TRUSTED_ORIGINS = [
-    # Replit
-    'https://*.replit.dev',
-    'https://*.replit.app',
-    'https://*.repl.co',
     # Vercel
     'https://*.vercel.app',
     'https://velvet-steel-ph.vercel.app',
