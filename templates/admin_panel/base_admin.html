@@ -67,6 +67,9 @@
             <a href="{% url 'admin_about_edit' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_about_edit' %}active{% endif %}">
               <i class="fas fa-file-alt"></i> About Page
               </a>
+            <a href="{% url 'admin_services_page_edit' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_services_page_edit' %}active{% endif %}">
+              <i class="fas fa-concierge-bell"></i> Services Page
+            </a>
             <div class="nav-section-label">System</div>
             <a href="/django-admin/" class="sidebar-link">
                 <i class="fas fa-cog"></i> Django Admin
