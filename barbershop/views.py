@@ -50,7 +50,6 @@ def about(request):
         'shop_phone':   settings.BARBERSHOP_PHONE,
         'shop_address': settings.BARBERSHOP_ADDRESS,
         'shop_email':   settings.BARBERSHOP_EMAIL,
-        'svc_page':     svc_page,
     }
     return render(request, 'about/index.html', context)
 
@@ -72,5 +71,6 @@ def services(request):
         'all_services':       all_services,
         'has_services':       all_services.count() > 0,
         'shop_name':          settings.BARBERSHOP_NAME,
+        'svc_page':           svc_page,
     }
     return render(request, 'home/services.html', context)
