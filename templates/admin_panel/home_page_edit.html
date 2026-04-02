@@ -113,6 +113,11 @@
 <!-- CTA BANNER -->
 <div class="admin-section" style="margin-bottom:20px;">
     <div class="section-toolbar"><h3><i class="fas fa-bullhorn"></i> CTA Banner</h3></div>
+    <div class="form-group" style="margin:0;margin-top:20px;">
+            <label class="form-label">CTA Phone Number <small style="text-transform:none;letter-spacing:0;color:#6a6050;">(include country code, no spaces e.g. +639123456789)</small></label>
+            <input type="text" name="cta_phone" class="form-control"
+                   value="{{ page.cta_phone|default:'+639123456789' }}">
+        </div>
     <div style="padding:24px;">
         <div class="form-group" style="margin:0;">
             <label class="form-label">CTA Subtitle</label>
