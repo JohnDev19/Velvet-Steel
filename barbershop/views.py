@@ -34,6 +34,7 @@ def home(request):
         'barbers':      barbers,
         'services':     services,
         'testimonials': testimonials,
+        'home_page':    home_page,
         'shop_name':    settings.BARBERSHOP_NAME,
         'shop_phone':   settings.BARBERSHOP_PHONE,
         'shop_address': settings.BARBERSHOP_ADDRESS,
