@@ -714,7 +714,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0);
-  z-index: 600;
+  z-index: 1;
   transition: background 0.35s ease;
   pointer-events: none;
 }
