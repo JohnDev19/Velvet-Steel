@@ -22,33 +22,60 @@
 <section class="section about-story">
     <div class="container">
         <div class="about-grid">
+
+            <!-- IMAGE + STATS -->
             <div class="about-visual">
                 <div class="about-img-frame">
+                    {% if about and about.shop_image %}
+                    <img src="{{ about.shop_image }}" alt="Velvet Steel Barbershop"
+                         style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;border:1px solid rgba(200,160,60,0.2);">
+                    {% else %}
                     <div class="about-img-placeholder"><i class="fas fa-cut"></i></div>
+                    {% endif %}
                     <div class="about-badge-float">
                         <span class="badge-year">EST.</span>
-                        <span class="badge-num">2010</span>
+                        <span class="badge-num">{{ about.established_year|default:"2010" }}</span>
                     </div>
                 </div>
                 <div class="about-stats-row">
-                    <div class="about-stat"><span class="astat-n">15+</span><span class="astat-l">Years</span></div>
-                    <div class="about-stat"><span class="astat-n">5K+</span><span class="astat-l">Clients</span></div>
-                    <div class="about-stat"><span class="astat-n">8+</span><span class="astat-l">Barbers</span></div>
+                    <div class="about-stat">
+                        <span class="astat-n">{{ about.stat_years|default:"15+" }}</span>
+                        <span class="astat-l">Years</span>
+                    </div>
+                    <div class="about-stat">
+                        <span class="astat-n">{{ about.stat_clients|default:"5K+" }}</span>
+                        <span class="astat-l">Clients</span>
+                    </div>
+                    <div class="about-stat">
+                        <span class="astat-n">{{ about.stat_barbers|default:"8+" }}</span>
+                        <span class="astat-l">Barbers</span>
+                    </div>
                 </div>
             </div>
+
+            <!-- STORY TEXT -->
             <div class="about-text">
-                <div class="section-badge">EST. 2010</div>
+                <div class="section-badge">EST. {{ about.established_year|default:"2010" }}</div>
                 <h2 class="section-title">The <em>Legacy</em> of Velvet Steel</h2>
-                <p class="about-lead">Founded in 2010 by master barber Rico Villanueva in the heart of Quezon City, Velvet Steel was built on a single conviction: that Filipino men deserve a genuinely premium grooming experience.
+                <p class="about-lead">{{ about.story_lead|default:"Founded in 2010 by master barber Rico Villanueva in the heart of Quezon City, Velvet Steel was built on a single conviction: that Filipino men deserve a genuinely premium grooming experience." }}</p>
+                {% if about and about.story_body_1 %}
+                <p>{{ about.story_body_1 }}</p>
+                {% else %}
                 <p>What started as a small, humble shop on Rizal Avenue has grown into Metro Manila's most respected premium barbershop — a place where tradition meets modernity, and where every client is treated like royalty.</p>
+                {% endif %}
+                {% if about and about.story_body_2 %}
+                <p>{{ about.story_body_2 }}</p>
+                {% else %}
                 <p>We believe that a great haircut is more than just a trim — it's an expression of identity, a confidence booster, and a moment of self-care that every man deserves. That's why we pour passion, precision, and artistry into every single appointment.</p>
+                {% endif %}
                 <div class="about-values">
-                    <div class="value-item"><i class="fas fa-check-circle"></i> <span>Certified Master Barbers</span></div>
-                    <div class="value-item"><i class="fas fa-check-circle"></i> <span>Premium Imported Products</span></div>
-                    <div class="value-item"><i class="fas fa-check-circle"></i> <span>Strict Hygiene Standards</span></div>
-                    <div class="value-item"><i class="fas fa-check-circle"></i> <span>100% Filipino-Owned Business</span></div>
+                    <div class="value-item"><i class="fas fa-check-circle"></i> <span>{{ about.value_1|default:"Certified Master Barbers" }}</span></div>
+                    <div class="value-item"><i class="fas fa-check-circle"></i> <span>{{ about.value_2|default:"Premium Imported Products" }}</span></div>
+                    <div class="value-item"><i class="fas fa-check-circle"></i> <span>{{ about.value_3|default:"Strict Hygiene Standards" }}</span></div>
+                    <div class="value-item"><i class="fas fa-check-circle"></i> <span>{{ about.value_4|default:"100% Filipino-Owned Business" }}</span></div>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
@@ -93,7 +120,7 @@
                 </div>
                 <div class="barber-info">
                     <h3 class="barber-name">Senior Barber</h3>
-                    <p class="barber-specialty">Classic Cuts & Modern Styles</p>
+                    <p class="barber-specialty">Classic Cuts &amp; Modern Styles</p>
                     <div class="barber-meta">
                         <span class="barber-exp"><i class="fas fa-award"></i> 8 yrs</span>
                         <span class="barber-rating"><i class="fas fa-star"></i> 4.9</span>
@@ -117,22 +144,31 @@
             <div class="contact-card">
                 <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
                 <h4>Address</h4>
-                <p>123 Rizal Avenue, Quezon City<br>Metro Manila, Philippines 1100</p>
+                <p>{{ about.address|default:"123 Rizal Avenue, Quezon City, Metro Manila, Philippines 1100"|linebreaksbr }}</p>
             </div>
             <div class="contact-card">
                 <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
                 <h4>Phone</h4>
-                <p>+63 912 345 6789<br>+63 2 8123 4567</p>
+                <p>
+                    {{ about.phone_1|default:"+63 912 345 6789" }}
+                    {% if about and about.phone_2 %}<br>{{ about.phone_2 }}{% else %}<br>+63 2 8123 4567{% endif %}
+                </p>
             </div>
             <div class="contact-card">
                 <div class="contact-icon"><i class="fas fa-envelope"></i></div>
                 <h4>Email</h4>
-                <p>info@velvetsteel.ph<br>bookings@velvetsteel.ph</p>
+                <p>
+                    {{ about.email_1|default:"info@velvetsteel.ph" }}
+                    {% if about and about.email_2 %}<br>{{ about.email_2 }}{% else %}<br>bookings@velvetsteel.ph{% endif %}
+                </p>
             </div>
             <div class="contact-card">
                 <div class="contact-icon"><i class="fas fa-clock"></i></div>
                 <h4>Hours</h4>
-                <p>Mon–Sat: 8:00 AM – 8:00 PM<br>Sunday: 9:00 AM – 6:00 PM</p>
+                <p>
+                    {{ about.hours_weekday|default:"Mon–Sat: 8:00 AM – 8:00 PM" }}<br>
+                    {{ about.hours_sunday|default:"Sunday: 9:00 AM – 6:00 PM" }}
+                </p>
             </div>
         </div>
     </div>

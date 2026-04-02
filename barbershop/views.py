@@ -40,9 +40,12 @@ def home(request):
 
 
 def about(request):
+    from reservations.models import AboutPage
     barbers = Barber.objects(is_active=True)
+    about   = AboutPage.objects().first()  # none until admin saves
     context = {
         'barbers':      barbers,
+        'about':        about,
         'shop_name':    settings.BARBERSHOP_NAME,
         'shop_phone':   settings.BARBERSHOP_PHONE,
         'shop_address': settings.BARBERSHOP_ADDRESS,

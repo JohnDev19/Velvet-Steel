@@ -499,4 +499,39 @@ def admin_service_delete(request, pk):
         name = svc.name
         svc.delete()
         messages.success(request, f'"{name}" deleted.')
-    return redirect('admin_services')
+    return redirect('admin_services') 
+
+@admin_required
+def admin_about_edit(request):
+    from .models import AboutPage
+    about = AboutPage.objects().first()
+
+    if request.method == 'POST':
+        if not about:
+            about = AboutPage()
+
+        image_file = request.FILES.get('shop_image')
+        if image_file:
+            about.shop_image = _image_to_data_uri(image_file)
+
+        fields = [
+            'established_year', 'stat_years', 'stat_clients', 'stat_barbers',
+            'story_lead', 'story_body_1', 'story_body_2',
+            'value_1', 'value_2', 'value_3', 'value_4',
+            'address', 'phone_1', 'phone_2',
+            'email_1', 'email_2', 'hours_weekday', 'hours_sunday',
+        ]
+        for f in fields:
+            val = request.POST.get(f, '').strip()
+            if val:
+                setattr(about, f, val)
+
+        about.updated_at = timezone.now()
+        try:
+            about.save()
+            messages.success(request, 'About page updated successfully.')
+        except Exception as e:
+            messages.error(request, f'Could not save: {e}')
+        return redirect('admin_about_edit')
+
+    return render(request, 'admin_panel/about_edit.html', {'about': about})
