@@ -15,7 +15,7 @@
     <div class="container page-hero-content">
         <div class="section-badge">WHAT WE OFFER</div>
         <h1 class="page-hero-title">Our <em>Services</em></h1>
-        <p>Premium grooming crafted for the modern Filipino gentleman</p>
+        <p>{{ svc_page.hero_subtitle|default:"Premium grooming crafted for the modern Filipino gentleman" }}</p>
     </div>
 </section>
 
@@ -24,7 +24,7 @@
         <div class="section-header">
             <div class="section-badge">GROOMING MENU</div>
             <h2 class="section-title">Services &amp; <em>Pricing</em></h2>
-            <p class="section-subtitle">Every service follows our quality tiers — from traditional basics to full premium experiences.</p>
+            <p class="section-subtitle">{{ svc_page.section_subtitle|default:"Every service follows our quality tiers — from traditional basics to full premium experiences." }}</p>
         </div>
 
         <div class="price-tiers-row">
@@ -210,7 +210,7 @@
     <div class="container cta-content">
         <div class="cta-text">
             <h2>Ready to Get <em>Started?</em></h2>
-            <p>Book your appointment now and let our masters work their magic.</p>
+            <p>{{ svc_page.cta_text|default:"Book your appointment now and let our masters work their magic." }}</p>
         </div>
         <a href="{% url 'book_reservation' %}" class="btn-gold btn-lg"><i class="fas fa-calendar-plus"></i> Book Appointment</a>
     </div>
