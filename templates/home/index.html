@@ -302,7 +302,7 @@
       <a href="{% url 'book_reservation' %}" class="btn-gold btn-lg">
         <i class="fas fa-calendar-plus"></i> Reserve a Slot
       </a>
-      <a href="tel:+639123456789" class="btn-white btn-lg">
+      <a href="tel:{{ home_page.cta_phone|default:'+639123456789' }}" class="btn-white btn-lg">
         <i class="fas fa-phone"></i> Call Now
       </a>
     </div>
@@ -352,4 +352,3 @@
 </section>
 
 {% endblock %}
-
