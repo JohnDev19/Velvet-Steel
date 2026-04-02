@@ -535,3 +535,26 @@ def admin_about_edit(request):
         return redirect('admin_about_edit')
 
     return render(request, 'admin_panel/about_edit.html', {'about': about})
+
+@admin_required
+def admin_services_page_edit(request):
+    from .models import ServicesPage
+    page = ServicesPage.objects().first()
+
+    if request.method == 'POST':
+        if not page:
+            page = ServicesPage()
+        fields = ['hero_subtitle', 'section_badge', 'section_subtitle', 'cta_text']
+        for f in fields:
+            val = request.POST.get(f, '').strip()
+            if val:
+                setattr(page, f, val)
+        page.updated_at = timezone.now()
+        try:
+            page.save()
+            messages.success(request, 'Services page updated successfully.')
+        except Exception as e:
+            messages.error(request, f'Could not save: {e}')
+        return redirect('admin_services_page_edit')
+
+    return render(request, 'admin_panel/services_page_edit.html', {'page': page})
