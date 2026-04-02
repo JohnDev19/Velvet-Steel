@@ -136,6 +136,7 @@ em { font-style: italic; color: var(--gold); }
   font-size: 0.6rem; letter-spacing: 0.2em;
   color: var(--gold); font-weight: 600;
 }
+/* Desktop nav links row */
 .nav-links-desktop { display: flex; align-items: center; gap: 4px; list-style: none; }
 
 .nav-link {
@@ -180,6 +181,8 @@ em { font-style: italic; color: var(--gold); }
   box-shadow: -8px 0 32px rgba(0,0,0,0.5);
 }
 .mob-sidebar.open { right: 0; }
+
+/* Sidebar header */
 .nav-sidebar-header {
   display: flex; flex-direction: row; align-items: center; gap: 12px;
   padding: 18px 16px;
@@ -217,9 +220,7 @@ em { font-style: italic; color: var(--gold); }
 }
 .nav-sidebar-close:hover { background: var(--gold-faint); color: var(--gold); }
 
-
-
-
+/* Sidebar links body */
 .nav-sidebar-links-body {
   display: flex; flex-direction: column; align-items: stretch;
   gap: 2px; padding: 14px 12px; flex: 1;
@@ -234,11 +235,13 @@ em { font-style: italic; color: var(--gold); }
 .nav-sidebar-links-body .nav-link.active { color: var(--gold); background: var(--gold-faint); }
 .nav-sidebar-sep { height: 1px; background: var(--border); margin: 6px 0; }
 
+/* Hide hamburger on desktop, hide desktop nav on mobile */
 @media (max-width: 900px) {
   .nav-toggle { display: flex; }
   .nav-links-desktop { display: none; }
 }
 
+/* Dropdown */
 .nav-dropdown { position: relative; }
 .nav-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
 .dropdown-menu {
@@ -259,6 +262,7 @@ em { font-style: italic; color: var(--gold); }
 .dropdown-menu .admin-link { color: var(--gold-light); }
 .dropdown-divider { height: 1px; background: var(--border); margin: 6px 0; }
 
+/* Mobile toggle */
 .nav-toggle {
   display: none; flex-direction: column; gap: 5px;
   background: none; border: none; cursor: pointer; padding: 4px;
@@ -477,10 +481,18 @@ em { font-style: italic; color: var(--gold); }
   position: absolute; inset: 0;
   background: linear-gradient(135deg, #1a1000 0%, #241800 40%, #1a1200 100%);
   border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  overflow: hidden;
 }
 .cta-banner-bg::before {
-  content: ''; position: absolute; inset: 0;
+  content: ''; position: absolute; inset: 0; z-index: 1;
   background: radial-gradient(ellipse at 50% 50%, rgba(200,160,60,0.15) 0%, transparent 70%);
+}
+.cta-banner-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  opacity: 0.18; display: block;
+  z-index: 0;
 }
 .cta-content { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
 .cta-text { text-align: left; }
@@ -537,10 +549,18 @@ em { font-style: italic; color: var(--gold); }
   position: absolute; inset: 0;
   background: linear-gradient(180deg, #0a0800 0%, #141008 60%, var(--dark) 100%);
   border-bottom: 1px solid var(--border);
+  overflow: hidden;
 }
 .page-hero-bg::after {
-  content: ''; position: absolute; inset: 0;
+  content: ''; position: absolute; inset: 0; z-index: 1;
   background: radial-gradient(ellipse at 50% 30%, rgba(200,160,60,0.1) 0%, transparent 60%);
+}
+.page-hero-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+  opacity: 0.22; display: block;
+  z-index: 0;
 }
 .page-hero-content { position: relative; }
 .page-hero-title { font-size: clamp(2.5rem, 6vw, 4.5rem); color: var(--text-primary); margin-top: 12px; margin-bottom: 12px; }
@@ -1035,6 +1055,20 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .haircut-styles-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .cta-content { flex-direction: column; text-align: center; gap: 24px; }
   .cta-text { text-align: center; }
+  .cta-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+  .cta-actions .btn-gold,
+  .cta-actions .btn-white,
+  .cta-actions .btn-outline {
+    padding: 12px 28px;
+    font-size: 0.85rem;
+    width: auto;
+    justify-content: center;
+  }
 }
 
 /* ============================================

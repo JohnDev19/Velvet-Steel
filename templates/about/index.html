@@ -11,7 +11,9 @@
 {% block content %}
 
 <section class="page-hero">
-    <div class="page-hero-bg"></div>
+    <div class="page-hero-bg">
+        <img src="{% static 'img/about_hero.jpg' %}" alt="" class="page-hero-img">
+    </div>
     <div class="container page-hero-content">
         <div class="section-badge">{{ about.page_badge|default:"OUR STORY" }}</div>
         <h1 class="page-hero-title">{{ about.page_hero_title|default:"About Velvet Steel"|safe }}</h1>
