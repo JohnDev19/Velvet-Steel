@@ -49,6 +49,9 @@
 </head>
 <body>
 
+<!-- MOBILE NAV OVERLAY -->
+<div class="mob-nav-overlay" id="mobNavOverlay"></div>
+
 <!-- NAVBAR -->
 <nav class="navbar" id="navbar">
     <div class="nav-container">
@@ -66,12 +69,99 @@
             </div>
         </a>
         <ul class="nav-links" id="navLinks">
-            <li><a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
-            <li><a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a></li>
-            <li><a href="{% url 'services' %}" class="nav-link {% if request.resolver_match.url_name == 'services' %}active{% endif %}">Services</a></li>
-            <li><a href="{% url 'book_reservation' %}" class="nav-link nav-book">Book Now</a></li>
+
+            <!-- ── SIDEBAR HEADER (mobile only) ──────────────── -->
+            <li class="nav-sidebar-header" id="navSidebarHeader">
+                {% if user.is_authenticated %}
+                <div class="nav-sidebar-avatar">
+                    {% if user_profile and user_profile.photo %}
+                    <img src="{{ user_profile.photo }}" alt="Profile">
+                    {% else %}
+                    <span>{{ user.first_name|first|upper|default:user.username|first|upper }}</span>
+                    {% endif %}
+                </div>
+                <div class="nav-sidebar-info">
+                    <strong>{{ user.get_full_name|default:user.username }}</strong>
+                    <span>{{ user.email }}</span>
+                </div>
+                {% else %}
+                <div class="nav-sidebar-avatar">
+                    <i class="fas fa-cut" style="font-size:1rem;"></i>
+                </div>
+                <div class="nav-sidebar-info">
+                    <strong>{{ site_settings.shop_name|default:"Velvet Steel" }}</strong>
+                    <span>{{ site_settings.shop_sub|default:"BARBERSHOP" }}</span>
+                </div>
+                {% endif %}
+                <button class="nav-sidebar-close" id="navSidebarClose" aria-label="Close menu">
+                    <i class="fas fa-times"></i>
+                </button>
+            </li>
+
+            <!-- ── MAIN LINKS ──────────────────────────────────── -->
+            <li class="nav-sidebar-links-body" id="navSidebarBody">
+
+                <a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+                    <i class="fas fa-info-circle"></i> About
+                </a>
+                <a href="{% url 'services' %}" class="nav-link {% if request.resolver_match.url_name == 'services' %}active{% endif %}">
+                    <i class="fas fa-cut"></i> Services
+                </a>
+
+                <div class="nav-sidebar-sep"></div>
+
+                <a href="{% url 'book_reservation' %}" class="nav-link nav-book">
+                    <i class="fas fa-calendar-alt"></i> Book Now
+                </a>
+
+                {% if user.is_authenticated %}
+                <div class="nav-sidebar-sep"></div>
+
+                {% if user.is_staff %}
+                <a href="{% url 'admin_dashboard' %}" class="nav-link">
+                    <i class="fas fa-tachometer-alt"></i> Admin Panel
+                </a>
+                {% else %}
+                <a href="{% url 'user_dashboard' %}" class="nav-link">
+                    <i class="fas fa-chart-line"></i> My Dashboard
+                </a>
+                <a href="{% url 'my_reservations' %}" class="nav-link">
+                    <i class="fas fa-calendar-check"></i> My Reservations
+                </a>
+                <a href="{% url 'review_page' %}" class="nav-link">
+                    <i class="fas fa-star"></i> Write a Review
+                </a>
+                {% endif %}
+                <a href="{% url 'profile' %}" class="nav-link">
+                    <i class="fas fa-user-cog"></i> Profile
+                </a>
+
+                <div class="nav-sidebar-sep"></div>
+
+                <a href="{% url 'logout' %}" class="nav-link" style="color:#e05555;">
+                    <i class="fas fa-sign-out-alt" style="color:#e05555;opacity:1;"></i> Logout
+                </a>
+
+                {% else %}
+                <div class="nav-sidebar-sep"></div>
+                <a href="{% url 'login' %}" class="nav-link">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <a href="{% url 'register' %}" class="nav-link" style="color:var(--gold);border:1px solid rgba(200,160,60,0.3);">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </a>
+                {% endif %}
+
+            </li>
+            <!-- end nav-sidebar-links-body -->
+
+            <!-- ── DESKTOP-ONLY items (hidden on mobile via CSS) ─ -->
+            <li class="nav-desktop-only"><a href="{% url 'book_reservation' %}" class="nav-link nav-book">Book Now</a></li>
             {% if user.is_authenticated %}
-            <li class="nav-dropdown">
+            <li class="nav-desktop-only nav-dropdown">
                 <a href="#" class="nav-link nav-user" aria-label="Account menu">
                     {% if user_profile and user_profile.photo %}
                     <img src="{{ user_profile.photo }}" class="nav-avatar" alt="Profile">
@@ -108,9 +198,10 @@
                 </div>
             </li>
             {% else %}
-            <li><a href="{% url 'login' %}" class="nav-link">Login</a></li>
-            <li><a href="{% url 'register' %}" class="nav-link nav-register">Sign Up</a></li>
+            <li class="nav-desktop-only"><a href="{% url 'login' %}" class="nav-link">Login</a></li>
+            <li class="nav-desktop-only"><a href="{% url 'register' %}" class="nav-link nav-register">Sign Up</a></li>
             {% endif %}
+
         </ul>
         <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
             <span></span><span></span><span></span>
