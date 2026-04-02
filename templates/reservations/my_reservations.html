@@ -1,6 +1,10 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block title %}My Reservations | Velvet Steel{% endblock %}
+{% block meta_description %}View and manage all your Velvet Steel appointments — upcoming bookings, past visits, and cancellations.{% endblock %}
+{% block og_title %}My Reservations | Velvet Steel Barbershop{% endblock %}
+{% block og_image %}{% load static %}{% static 'img/logo.png' %}{% endblock %}
+{% block twitter_image %}{% load static %}{% static 'img/logo.png' %}{% endblock %}
 {% block extra_css %}
 <style>
 @media (max-width: 560px) {

@@ -3,13 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% load static %}
+
+    {# ── CORE SEO ─────────────────────────────────────────────── #}
     <title>{% block title %}Velvet Steel Barbershop{% endblock %} | Premium Cuts, Quezon City</title>
-    <meta name="description" content="Velvet Steel Barbershop — Premium grooming in Quezon City, Metro Manila. Fades, straight razor shaves, and full styling packages. Book online.">
+    <meta name="description"        content="{% block meta_description %}Velvet Steel Barbershop — Premium grooming in Quezon City, Metro Manila. Precision fades, straight razor shaves, and full styling packages. Book online today.{% endblock %}">
+    <meta name="keywords"           content="{% block meta_keywords %}barbershop quezon city, premium barbershop manila, skin fade manila, haircut qc, straight razor shave, velvet steel barbershop{% endblock %}">
+    <meta name="author"             content="Velvet Steel Barbershop">
+    <meta name="robots"             content="index, follow">
+    <link rel="canonical"           href="{% block canonical %}https://velvet-steel-ph.vercel.app{% endblock %}">
+
+    {# ── OPEN GRAPH (Facebook, LinkedIn, Messenger, Viber, etc.) ─ #}
+    <meta property="og:type"        content="{% block og_type %}website{% endblock %}">
+    <meta property="og:site_name"   content="Velvet Steel Barbershop">
+    <meta property="og:title"       content="{% block og_title %}Velvet Steel Barbershop | Premium Cuts, Quezon City{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Premium grooming in Quezon City, Metro Manila. Precision fades, straight razor shaves, and full styling packages. Book your appointment online.{% endblock %}">
+    <meta property="og:image"       content="{% block og_image %}{% static 'img/photo.jpg' %}{% endblock %}">
+    <meta property="og:image:alt"   content="{% block og_image_alt %}Velvet Steel Barbershop — Premium grooming in Quezon City{% endblock %}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height"content="630">
+    <meta property="og:url"         content="{% block og_url %}https://velvet-steel-ph.vercel.app{% endblock %}">
+    <meta property="og:locale"      content="en_PH">
+
+    {# ── TWITTER / X CARD ─────────────────────────────────────── #}
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:site"        content="@velvetsteel_ph">
+    <meta name="twitter:title"       content="{% block twitter_title %}Velvet Steel Barbershop | Premium Cuts, Quezon City{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Premium grooming in Quezon City, Metro Manila. Precision fades, straight razor shaves, and full styling packages. Book online.{% endblock %}">
+    <meta name="twitter:image"       content="{% block twitter_image %}{% static 'img/photo.jpg' %}{% endblock %}">
+    <meta name="twitter:image:alt"   content="Velvet Steel Barbershop — Premium grooming in Quezon City">
+
+    {# ── FAVICON / PWA ────────────────────────────────────────── #}
+    <link rel="icon"             type="image/png" href="{% static 'img/logo.png' %}">
+    <link rel="apple-touch-icon"                  href="{% static 'img/logo.png' %}">
+    <meta name="theme-color"    content="#c8a03c">
+
+    {# ── FONTS & ICONS ────────────────────────────────────────── #}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Josefin+Sans:wght@300;400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    {% load static %}
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     {% block extra_css %}{% endblock %}
 </head>

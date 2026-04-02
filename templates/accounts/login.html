@@ -1,5 +1,14 @@
 {% extends 'base/base.html' %}
 {% block title %}Login | Velvet Steel Barbershop{% endblock %}
+{% block meta_description %}Sign in to your Velvet Steel account to manage reservations, view booking history, and book your next appointment.{% endblock %}
+{% block og_title %}Login | Velvet Steel Barbershop{% endblock %}
+{% block og_description %}Sign in to your Velvet Steel account to manage reservations, view booking history, and book your next appointment.{% endblock %}
+{% block og_url %}https://velvet-steel-ph.vercel.app/accounts/login/{% endblock %}
+{% block canonical %}https://velvet-steel-ph.vercel.app/accounts/login/{% endblock %}
+{% block og_image %}{% load static %}{% static 'img/logo.png' %}{% endblock %}
+{% block twitter_title %}Login | Velvet Steel Barbershop{% endblock %}
+{% block twitter_description %}Sign in to your Velvet Steel account to manage reservations, view booking history, and book your next appointment.{% endblock %}
+{% block twitter_image %}{% load static %}{% static 'img/logo.png' %}{% endblock %}
 {% block content %}
 <section class="auth-section">
     <div class="auth-bg"></div>
