@@ -237,6 +237,19 @@ class AboutPage(Document):
         obj = cls.objects().first()
         return obj  # None
 
+class ServicesPage(Document):
+    hero_subtitle        = StringField(default='Premium grooming crafted for the modern Filipino gentleman')
+    section_badge        = StringField(default='GROOMING MENU')
+    section_subtitle     = StringField(default='Every service follows our quality tiers — from traditional basics to full premium experiences.')
+    cta_text             = StringField(default='Book your appointment now and let our masters work their magic.')
+    updated_at           = DateTimeField(default=timezone.now)
+
+    meta = {'collection': 'services_page_content'}
+
+    @classmethod
+    def get_singleton(cls):
+        return cls.objects().first()
+        
 class HaircutStyle(Document):
     CATEGORY_CHOICES = (
         ('basic',   '₱70–₱100 · Traditional, basic cut'),
