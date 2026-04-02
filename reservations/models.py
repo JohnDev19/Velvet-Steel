@@ -249,6 +249,48 @@ class ServicesPage(Document):
     @classmethod
     def get_singleton(cls):
         return cls.objects().first()
+
+class HomePage(Document):
+    # Hero
+    hero_location        = StringField(default='QUEZON CITY — METRO MANILA')
+    hero_small_title     = StringField(default='Precision. Craft.')
+    hero_large_title     = StringField(default='Velvet Steel')
+    hero_subtitle        = StringField(default='Premium barbershop grooming in the heart of Metro Manila. Old-world technique, uncompromising standards, modern sensibility.')
+
+    # Features
+    feat1_title          = StringField(default='Premium Standard')
+    feat1_desc           = StringField(default='Every service uses imported professional-grade products. No shortcuts. No compromise on quality from the first cut to the last finish.')
+    feat2_title          = StringField(default='Certified Barbers')
+    feat2_desc           = StringField(default='Our team of master barbers has trained and refined their craft across Manila, Spain, and Japan. Technique is never left to chance.')
+    feat3_title          = StringField(default='Online Booking')
+    feat3_desc           = StringField(default='Reserve your exact slot in seconds. Real-time availability, instant confirmation, no phone calls required. Your time is valued.')
+    feat4_title          = StringField(default='Strict Hygiene')
+    feat4_desc           = StringField(default='Full tool sterilization between every client. A clean, orderly environment is not optional — it is the baseline at Velvet Steel.')
+
+    # Section subtitles
+    services_subtitle    = StringField(default='From signature fades to full grooming rituals. Every service is a deliberate act of craft, not a transaction.')
+    barbers_subtitle     = StringField(default='Specialists, not generalists. Every barber at Velvet Steel has a defined craft and years of deliberate practice behind it.')
+    testimonials_subtitle= StringField(default='Real words from real clients. Every review is a reflection of the craft, care, and consistency we bring to every cut.')
+
+    # CTA banner
+    cta_subtitle         = StringField(default='Reserve your slot online in seconds. Real-time availability, confirmed instantly. Walk in ready, walk out sharp.')
+
+    # Location section
+    loc_address          = StringField(default='123 Rizal Avenue, Quezon City\nMetro Manila, Philippines')
+    loc_hours_weekday    = StringField(default='Monday – Saturday: 8:00 AM – 8:00 PM')
+    loc_hours_sunday     = StringField(default='Sunday: 9:00 AM – 6:00 PM')
+    loc_phone            = StringField(default='+63 912 345 6789')
+    loc_email            = StringField(default='info@velvetsteel.ph')
+    loc_map_city         = StringField(default='Quezon City, Metro Manila')
+    loc_map_country      = StringField(default='Philippines')
+
+    updated_at           = DateTimeField(default=timezone.now)
+
+    meta = {'collection': 'home_page_content'}
+
+    @classmethod
+    def get_singleton(cls):
+        return cls.objects().first()
         
 class HaircutStyle(Document):
     CATEGORY_CHOICES = (
