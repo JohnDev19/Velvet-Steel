@@ -1,0 +1,205 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Edit About Page{% endblock %}
+{% block page_title %}About Page{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+    <div>
+        <h2>Edit About Page</h2>
+        <p class="subtext">Changes are reflected live on the public About page.</p>
+    </div>
+    <a href="/about/" target="_blank" class="btn-outline btn-sm">
+        <i class="fas fa-external-link-alt"></i> View Page
+    </a>
+</div>
+
+<form method="post" enctype="multipart/form-data" novalidate>
+{% csrf_token %}
+
+<!-- ── SHOP IMAGE ───────────────────────────────────────────── -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-image"></i> Shop Photo</h3></div>
+    <div style="padding:24px;">
+        {% if about and about.shop_image %}
+        <div class="current-photo-row" style="margin-bottom:16px;">
+            <img src="{{ about.shop_image }}" alt="Current shop photo" style="width:120px;height:90px;object-fit:cover;border-radius:6px;border:1px solid rgba(200,160,60,0.2);">
+            <div class="current-photo-meta">
+                <strong>Current Photo</strong>
+                <span>Upload a new image below to replace it.</span>
+            </div>
+        </div>
+        {% endif %}
+        <div class="upload-zone" id="shopImgZone">
+            <input type="file" name="shop_image" id="shopImgInput" accept="image/jpeg,image/png,image/webp">
+            <div class="upload-zone-icon"><i class="fas fa-store"></i></div>
+            <span class="upload-zone-title">Click or drag to upload shop photo</span>
+            <span class="upload-zone-hint">JPG, PNG or WebP — Recommended: 4:3 ratio, min 800×600</span>
+        </div>
+        <div class="upload-preview-wrap" id="shopImgPreviewWrap">
+            <img class="upload-preview-img" id="shopImgPreviewImg" src="" alt="Preview">
+            <button type="button" class="upload-preview-clear" id="shopImgClear" title="Remove"><i class="fas fa-times"></i></button>
+            <span class="upload-preview-name" id="shopImgPreviewName"></span>
+        </div>
+    </div>
+</div>
+
+<!-- ── STATS & BADGE ────────────────────────────────────────── -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-chart-bar"></i> Stats &amp; Established Year</h3></div>
+    <div style="padding:24px;">
+        <div class="form-row-2" style="margin-bottom:0;">
+            <div class="form-group">
+                <label class="form-label">Established Year</label>
+                <input type="text" name="established_year" class="form-control"
+                       value="{{ about.established_year|default:'2010' }}" placeholder="2010">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Years Stat (e.g. 15+)</label>
+                <input type="text" name="stat_years" class="form-control"
+                       value="{{ about.stat_years|default:'15+' }}" placeholder="15+">
+            </div>
+        </div>
+        <div class="form-row-2" style="margin-bottom:0;">
+            <div class="form-group">
+                <label class="form-label">Clients Stat (e.g. 5K+)</label>
+                <input type="text" name="stat_clients" class="form-control"
+                       value="{{ about.stat_clients|default:'5K+' }}" placeholder="5K+">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Barbers Stat (e.g. 8+)</label>
+                <input type="text" name="stat_barbers" class="form-control"
+                       value="{{ about.stat_barbers|default:'8+' }}" placeholder="8+">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── STORY TEXT ────────────────────────────────────────────── -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-align-left"></i> Story Text</h3></div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:20px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Lead Paragraph <small style="text-transform:none;letter-spacing:0;color:#6a6050;">(displayed larger)</small></label>
+            <textarea name="story_lead" class="form-control" rows="3" placeholder="Founded in 2010…">{{ about.story_lead|default:'Founded in 2010 by master barber Rico Villanueva in the heart of Quezon City, Velvet Steel was built on a single conviction: that Filipino men deserve a genuinely premium grooming experience.' }}</textarea>
+        </div>
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Body Paragraph 1</label>
+            <textarea name="story_body_1" class="form-control" rows="3" placeholder="What started as…">{{ about.story_body_1|default:"What started as a small, humble shop on Rizal Avenue has grown into Metro Manila's most respected premium barbershop — a place where tradition meets modernity, and where every client is treated like royalty." }}</textarea>
+        </div>
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Body Paragraph 2</label>
+            <textarea name="story_body_2" class="form-control" rows="3" placeholder="We believe…">{{ about.story_body_2|default:"We believe that a great haircut is more than just a trim — it's an expression of identity, a confidence booster, and a moment of self-care that every man deserves. That's why we pour passion, precision, and artistry into every single appointment." }}</textarea>
+        </div>
+    </div>
+</div>
+
+<!-- ── VALUES ────────────────────────────────────────────────── -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-check-circle"></i> Values / Checkmarks</h3></div>
+    <div style="padding:24px;">
+        <div class="form-row-2" style="margin-bottom:0;">
+            <div class="form-group">
+                <label class="form-label">Value 1</label>
+                <input type="text" name="value_1" class="form-control" value="{{ about.value_1|default:'Certified Master Barbers' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Value 2</label>
+                <input type="text" name="value_2" class="form-control" value="{{ about.value_2|default:'Premium Imported Products' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Value 3</label>
+                <input type="text" name="value_3" class="form-control" value="{{ about.value_3|default:'Strict Hygiene Standards' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Value 4</label>
+                <input type="text" name="value_4" class="form-control" value="{{ about.value_4|default:'100% Filipino-Owned Business' }}">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── CONTACT INFO ──────────────────────────────────────────── -->
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-map-marker-alt"></i> Contact Information</h3></div>
+    <div style="padding:24px;">
+        <div class="form-group">
+            <label class="form-label">Address</label>
+            <textarea name="address" class="form-control" rows="2" placeholder="123 Rizal Avenue…">{{ about.address|default:'123 Rizal Avenue, Quezon City, Metro Manila, Philippines 1100' }}</textarea>
+        </div>
+        <div class="form-row-2">
+            <div class="form-group">
+                <label class="form-label">Phone 1</label>
+                <input type="text" name="phone_1" class="form-control" value="{{ about.phone_1|default:'+63 912 345 6789' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Phone 2 <small style="text-transform:none;">(optional)</small></label>
+                <input type="text" name="phone_2" class="form-control" value="{{ about.phone_2|default:'+63 2 8123 4567' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email 1</label>
+                <input type="email" name="email_1" class="form-control" value="{{ about.email_1|default:'info@velvetsteel.ph' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email 2 <small style="text-transform:none;">(optional)</small></label>
+                <input type="email" name="email_2" class="form-control" value="{{ about.email_2|default:'bookings@velvetsteel.ph' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Weekday Hours</label>
+                <input type="text" name="hours_weekday" class="form-control" value="{{ about.hours_weekday|default:'Mon–Sat: 8:00 AM – 8:00 PM' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Sunday Hours</label>
+                <input type="text" name="hours_sunday" class="form-control" value="{{ about.hours_sunday|default:'Sunday: 9:00 AM – 6:00 PM' }}">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display:flex;gap:12px;padding-bottom:40px;">
+    <button type="submit" class="btn-gold">
+        <i class="fas fa-save"></i> Save About Page
+    </button>
+    <a href="/about/" target="_blank" class="btn-outline">
+        <i class="fas fa-eye"></i> Preview
+    </a>
+</div>
+
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    var zone  = document.getElementById('shopImgZone');
+    var input = document.getElementById('shopImgInput');
+    var wrap  = document.getElementById('shopImgPreviewWrap');
+    var img   = document.getElementById('shopImgPreviewImg');
+    var name  = document.getElementById('shopImgPreviewName');
+    var clear = document.getElementById('shopImgClear');
+    if (!zone || !input) return;
+    zone.addEventListener('click', function (e) { if (!e.target.closest('input')) input.click(); });
+    zone.addEventListener('dragover', function (e) { e.preventDefault(); zone.classList.add('upload-zone-drag'); });
+    zone.addEventListener('dragleave', function () { zone.classList.remove('upload-zone-drag'); });
+    zone.addEventListener('drop', function (e) {
+        e.preventDefault(); zone.classList.remove('upload-zone-drag');
+        if (e.dataTransfer.files[0]) {
+            var dt = new DataTransfer(); dt.items.add(e.dataTransfer.files[0]); input.files = dt.files;
+            input.dispatchEvent(new Event('change'));
+        }
+    });
+    input.addEventListener('change', function () {
+        var file = input.files[0]; if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            img.src = e.target.result; name.textContent = file.name;
+            wrap.style.display = 'block'; zone.classList.add('upload-zone-active');
+        };
+        reader.readAsDataURL(file);
+    });
+    if (clear) clear.addEventListener('click', function () {
+        input.value = ''; wrap.style.display = 'none'; img.src = ''; name.textContent = '';
+        zone.classList.remove('upload-zone-active');
+    });
+}());
+</script>
+{% endblock %}
