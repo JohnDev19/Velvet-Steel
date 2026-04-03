@@ -15,10 +15,8 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    # Replit
-    '.replit.dev',
-    '.replit.app',
-    '.kirk.replit.dev',
+    'velvet-steel-ph.vercel.app',
+    '.vercel.app',
 ] + [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h.strip()]
 
 # Replit domain support
@@ -30,8 +28,8 @@ for _domain in [_replit_dev_domain] + [d.strip() for d in _replit_domains.split(
 
 CSRF_TRUSTED_ORIGINS = [
     # Replit
-    'https://*.replit.dev',
-    'https://*.replit.app',
+    'https://*.velvet-steel-ph.vercel.app',
+    'https://*.vercel.app',
 ] + [o.strip() for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
 
 # ── APPS ─────────────────────────────────────────────────────
