@@ -288,6 +288,7 @@ class HomePage(Document):
     loc_phone            = StringField(default='+63 912 345 6789')
     loc_email            = StringField(default='info@velvetsteel.ph')
     loc_map_city         = StringField(default='Quezon City, Metro Manila')
+    loc_map_country      = StringField(default='Philippines')
     loc_map_embed        = StringField(default='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3860.819515648185!2d121.04945731484!3d14.647037989777!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b70c45a1e40f%3A0x9e4f61e1eb6cc49e!2sQuezon%20City%2C%20Metro%20Manila!5e0!3m2!1sen!2sph!4v1609459200000!5m2!1sen!2sph')
 
     updated_at           = DateTimeField(default=timezone.now)
