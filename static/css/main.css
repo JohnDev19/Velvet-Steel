@@ -1575,14 +1575,14 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   left: 60px;
   top: 65%;
   transform: translateY(-50%) rotate(25deg);
-  width: 210px;
+  width: 230px;
   height: auto;
 }
 
 /* Large desktop – 1400px+ */
 @media (min-width: 1400px) {
   .scissor-divider { margin-top: -130px; margin-bottom: -130px; height: 260px; }
-  .scissor-deco    { width: 260px; left: 90px; top: 68%; }
+  .scissor-deco    { width: 290px; left: 90px; top: 68%; }
 }
 
 /* Tablet – 900 to 1100px */
@@ -1600,7 +1600,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 /* Mobile – 480 to 640px */
 @media (max-width: 640px) {
   .scissor-divider { margin-top: -70px; margin-bottom: -70px; height: 140px; }
-  .scissor-deco    { width: 125px; left: 20px; top: 70%; }
+  .scissor-deco    { width: 140px; left: 20px; top: 70%; }
 }
 
 /* Small mobile – below 480px */
