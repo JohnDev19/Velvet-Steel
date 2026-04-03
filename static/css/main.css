@@ -1562,35 +1562,49 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .scissor-divider {
   position: relative;
   z-index: 10;
-  margin-top: -90px;
-  margin-bottom: -99px;
+  margin-top: -110px;
+  margin-bottom: -110px;
   pointer-events: none;
   line-height: 0;
+  height: 220px;
 }
 
 .scissor-deco {
   display: block;
   position: absolute;
   left: 60px;
-  top: 50%;
+  top: 65%;
   transform: translateY(-50%) rotate(25deg);
-  width: 180px;
+  width: 210px;
   height: auto;
 }
 
+/* Large desktop – 1400px+ */
 @media (min-width: 1400px) {
-  .scissor-deco    { width: 220px; left: 80px; }
-  .scissor-divider { margin-top: -110px; margin-bottom: -110px; }
-} @media (max-width: 1100px) {
-  .scissor-deco    { width: 148px; left: 44px; }
-  .scissor-divider { margin-top: -74px; margin-bottom: -90px; }
-} @media (max-width: 900px) {
-  .scissor-deco    { width: 116px; left: 32px; }
-  .scissor-divider { margin-top: -58px; margin-bottom: -58px; }
-} @media (max-width: 640px) {
-  .scissor-deco    { width: 88px; left: 20px; }
-  .scissor-divider { margin-top: -44px; margin-bottom: -44px; }
-} @media (max-width: 480px) {
-  .scissor-deco    { width: 66px; left: 14px; }
-  .scissor-divider { margin-top: -33px; margin-bottom: -33px; }
+  .scissor-divider { margin-top: -130px; margin-bottom: -130px; height: 260px; }
+  .scissor-deco    { width: 260px; left: 90px; top: 68%; }
+}
+
+/* Tablet – 900 to 1100px */
+@media (max-width: 1100px) {
+  .scissor-divider { margin-top: -100px; margin-bottom: -100px; height: 200px; }
+  .scissor-deco    { width: 185px; left: 44px; top: 66%; }
+}
+
+/* Small tablet – 640 to 900px */
+@media (max-width: 900px) {
+  .scissor-divider { margin-top: -85px; margin-bottom: -85px; height: 170px; }
+  .scissor-deco    { width: 155px; left: 32px; top: 68%; }
+}
+
+/* Mobile – 480 to 640px */
+@media (max-width: 640px) {
+  .scissor-divider { margin-top: -70px; margin-bottom: -70px; height: 140px; }
+  .scissor-deco    { width: 125px; left: 20px; top: 70%; }
+}
+
+/* Small mobile – below 480px */
+@media (max-width: 480px) {
+  .scissor-divider { margin-top: -55px; margin-bottom: -55px; height: 110px; }
+  .scissor-deco    { width: 98px; left: 14px; top: 72%; }
 }
