@@ -82,6 +82,45 @@
   </div>
 </section>
 
+<div class="section-geo">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none">
+    <!-- outer octagon -->
+    <polygon
+      points="50,4 80,15 96,42 96,58 80,85 50,96 20,85 4,58 4,42 20,15"
+      stroke="#c8a03c"
+      stroke-width="1.5"
+      fill="none"
+      opacity="1"
+    />
+    <!-- inner rotated square -->
+    <rect
+      x="29" y="29" width="42" height="42"
+      rx="2"
+      stroke="#c8a03c"
+      stroke-width="1"
+      fill="none"
+      opacity="0.7"
+      transform="rotate(45 50 50)"
+    />
+    <!-- center diamond -->
+    <polygon
+      points="50,36 64,50 50,64 36,50"
+      stroke="#c8a03c"
+      stroke-width="1"
+      fill="rgba(200,160,60,0.06)"
+      opacity="0.9"
+    />
+    <!-- center dot -->
+    <circle cx="50" cy="50" r="3" fill="#c8a03c" opacity="0.8"/>
+    <!-- crner tick marks -->
+    <line x1="50" y1="4"  x2="50" y2="11"  stroke="#c8a03c" stroke-width="1.2" opacity="0.5"/>
+    <line x1="50" y1="89" x2="50" y2="96"  stroke="#c8a03c" stroke-width="1.2" opacity="0.5"/>
+    <line x1="4"  y1="50" x2="11" y2="50"  stroke="#c8a03c" stroke-width="1.2" opacity="0.5"/>
+    <line x1="89" y1="50" x2="96" y2="50"  stroke="#c8a03c" stroke-width="1.2" opacity="0.5"/>
+  </svg>
+</div>
+
+
 <section class="section services-section">
   <div class="container">
     <div class="section-header">

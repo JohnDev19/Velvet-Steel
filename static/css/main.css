@@ -1596,3 +1596,35 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .scissor-deco    { width: 140px; left: 20px; top: 70%; }
 } @media (max-width: 480px) {
   .scissor-divider { margin-top: -55px; margin-bottom: -55px; height: 110px; } .scissor-deco    { width: 98px; left: 14px; top: 72%; } }
+  
+/* ============================================ SECTION GEO SHAPE */
+.section-geo {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 5;
+  margin-bottom: -28px;
+  pointer-events: none;
+  user-select: none;
+}
+.section-geo svg {
+  width: 56px;
+  height: 56px;
+  animation: geoSpin 18s linear infinite;
+  opacity: 0.55;
+  filter: drop-shadow(0 0 8px rgba(200, 160, 60, 0.35));
+}
+@keyframes geoSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.section-geo--sm svg { width: 40px; height: 40px; }
+.section-geo--lg svg { width: 72px; height: 72px; }
+@media (max-width: 768px) {
+  .section-geo svg { width: 44px; height: 44px; }
+  .section-geo { margin-bottom: -22px; }
+}
+@media (max-width: 480px) {
+  .section-geo svg { width: 34px; height: 34px; }
+  .section-geo { margin-bottom: -17px; }
+}
