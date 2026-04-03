@@ -38,6 +38,7 @@
     font-size: 2.5rem;
     color: #0e0e0e;
     flex-shrink: 0;
+    overflow: hidden;
 }
 
 .dashboard-info h1 {
@@ -501,7 +502,7 @@
 <div class="dashboard-hero">
     <div class="dashboard-header">
         <div class="dashboard-avatar">
-            <i class="fas fa-user-tie"></i>
+            <img src="{% if profile and profile.photo %}{{ profile.photo }}{% else %}{% static 'img/user_profile_blank.jpg' %}{% endif %}" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
         </div>
         <div class="dashboard-info">
             <h1>{{ user.first_name|default:"Welcome" }}</h1>

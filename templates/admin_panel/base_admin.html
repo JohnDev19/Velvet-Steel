@@ -97,11 +97,7 @@
             </button>
             <div class="topbar-title">{% block page_title %}Dashboard{% endblock %}</div>
             <div class="topbar-user">
-                {% if user_profile and user_profile.photo %}
-                <img src="{{ user_profile.photo }}" class="topbar-avatar" alt="Profile">
-                {% else %}
-                <i class="fas fa-user-circle"></i>
-                {% endif %}
+                <img src="{% if user_profile and user_profile.photo %}{{ user_profile.photo }}{% else %}{% static 'img/user_profile_blank.jpg' %}{% endif %}" class="topbar-avatar" alt="Profile">
                 <span>{{ request.user.get_full_name|default:request.user.username }}</span>
             </div>
         </header>

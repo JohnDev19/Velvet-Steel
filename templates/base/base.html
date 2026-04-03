@@ -52,18 +52,14 @@
 <!-- MOBILE NAV OVERLAY -->
 <div class="mob-nav-overlay" id="mobNavOverlay"></div>
 
-<!-- MOBILE SIDEBAR -->
+<!-- MOBILE SIDEBAR — must live outside <nav> so position:fixed isn't trapped by backdrop-filter -->
 <div class="mob-sidebar" id="navLinks">
 
     <!-- Sidebar header -->
     <div class="nav-sidebar-header" id="navSidebarHeader">
         {% if user.is_authenticated %}
         <div class="nav-sidebar-avatar">
-            {% if user_profile and user_profile.photo %}
-            <img src="{{ user_profile.photo }}" alt="Profile">
-            {% else %}
-            <span>{{ user.first_name|first|upper|default:user.username|first|upper }}</span>
-            {% endif %}
+            <img src="{% if user_profile and user_profile.photo %}{{ user_profile.photo }}{% else %}{% static 'img/user_profile_blank.jpg' %}{% endif %}" alt="Profile">
         </div>
         <div class="nav-sidebar-info">
             <strong>{{ user.get_full_name|default:user.username }}</strong>
@@ -169,20 +165,12 @@
             {% if user.is_authenticated %}
             <li class="nav-dropdown">
                 <a href="#" class="nav-link nav-user" aria-label="Account menu">
-                    {% if user_profile and user_profile.photo %}
-                    <img src="{{ user_profile.photo }}" class="nav-avatar" alt="Profile">
-                    {% else %}
-                    <i class="fas fa-user-circle nav-user-icon"></i>
-                    {% endif %}
+                    <img src="{% if user_profile and user_profile.photo %}{{ user_profile.photo }}{% else %}{% static 'img/user_profile_blank.jpg' %}{% endif %}" class="nav-avatar" alt="Profile">
                 </a>
                 <div class="dropdown-menu">
                     <div class="dropdown-user-header">
                         <div class="dropdown-user-avatar">
-                            {% if user_profile and user_profile.photo %}
-                            <img src="{{ user_profile.photo }}" alt="Profile">
-                            {% else %}
-                            <span>{{ user.first_name|first|upper|default:user.username|first|upper }}</span>
-                            {% endif %}
+                            <img src="{% if user_profile and user_profile.photo %}{{ user_profile.photo }}{% else %}{% static 'img/user_profile_blank.jpg' %}{% endif %}" alt="Profile">
                         </div>
                         <div class="dropdown-user-info">
                             <strong>{{ user.get_full_name|default:user.username }}</strong>

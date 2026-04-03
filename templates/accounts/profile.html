@@ -107,11 +107,7 @@
         <div class="profile-card-header">
             <div class="profile-avatar-wrap">
                 <div class="profile-avatar-circle">
-                    {% if profile.photo %}
-                    <img src="{{ profile.photo }}" alt="Profile photo">
-                    {% else %}
-                    <span class="profile-avatar-initials">{{ request.user.first_name|first|upper|default:request.user.username|first|upper }}</span>
-                    {% endif %}
+                    <img src="{% if profile.photo %}{{ profile.photo }}{% else %}{% static 'img/user_profile_blank.jpg' %}{% endif %}" alt="Profile photo">
                 </div>
             </div>
             <div class="profile-header-meta">

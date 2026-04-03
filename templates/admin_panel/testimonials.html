@@ -13,11 +13,7 @@
         <div class="review-admin-card {% if not t.is_approved %}review-pending{% endif %}">
             <div class="rac-header">
                 <div class="rac-customer-avatar">
-                    {% if t.cust_photo %}
-                    <img src="{{ t.cust_photo }}" alt="{{ t.customer_name }}">
-                    {% else %}
-                    <span>{{ t.customer_name|first|upper }}</span>
-                    {% endif %}
+                    <img src="{% if t.cust_photo %}{{ t.cust_photo }}{% else %}{% static 'img/user_profile_blank.jpg' %}{% endif %}" alt="{{ t.customer_name }}">
                 </div>
                 <div class="rac-stars">
                     {% for i in "12345" %}

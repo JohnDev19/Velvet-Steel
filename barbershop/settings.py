@@ -15,15 +15,23 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    # Vercel
-    '.vercel.app',
-    'velvet-steel-ph.vercel.app',
+    # Replit
+    '.replit.dev',
+    '.replit.app',
+    '.kirk.replit.dev',
 ] + [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h.strip()]
 
+# Replit domain support
+_replit_dev_domain = os.environ.get('REPLIT_DEV_DOMAIN', '')
+_replit_domains = os.environ.get('REPLIT_DOMAINS', '')
+for _domain in [_replit_dev_domain] + [d.strip() for d in _replit_domains.split(',') if d.strip()]:
+    if _domain and _domain not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_domain)
+
 CSRF_TRUSTED_ORIGINS = [
-    # Vercel
-    'https://*.vercel.app',
-    'https://velvet-steel-ph.vercel.app',
+    # Replit
+    'https://*.replit.dev',
+    'https://*.replit.app',
 ] + [o.strip() for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
 
 # ── APPS ─────────────────────────────────────────────────────
@@ -155,7 +163,7 @@ EMAIL_PORT          = int(os.environ.get('EMAIL_PORT', '587'))
 EMAIL_USE_TLS       = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER     = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL  = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@velvetsteel.ph')
+DEFAULT_FROM_EMAIL  = os.environ.get('DEFAULT_FROM_EMAIL', os.environ.get('EMAIL_HOST_USER', 'noreply@velvetsteel.ph'))
 
 # ── BARBERSHOP INFO ──────────────────────────────────────────
 BARBERSHOP_NAME    = os.environ.get('BARBERSHOP_NAME',    'Velvet Steel Barbershop')

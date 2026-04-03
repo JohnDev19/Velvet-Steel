@@ -251,11 +251,7 @@ tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
             <td><span class="code-badge">{{ res.confirmation_code }}</span></td>
             <td>
               <div class="cust-cell">
-                {% if res.cust_photo %}
-                <img src="{{ res.cust_photo }}" class="cust-avatar" alt="">
-                {% else %}
-                <div class="cust-initials">{{ res.customer_name|first|upper }}</div>
-                {% endif %}
+                <img src="{% if res.cust_photo %}{{ res.cust_photo }}{% else %}{% static 'img/user_profile_blank.jpg' %}{% endif %}" class="cust-avatar" alt="">
                 {{ res.customer_name }}
               </div>
             </td>
@@ -303,11 +299,7 @@ tbody tr.row-selected { background: rgba(200,160,60,0.06) !important; }
         <div class="rmc-body">
           <span class="rmc-code">{{ res.confirmation_code }}</span>
           <div class="rmc-customer" style="display:flex;align-items:center;gap:7px;">
-            {% if res.cust_photo %}
-            <img src="{{ res.cust_photo }}" class="cust-avatar" alt="">
-            {% else %}
-            <div class="cust-initials">{{ res.customer_name|first|upper }}</div>
-            {% endif %}
+            <img src="{% if res.cust_photo %}{{ res.cust_photo }}{% else %}{% static 'img/user_profile_blank.jpg' %}{% endif %}" class="cust-avatar" alt="">
             {{ res.customer_name }}
           </div>
           <div class="rmc-barber">

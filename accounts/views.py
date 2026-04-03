@@ -1,10 +1,20 @@
+import os
+import random
+import string
+import base64
+from datetime import datetime, timedelta
+
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.utils import timezone
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 from django import forms
-from .models import UserProfile
+from .models import UserProfile, EmailVerification
 
 
 # ── helpers ─────────────────────────────────────────────────────────────────
@@ -52,7 +62,19 @@ def _restore_user_from_mongo(username, password):
         if not mu or not check_password(password, mu.password):
             return None
 
-        if not User.objects.filter(pk=mu.django_id).exists():
+        existing = User.objects.filter(pk=mu.django_id).first()
+        if existing:
+            # Slot is taken — update it to match MongoDB (handles ID conflicts)
+            existing.username     = mu.username
+            existing.email        = mu.email
+            existing.first_name   = mu.first_name
+            existing.last_name    = mu.last_name
+            existing.password     = mu.password
+            existing.is_active    = mu.is_active
+            existing.is_staff     = mu.is_staff
+            existing.is_superuser = mu.is_superuser
+            existing.save()
+        else:
             user = User(pk=mu.django_id)
             user.username     = mu.username
             user.email        = mu.email
@@ -68,6 +90,23 @@ def _restore_user_from_mongo(username, password):
         return authenticate(request=None, username=mu.username, password=password)
     except Exception:
         return None
+
+
+def _send_verification_email(request, to_email, first_name, code):
+    from django.templatetags.static import static as static_url
+    logo_src = request.build_absolute_uri(static_url('img/logo.png'))
+    html_body = render_to_string('accounts/email_verify.html', {
+        'first_name': first_name,
+        'code':       code,
+        'logo_src':   logo_src,
+    })
+    subject = 'Your Velvet Steel Verification Code'
+    host_user  = getattr(settings, 'EMAIL_HOST_USER', '')
+    from_email = host_user or getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@velvetsteel.ph')
+    display_from = f'Velvet Steel Barbershop <{from_email}>'
+    msg = EmailMultiAlternatives(subject, f'Your verification code is: {code}', display_from, [to_email])
+    msg.attach_alternative(html_body, 'text/html')
+    msg.send(fail_silently=False)
 
 
 # ── forms ────────────────────────────────────────────────────────────────────
@@ -107,28 +146,130 @@ def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            dj_user = User.objects.create_user(
-                username=form.cleaned_data['username'],
-                email=form.cleaned_data['email'],
-                password=form.cleaned_data['password1'],
-                first_name=form.cleaned_data['first_name'],
-                last_name=form.cleaned_data['last_name'],
-            )
-            _persist_user_to_mongo(dj_user)
+            email = form.cleaned_data['email']
+            username = form.cleaned_data['username']
+            # Remove any old pending verifications for this email/username
             try:
-                profile = UserProfile(
-                    user_id=dj_user.pk,
-                    phone=form.cleaned_data.get('phone', ''),
-                )
-                profile.save()
+                EmailVerification.objects(email=email).delete()
+                EmailVerification.objects(username=username).delete()
             except Exception:
                 pass
-            login(request, dj_user)
-            messages.success(request, f'Welcome, {dj_user.first_name}! Your account has been created.')
-            return redirect('home')
+            # Generate 6-digit code
+            code = ''.join(random.choices(string.digits, k=6))
+            expires = datetime.utcnow() + timedelta(minutes=15)
+            ev = EmailVerification(
+                email=email,
+                username=username,
+                code=code,
+                expires_at=expires,
+            )
+            ev.save()
+            # Store pending form data securely in session (never persisted to DB)
+            request.session['pending_register'] = {
+                'username':   username,
+                'email':      email,
+                'password':   form.cleaned_data['password1'],
+                'first_name': form.cleaned_data['first_name'],
+                'last_name':  form.cleaned_data['last_name'],
+                'phone':      form.cleaned_data.get('phone', ''),
+            }
+            # Send verification email
+            try:
+                _send_verification_email(request, email, form.cleaned_data['first_name'], code)
+            except Exception as e:
+                messages.error(request, f'Could not send verification email: {e}')
+                return render(request, 'accounts/register.html', {'form': form})
+            messages.info(request, f'A 6-digit verification code was sent to {email}. Check your inbox.')
+            return redirect('verify_email')
     else:
         form = RegisterForm()
     return render(request, 'accounts/register.html', {'form': form})
+
+
+def verify_email_view(request):
+    pending = request.session.get('pending_register')
+    if not pending:
+        return redirect('register')
+    email = pending['email']
+    try:
+        ev = EmailVerification.objects(email=email).order_by('-id').first()
+    except Exception:
+        ev = None
+    if not ev:
+        messages.error(request, 'No pending verification found. Please register again.')
+        return redirect('register')
+    if request.method == 'POST':
+        entered = request.POST.get('code', '').strip()
+        # Check expiry
+        if datetime.utcnow() > ev.expires_at:
+            ev.delete()
+            request.session.pop('pending_register', None)
+            messages.error(request, 'The code has expired. Please register again.')
+            return redirect('register')
+        # Increment attempts (brute-force protection)
+        ev.attempts += 1
+        ev.save()
+        if ev.attempts > 10:
+            ev.delete()
+            request.session.pop('pending_register', None)
+            messages.error(request, 'Too many incorrect attempts. Please register again.')
+            return redirect('register')
+        if entered != ev.code:
+            remaining = max(0, 10 - ev.attempts)
+            messages.error(request, f'Incorrect code. {remaining} attempt(s) remaining.')
+            return render(request, 'accounts/verify_email.html', {
+                'email':     email,
+                'remaining': remaining,
+            })
+        # Code is correct — create the account
+        try:
+            dj_user = User.objects.create_user(
+                username=pending['username'],
+                email=pending['email'],
+                password=pending['password'],
+                first_name=pending['first_name'],
+                last_name=pending['last_name'],
+            )
+            _persist_user_to_mongo(dj_user)
+            try:
+                profile = UserProfile(user_id=dj_user.pk, phone=pending.get('phone', ''))
+                profile.save()
+            except Exception:
+                pass
+        except Exception as e:
+            messages.error(request, f'Account creation failed: {e}')
+            return redirect('register')
+        ev.delete()
+        request.session.pop('pending_register', None)
+        dj_user.backend = 'django.contrib.auth.backends.ModelBackend'
+        login(request, dj_user)
+        messages.success(request, f'Welcome, {dj_user.first_name}! Your email has been verified.')
+        return redirect('home')
+    return render(request, 'accounts/verify_email.html', {'email': email, 'remaining': 10})
+
+
+def resend_code_view(request):
+    pending = request.session.get('pending_register')
+    if not pending:
+        return redirect('register')
+    email = pending['email']
+    try:
+        ev = EmailVerification.objects(email=email).order_by('-id').first()
+    except Exception:
+        ev = None
+    if not ev:
+        return redirect('register')
+    # Issue a fresh code and reset expiry/attempts
+    ev.code = ''.join(random.choices(string.digits, k=6))
+    ev.expires_at = datetime.utcnow() + timedelta(minutes=15)
+    ev.attempts = 0
+    ev.save()
+    try:
+        _send_verification_email(request, email, pending['first_name'], ev.code)
+        messages.success(request, f'A new code has been sent to {email}.')
+    except Exception as e:
+        messages.error(request, f'Could not resend code: {e}')
+    return redirect('verify_email')
 
 
 def login_view(request):

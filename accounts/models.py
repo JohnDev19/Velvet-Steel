@@ -1,4 +1,4 @@
-from mongoengine import Document, IntField, StringField, DateTimeField, BooleanField
+from mongoengine import Document, IntField, StringField, DateTimeField, BooleanField, DictField
 from django.utils import timezone
 
 
@@ -46,3 +46,19 @@ class MongoUser(Document):
 
     def __str__(self):
         return f"MongoUser({self.username})"
+
+
+class EmailVerification(Document):
+    email      = StringField(required=True)
+    username   = StringField(required=True)
+    code       = StringField(required=True)
+    attempts   = IntField(default=0)
+    expires_at = DateTimeField(required=True)
+
+    meta = {
+        'collection': 'email_verifications',
+        'indexes': ['email', 'username'],
+    }
+
+    def __str__(self):
+        return f"EmailVerification({self.email})"

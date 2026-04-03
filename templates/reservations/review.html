@@ -246,11 +246,7 @@
             <div class="submitted-review-card">
                 <div class="src-header">
                     <div class="src-reviewer-avatar">
-                        {% if user_profile and user_profile.photo %}
-                        <img src="{{ user_profile.photo }}" alt="Your photo">
-                        {% else %}
-                        <span>{{ request.user.first_name|first|upper|default:request.user.username|first|upper }}</span>
-                        {% endif %}
+                        <img src="{% if user_profile and user_profile.photo %}{{ user_profile.photo }}{% else %}{% static 'img/user_profile_blank.jpg' %}{% endif %}" alt="Your photo">
                     </div>
                     <div class="src-stars">
                         {% for i in "12345" %}{% if forloop.counter <= t.rating %}&#9733;{% else %}<span class="star-empty">&#9733;</span>{% endif %}{% endfor %}
