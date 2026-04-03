@@ -1557,3 +1557,34 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .cookie-btn-accept, .cookie-btn-decline { flex: unset; width: 100%; text-align: center; }
 }
 .cs-dropdown::-webkit-scrollbar-thumb { background: rgba(200,160,60,0.3); border-radius: 2px; }
+
+/* ============================================ SCISSOR DIVIDER */
+.scissor-divider {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  margin-top: -72px;
+  margin-bottom: -72px;
+  pointer-events: none;
+  line-height: 0;
+}
+
+.scissor-deco {
+  width: 144px;
+  height: auto;
+  display: inline-block;
+  opacity: 0.9;
+}
+@media (max-width: 1100px) {
+  .scissor-deco   { width: 120px; }
+  .scissor-divider{ margin-top: -60px; margin-bottom: -60px; }
+} @media (max-width: 900px) {
+  .scissor-deco   { width: 96px; }
+  .scissor-divider{ margin-top: -48px; margin-bottom: -48px; }
+} @media (max-width: 640px) {
+  .scissor-deco   { width: 76px; }
+  .scissor-divider{ margin-top: -38px; margin-bottom: -38px; }
+} @media (max-width: 480px) {
+  .scissor-deco   { width: 58px; }
+  .scissor-divider{ margin-top: -29px; margin-bottom: -29px; }
+}
