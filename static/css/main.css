@@ -485,7 +485,7 @@ em { font-style: italic; color: var(--gold); }
 }
 .cta-banner-bg::before {
   content: ''; position: absolute; inset: 0; z-index: 1;
-  background: radial-gradient(ellipse at 50% 50%, rgba(200,160,60,0.161) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 50% 50%, rgba(200,160,60,0.161) 0%, transparent 50%);
 }
 .cta-banner-img {
   position: absolute; inset: 0;
