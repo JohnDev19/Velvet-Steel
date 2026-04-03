@@ -599,6 +599,58 @@ def admin_site_settings_edit(request):
 
 
 @admin_required
+def admin_privacy_edit(request):
+    from .models import PrivacyPage
+    page = PrivacyPage.get()
+
+    if request.method == 'POST':
+        fields = [
+            'last_updated', 'intro', 'collect_text', 'use_text', 'cookies_text',
+            'sharing_text', 'retention_text', 'rights_text', 'security_text',
+            'children_text', 'changes_text',
+        ]
+        for f in fields:
+            val = request.POST.get(f, '').strip()
+            if val:
+                setattr(page, f, val)
+        page.updated_at = timezone.now()
+        try:
+            page.save()
+            messages.success(request, 'Privacy Policy updated successfully.')
+        except Exception as e:
+            messages.error(request, f'Could not save: {e}')
+        return redirect('admin_privacy_edit')
+
+    return render(request, 'admin_panel/privacy_edit.html', {'page': page})
+
+
+@admin_required
+def admin_terms_edit(request):
+    from .models import TermsPage
+    page = TermsPage.get()
+
+    if request.method == 'POST':
+        fields = [
+            'last_updated', 'intro', 'acceptance_text', 'services_text',
+            'accounts_text', 'bookings_text', 'conduct_text', 'ip_text',
+            'disclaimers_text', 'liability_text', 'governing_text', 'changes_text',
+        ]
+        for f in fields:
+            val = request.POST.get(f, '').strip()
+            if val:
+                setattr(page, f, val)
+        page.updated_at = timezone.now()
+        try:
+            page.save()
+            messages.success(request, 'Terms of Service updated successfully.')
+        except Exception as e:
+            messages.error(request, f'Could not save: {e}')
+        return redirect('admin_terms_edit')
+
+    return render(request, 'admin_panel/terms_edit.html', {'page': page})
+
+
+@admin_required
 def admin_home_page_edit(request):
     from .models import HomePage
     page = HomePage.objects().first()

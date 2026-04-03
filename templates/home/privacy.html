@@ -9,7 +9,7 @@
         <div class="legal-hero-inner">
             <div class="section-badge">LEGAL</div>
             <h1>Privacy Policy</h1>
-            <p class="legal-hero-sub">Last updated: <strong>January 1, 2025</strong></p>
+            <p class="legal-hero-sub">Last updated: <strong>{{ page.last_updated|default:"January 1, 2025" }}</strong></p>
         </div>
     </div>
 </section>
@@ -41,43 +41,22 @@
             <article class="legal-body">
 
                 <div class="legal-intro">
-                    <p>Velvet Steel Barbershop ("we", "our", or "us") is committed to protecting your personal information. This Privacy Policy explains what data we collect when you visit our website or use our online booking system, how we use it, and your rights regarding that data. By using our website, you agree to the practices described in this policy.</p>
+                    <p>{{ page.intro|default:"Velvet Steel Barbershop is committed to protecting your personal information. This Privacy Policy explains what data we collect, how we use it, and your rights regarding that data." }}</p>
                 </div>
 
                 <div class="legal-block" id="information-we-collect">
                     <h2><span class="legal-num">01</span>Information We Collect</h2>
-                    <h3>Information You Provide Directly</h3>
-                    <ul>
-                        <li><strong>Account information</strong> — your name, username, email address, and password when you create an account.</li>
-                        <li><strong>Profile information</strong> — your phone number, address, city, and profile photo if you choose to add them.</li>
-                        <li><strong>Booking information</strong> — the service, barber, date, time, and any notes you submit when making a reservation.</li>
-                        <li><strong>Reviews and feedback</strong> — any testimonials or ratings you submit about your experience.</li>
-                    </ul>
-                    <h3>Information Collected Automatically</h3>
-                    <ul>
-                        <li><strong>Usage data</strong> — pages you visit, links you click, and how long you spend on our site.</li>
-                        <li><strong>Device data</strong> — your browser type, operating system, screen resolution, and IP address.</li>
-                        <li><strong>Cookies</strong> — small text files stored in your browser to keep you logged in and remember your preferences. See Section 3 for details.</li>
-                    </ul>
+                    <p>{{ page.collect_text|default:"We collect information you provide directly (name, email, profile photo, phone, address) when you create an account or make a booking, as well as usage data collected automatically including pages visited, browser type, IP address, and cookies." }}</p>
                 </div>
 
                 <div class="legal-block" id="how-we-use">
                     <h2><span class="legal-num">02</span>How We Use Your Information</h2>
-                    <p>We use the information we collect to:</p>
-                    <ul>
-                        <li>Create and manage your account and reservations.</li>
-                        <li>Send booking confirmations and appointment reminders via email.</li>
-                        <li>Respond to your inquiries and provide customer support.</li>
-                        <li>Improve and personalise your experience on our website.</li>
-                        <li>Maintain the security and integrity of our platform.</li>
-                        <li>Comply with legal obligations under Philippine law, including the Data Privacy Act of 2012 (RA 10173).</li>
-                    </ul>
-                    <p>We do <strong>not</strong> use your data for automated decision-making or profiling that produces significant legal effects.</p>
+                    <p>{{ page.use_text|default:"We use your data to create and manage your account and reservations, send booking confirmations, respond to inquiries, improve your experience, and comply with Philippine law." }}</p>
                 </div>
 
                 <div class="legal-block" id="cookies">
                     <h2><span class="legal-num">03</span>Cookies &amp; Tracking</h2>
-                    <p>We use only <strong>strictly necessary cookies</strong> to operate this website. These cookies are essential and cannot be switched off. They include:</p>
+                    <p>{{ page.cookies_text|default:"We use only strictly necessary cookies to operate this website." }}</p>
                     <div class="legal-table-wrap">
                         <table class="legal-table">
                             <thead>
@@ -90,51 +69,36 @@
                             </tbody>
                         </table>
                     </div>
-                    <p>We do not currently use analytics, advertising, or third-party tracking cookies. If this changes, we will update this policy and ask for your consent.</p>
                 </div>
 
                 <div class="legal-block" id="data-sharing">
                     <h2><span class="legal-num">04</span>Data Sharing</h2>
-                    <p>We do not sell, trade, or rent your personal data to third parties. We may share your information only in the following limited circumstances:</p>
-                    <ul>
-                        <li><strong>Service providers</strong> — trusted vendors who help us operate the website (e.g., cloud hosting), bound by confidentiality agreements.</li>
-                        <li><strong>Legal requirements</strong> — if required by law, court order, or government authority under Philippine law.</li>
-                        <li><strong>Business transfers</strong> — in the unlikely event of a merger or acquisition, your data may be transferred as part of the business assets, with advance notice to you.</li>
-                    </ul>
+                    <p>{{ page.sharing_text|default:"We do not sell, trade, or rent your personal data. We may share information only with trusted service providers, when required by law, or in a business transfer." }}</p>
                 </div>
 
                 <div class="legal-block" id="data-retention">
                     <h2><span class="legal-num">05</span>Data Retention</h2>
-                    <p>We retain your personal data for as long as your account is active or as needed to provide our services. Reservation records are kept for a minimum of three (3) years as required for business record-keeping under Philippine law. You may request deletion of your account at any time (see Section 6).</p>
+                    <p>{{ page.retention_text|default:"We retain your personal data for as long as your account is active or as needed to provide our services." }}</p>
                 </div>
 
                 <div class="legal-block" id="your-rights">
                     <h2><span class="legal-num">06</span>Your Rights</h2>
-                    <p>Under the Philippine Data Privacy Act of 2012 (RA 10173), you have the right to:</p>
-                    <ul>
-                        <li><strong>Access</strong> — request a copy of the personal data we hold about you.</li>
-                        <li><strong>Correction</strong> — ask us to correct inaccurate or incomplete data.</li>
-                        <li><strong>Erasure</strong> — request deletion of your data, subject to legal retention requirements.</li>
-                        <li><strong>Object</strong> — object to the processing of your data in certain circumstances.</li>
-                        <li><strong>Data portability</strong> — request your data in a machine-readable format.</li>
-                        <li><strong>Lodge a complaint</strong> — file a complaint with the National Privacy Commission (NPC) at <a href="https://www.privacy.gov.ph" target="_blank" rel="noopener noreferrer">privacy.gov.ph</a>.</li>
-                    </ul>
-                    <p>To exercise any of these rights, contact us at <a href="mailto:{{ site_settings.footer_email|default:'info@velvetsteel.ph' }}">{{ site_settings.footer_email|default:"info@velvetsteel.ph" }}</a>. We will respond within fifteen (15) business days.</p>
+                    <p>{{ page.rights_text|default:"Under the Philippine Data Privacy Act of 2012 (RA 10173), you have the right to access, correct, erase, object to processing, and request portability of your data. Contact us to exercise any of these rights." }}</p>
                 </div>
 
                 <div class="legal-block" id="security">
                     <h2><span class="legal-num">07</span>Security</h2>
-                    <p>We implement industry-standard security measures including HTTPS encryption, hashed passwords, and CSRF protection. However, no system is completely secure. We encourage you to use a strong, unique password and to log out after each session on shared devices.</p>
+                    <p>{{ page.security_text|default:"We implement industry-standard security measures including HTTPS encryption, hashed passwords, and CSRF protection." }}</p>
                 </div>
 
                 <div class="legal-block" id="children">
                     <h2><span class="legal-num">08</span>Children's Privacy</h2>
-                    <p>Our website is not directed at children under 13 years of age. We do not knowingly collect personal information from children. If you believe a child has provided us with their data, please contact us immediately and we will delete it promptly.</p>
+                    <p>{{ page.children_text|default:"Our website is not directed at children under 13. We do not knowingly collect personal information from children." }}</p>
                 </div>
 
                 <div class="legal-block" id="changes">
                     <h2><span class="legal-num">09</span>Changes to This Policy</h2>
-                    <p>We may update this Privacy Policy from time to time. When we do, we will revise the "Last updated" date at the top of this page. We encourage you to review this page periodically. Continued use of our website after any changes constitutes your acceptance of the updated policy.</p>
+                    <p>{{ page.changes_text|default:"We may update this Privacy Policy from time to time. Continued use of our website after changes constitutes your acceptance." }}</p>
                 </div>
 
                 <div class="legal-block" id="contact">

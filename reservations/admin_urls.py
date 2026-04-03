@@ -28,4 +28,6 @@ urlpatterns = [
     path('services-page/', admin_views.admin_services_page_edit, name='admin_services_page_edit'),
     path('home-page/', admin_views.admin_home_page_edit, name='admin_home_page_edit'),
     path('site-settings/', admin_views.admin_site_settings_edit, name='admin_site_settings_edit'),
+    path('privacy-policy/', admin_views.admin_privacy_edit, name='admin_privacy_edit'),
+    path('terms-of-service/', admin_views.admin_terms_edit, name='admin_terms_edit'),
 ]

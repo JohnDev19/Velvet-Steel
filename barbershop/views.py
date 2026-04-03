@@ -57,11 +57,15 @@ def about(request):
     return render(request, 'about/index.html', context)
 
 def privacy_policy(request):
-    return render(request, 'home/privacy.html')
+    from reservations.models import PrivacyPage
+    page = PrivacyPage.get()
+    return render(request, 'home/privacy.html', {'page': page})
 
 
 def terms_of_service(request):
-    return render(request, 'home/terms.html')
+    from reservations.models import TermsPage
+    page = TermsPage.get()
+    return render(request, 'home/terms.html', {'page': page})
 
 
 def services(request):

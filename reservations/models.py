@@ -363,3 +363,54 @@ class SiteSettings(Document):
             return json.loads(self.social_links or '[]')
         except Exception:
             return []
+
+
+class PrivacyPage(Document):
+    last_updated   = StringField(default='January 1, 2025')
+    intro          = StringField(default='Velvet Steel Barbershop ("we", "our", or "us") is committed to protecting your personal information. This Privacy Policy explains what data we collect when you visit our website or use our online booking system, how we use it, and your rights regarding that data. By using our website, you agree to the practices described in this policy.')
+    collect_text   = StringField(default='We collect information you provide directly (name, username, email, profile photo, phone, address) when you create an account or make a booking. We also collect usage data automatically including pages visited, browser type, operating system, IP address, and cookies.')
+    use_text       = StringField(default='We use your data to create and manage your account and reservations, send booking confirmations and appointment reminders, respond to inquiries, improve your experience on our site, maintain platform security, and comply with legal obligations under the Philippine Data Privacy Act of 2012 (RA 10173).')
+    cookies_text   = StringField(default='We use only strictly necessary cookies to operate this website: sessionid (keeps you logged in), csrftoken (protects forms against cross-site forgery), and vs_cookie_consent (remembers your cookie choice). We do not currently use analytics, advertising, or third-party tracking cookies.')
+    sharing_text   = StringField(default='We do not sell, trade, or rent your personal data. We may share information with trusted service providers who help us operate the website (bound by confidentiality), when required by Philippine law or court order, or in a business transfer (with advance notice to you).')
+    retention_text = StringField(default='We retain your personal data for as long as your account is active or as needed to provide our services. Reservation records are kept for a minimum of three (3) years as required under Philippine law. You may request deletion of your account at any time.')
+    rights_text    = StringField(default='Under the Philippine Data Privacy Act of 2012 (RA 10173), you have the right to access, correct, erase, object to processing, and request portability of your data. You may also file a complaint with the National Privacy Commission (NPC) at privacy.gov.ph. Contact us to exercise any of these rights — we respond within 15 business days.')
+    security_text  = StringField(default='We implement industry-standard security including HTTPS encryption, hashed passwords, and CSRF protection. No system is completely secure — we encourage you to use a strong, unique password and log out after each session on shared devices.')
+    children_text  = StringField(default='Our website is not directed at children under 13. We do not knowingly collect personal information from children. If you believe a child has provided us with their data, please contact us immediately and we will delete it promptly.')
+    changes_text   = StringField(default='We may update this Privacy Policy from time to time. When we do, we will revise the "Last updated" date at the top of this page. Continued use of our website after changes constitutes your acceptance of the updated policy.')
+    updated_at     = DateTimeField(default=timezone.now)
+
+    meta = {'collection': 'privacy_page_content'}
+
+    @classmethod
+    def get(cls):
+        obj = cls.objects().first()
+        if obj is None:
+            obj = cls()
+            obj.save()
+        return obj
+
+
+class TermsPage(Document):
+    last_updated    = StringField(default='January 1, 2025')
+    intro           = StringField(default='Welcome to Velvet Steel Barbershop. These Terms of Service ("Terms") govern your access to and use of our website and our online appointment booking platform (the "Service"). By accessing or using the site, you agree to be bound by these Terms and our Privacy Policy.')
+    acceptance_text = StringField(default='By creating an account, making a booking, or browsing this website, you confirm that you are at least 13 years of age and have the legal capacity to enter into these Terms. If you are using the site on behalf of an organisation, you represent that you have authority to bind that organisation to these Terms.')
+    services_text   = StringField(default='Velvet Steel Barbershop provides an informational website describing our services, team, and location; an online appointment booking platform for registered users to schedule and manage reservations; and a customer account system for tracking booking history and loyalty points. We may modify, suspend, or discontinue any aspect of the Service at any time.')
+    accounts_text   = StringField(default='To make a booking, you must create an account with accurate, current, and complete information. You are responsible for maintaining the security of your password and all activity under your account. Notify us immediately of any suspected unauthorised access. Do not create multiple accounts, share your account, or use another person\'s account without permission.')
+    bookings_text   = StringField(default='Bookings are confirmed when you receive a confirmation from us. We ask that you cancel or reschedule at least 24 hours before your appointment. Repeated no-shows without notice may result in restrictions on future bookings. Prices displayed on the website are indicative and the final price is confirmed at the time of your appointment. All fees are collected in person at the shop.')
+    conduct_text    = StringField(default='You agree not to upload harmful, defamatory, or illegal content; impersonate any person; attempt unauthorised access to our systems; use bots or scrapers to extract data; submit false or spam reviews or bookings; or engage in activity that disrupts the normal operation of the site. Violations may result in immediate account termination.')
+    ip_text         = StringField(default='All content on this website — text, images, logos, graphics, and software — is the property of Velvet Steel Barbershop and protected by Philippine and international intellectual property laws. You may not reproduce or distribute content without our written consent. By submitting a review, you grant us a non-exclusive, royalty-free licence to display that content on our website and marketing materials.')
+    disclaimers_text = StringField(default='The site and Service are provided on an "as is" and "as available" basis without warranties of any kind. We disclaim all implied warranties including merchantability, fitness for a particular purpose, and non-infringement. We do not warrant that the site will be uninterrupted, error-free, or free of harmful components.')
+    liability_text  = StringField(default='To the maximum extent permitted by Philippine law, Velvet Steel Barbershop and its owners, employees, and affiliates shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the site. Our total liability to you shall not exceed the amount you paid us in the three (3) months preceding the claim, or ₱1,000.00, whichever is greater.')
+    governing_text  = StringField(default='These Terms are governed by and construed in accordance with the laws of the Republic of the Philippines. Any disputes shall be subject to the exclusive jurisdiction of the courts of Quezon City, Metro Manila, Philippines.')
+    changes_text    = StringField(default='We reserve the right to update these Terms at any time. Changes take effect immediately upon posting and the "Last updated" date will be revised. Continued use of the site after changes constitutes your acceptance of the revised Terms.')
+    updated_at      = DateTimeField(default=timezone.now)
+
+    meta = {'collection': 'terms_page_content'}
+
+    @classmethod
+    def get(cls):
+        obj = cls.objects().first()
+        if obj is None:
+            obj = cls()
+            obj.save()
+        return obj

@@ -1,0 +1,139 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Privacy Policy{% endblock %}
+{% block page_title %}Privacy Policy{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+    <div>
+        <h2>Privacy Policy</h2>
+        <p class="subtext">Edit the text shown on the public Privacy Policy page. All changes save permanently to the database.</p>
+    </div>
+    <a href="{% url 'privacy_policy' %}" target="_blank" class="btn-outline btn-sm">
+        <i class="fas fa-external-link-alt"></i> View Live Page
+    </a>
+</div>
+
+<form method="post" novalidate>
+{% csrf_token %}
+
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-calendar-alt"></i> Page Header</h3></div>
+    <div style="padding:24px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Last Updated Date <small style="text-transform:none;letter-spacing:0;color:#6a6050;">(shown under the page title)</small></label>
+            <input type="text" name="last_updated" class="form-control" value="{{ page.last_updated|default:'January 1, 2025' }}" placeholder="e.g. April 3, 2026">
+        </div>
+    </div>
+</div>
+
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-align-left"></i> Introduction</h3></div>
+    <div style="padding:24px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Opening paragraph</label>
+            <textarea name="intro" class="form-control" rows="4" placeholder="Opening paragraph…">{{ page.intro }}</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-database"></i> Section 1 — Information We Collect</h3></div>
+    <div style="padding:24px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Body text</label>
+            <textarea name="collect_text" class="form-control" rows="4">{{ page.collect_text }}</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-tasks"></i> Section 2 — How We Use Your Information</h3></div>
+    <div style="padding:24px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Body text</label>
+            <textarea name="use_text" class="form-control" rows="4">{{ page.use_text }}</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-cookie-bite"></i> Section 3 — Cookies &amp; Tracking</h3></div>
+    <div style="padding:24px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Body text <small style="text-transform:none;letter-spacing:0;color:#6a6050;">(the cookie table is fixed; edit this paragraph above it)</small></label>
+            <textarea name="cookies_text" class="form-control" rows="4">{{ page.cookies_text }}</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-share-alt"></i> Section 4 — Data Sharing</h3></div>
+    <div style="padding:24px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Body text</label>
+            <textarea name="sharing_text" class="form-control" rows="4">{{ page.sharing_text }}</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-clock"></i> Section 5 — Data Retention</h3></div>
+    <div style="padding:24px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Body text</label>
+            <textarea name="retention_text" class="form-control" rows="3">{{ page.retention_text }}</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-user-shield"></i> Section 6 — Your Rights</h3></div>
+    <div style="padding:24px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Body text</label>
+            <textarea name="rights_text" class="form-control" rows="4">{{ page.rights_text }}</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-lock"></i> Section 7 — Security</h3></div>
+    <div style="padding:24px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Body text</label>
+            <textarea name="security_text" class="form-control" rows="3">{{ page.security_text }}</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-child"></i> Section 8 — Children's Privacy</h3></div>
+    <div style="padding:24px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Body text</label>
+            <textarea name="children_text" class="form-control" rows="3">{{ page.children_text }}</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="admin-section" style="margin-bottom:20px;">
+    <div class="section-toolbar"><h3><i class="fas fa-history"></i> Section 9 — Changes to This Policy</h3></div>
+    <div style="padding:24px;">
+        <div class="form-group" style="margin:0;">
+            <label class="form-label">Body text</label>
+            <textarea name="changes_text" class="form-control" rows="3">{{ page.changes_text }}</textarea>
+        </div>
+    </div>
+</div>
+
+<div style="display:flex;gap:12px;padding-bottom:40px;">
+    <button type="submit" class="btn-gold">
+        <i class="fas fa-save"></i> Save Privacy Policy
+    </button>
+    <a href="{% url 'privacy_policy' %}" target="_blank" class="btn-outline">
+        <i class="fas fa-eye"></i> Preview Live Page
+    </a>
+</div>
+
+</form>
+{% endblock %}
