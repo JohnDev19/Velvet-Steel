@@ -486,7 +486,6 @@ em { font-style: italic; color: var(--gold); }
 .cta-banner-bg {
   position: absolute; inset: 0;
   background: linear-gradient(135deg, #1a1000 0%, #241800 40%, #1a1200 100%);
-  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
   overflow: hidden;
 }
 .cta-banner-img {
