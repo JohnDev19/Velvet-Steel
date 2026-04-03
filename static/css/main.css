@@ -492,7 +492,7 @@ em { font-style: italic; color: var(--gold); }
   content: '';
   position: absolute; inset: 0;
   background: rgba(0, 0, 0, 0.60);
-  z-index: 1;
+  z-index: 0;
 }
 .cta-banner-img {
   position: absolute; inset: 0;
@@ -501,7 +501,7 @@ em { font-style: italic; color: var(--gold); }
   opacity: 0.55; display: block;
   z-index: 0;
 }
-.cta-content { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+.cta-content { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
 .cta-text { text-align: left; }
 .cta-text h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--text-primary); margin-bottom: 12px; }
 .cta-text p { font-size: 1rem; color: var(--text-secondary); max-width: 500px; }
