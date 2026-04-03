@@ -485,14 +485,20 @@ em { font-style: italic; color: var(--gold); }
 }
 .cta-banner-bg {
   position: absolute; inset: 0;
-  background: linear-gradient(135deg, #1a1000 0%, #241800 40%, #1a1200 100%);
+  background: #000;
   overflow: hidden;
+}
+.cta-banner-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(0, 0, 0, 0.60);
+  z-index: 1;
 }
 .cta-banner-img {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover; object-position: center;
-  opacity: 0.20; display: block;
+  opacity: 0.55; display: block;
   z-index: 0;
 }
 .cta-content { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
