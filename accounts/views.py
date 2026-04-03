@@ -64,7 +64,6 @@ def _restore_user_from_mongo(username, password):
 
         existing = User.objects.filter(pk=mu.django_id).first()
         if existing:
-            # Slot is taken — update it to match MongoDB (handles ID conflicts)
             existing.username     = mu.username
             existing.email        = mu.email
             existing.first_name   = mu.first_name
@@ -148,13 +147,12 @@ def register_view(request):
         if form.is_valid():
             email = form.cleaned_data['email']
             username = form.cleaned_data['username']
-            # Remove any old pending verifications for this email/username
             try:
                 EmailVerification.objects(email=email).delete()
                 EmailVerification.objects(username=username).delete()
             except Exception:
                 pass
-            # Generate 6-digit code
+            # 6-digit code
             code = ''.join(random.choices(string.digits, k=6))
             expires = datetime.utcnow() + timedelta(minutes=15)
             ev = EmailVerification(
@@ -164,7 +162,6 @@ def register_view(request):
                 expires_at=expires,
             )
             ev.save()
-            # Store pending form data securely in session (never persisted to DB)
             request.session['pending_register'] = {
                 'username':   username,
                 'email':      email,
@@ -173,7 +170,6 @@ def register_view(request):
                 'last_name':  form.cleaned_data['last_name'],
                 'phone':      form.cleaned_data.get('phone', ''),
             }
-            # Send verification email
             try:
                 _send_verification_email(request, email, form.cleaned_data['first_name'], code)
             except Exception as e:
@@ -200,13 +196,13 @@ def verify_email_view(request):
         return redirect('register')
     if request.method == 'POST':
         entered = request.POST.get('code', '').strip()
-        # Check expiry
+        # expiry
         if datetime.utcnow() > ev.expires_at:
             ev.delete()
             request.session.pop('pending_register', None)
             messages.error(request, 'The code has expired. Please register again.')
             return redirect('register')
-        # Increment attempts (brute-force protection)
+        # increment aTtempts (brute-force protection)
         ev.attempts += 1
         ev.save()
         if ev.attempts > 10:
@@ -221,7 +217,7 @@ def verify_email_view(request):
                 'email':     email,
                 'remaining': remaining,
             })
-        # Code is correct — create the account
+        # kung tama ang code - create the account
         try:
             dj_user = User.objects.create_user(
                 username=pending['username'],
@@ -259,7 +255,6 @@ def resend_code_view(request):
         ev = None
     if not ev:
         return redirect('register')
-    # Issue a fresh code and reset expiry/attempts
     ev.code = ''.join(random.choices(string.digits, k=6))
     ev.expires_at = datetime.utcnow() + timedelta(minutes=15)
     ev.attempts = 0

@@ -225,7 +225,7 @@ class Command(BaseCommand):
         self.stdout.write(f'  {created_t} testimonials created')
 
         # ── HAIRCUT STYLES ───────────────────────────────────────
-        # 10 categories × styles. Images are uploaded via the admin panel.
+        # 10 categories × styles. Images are uploaded dun sa admin panel.
         # Prices follow the tier guide in the services section above.
         styles_data = [
             # Buzz Cut

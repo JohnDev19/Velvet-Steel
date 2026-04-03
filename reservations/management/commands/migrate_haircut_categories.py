@@ -23,7 +23,7 @@ NEW_CATEGORIES = {'basic', 'finish', 'styled', 'fade', 'premium'}
 
 
 class Command(BaseCommand):
-    help = 'Migrates old haircut style category values to new price-tier categories'
+    help = 'Migrates old haircut style category values to new price-tier categories.'
 
     def handle(self, *args, **kwargs):
         styles = HaircutStyle.objects.all()

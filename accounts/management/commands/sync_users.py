@@ -6,7 +6,7 @@ from dotenv import dotenv_values
 
 
 class Command(BaseCommand):
-    help = 'Sync MongoUser records into Django auth_user table and ensure admin exists.'
+    help = 'Sync MongoUser records into Django auth_user table.'
 
     def handle(self, *args, **options):
         try:
@@ -29,13 +29,10 @@ class Command(BaseCommand):
 
         mongo_ids = {mu.django_id for mu in mongo_users}
 
-        # Remove Django users not present in MongoDB (orphans)
         for dj in User.objects.all():
             if dj.pk not in mongo_ids:
                 self.stdout.write(f'  Removing orphan Django user: {dj.username} (id={dj.pk})')
                 dj.delete()
-
-        # Sync each MongoUser → Django
         for mu in mongo_users:
             try:
                 existing = User.objects.filter(pk=mu.django_id).first()
@@ -72,7 +69,7 @@ class Command(BaseCommand):
             except Exception as e:
                 self.stderr.write(f'  Failed to sync {mu.username}: {e}')
 
-        # Ensure admin superuser exists
+        # admin superuser
         if admin_username and admin_password:
             admin = User.objects.filter(username=admin_username).first()
             if not admin:
@@ -81,7 +78,7 @@ class Command(BaseCommand):
                 if not admin.check_password(admin_password):
                     admin.set_password(admin_password)
                     admin.save()
-                    # Also update MongoUser hash
+                    # MongoUser hash
                     try:
                         mu_admin = MongoUser.objects(django_id=admin.pk).first()
                         if mu_admin:
@@ -90,7 +87,7 @@ class Command(BaseCommand):
                     except Exception:
                         pass
             else:
-                # Create fresh admin
+                # fresh admin
                 admin = User.objects.create_superuser(
                     username=admin_username,
                     email=admin_email,
