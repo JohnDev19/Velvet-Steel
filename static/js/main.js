@@ -538,6 +538,33 @@ if (serviceSelectEl && servicePreview) {
   window.addEventListener('resize', function() { stopTimer(); layout(); startTimer(); });
 })();
 
+/* ============================================
+   SECTION SHAPE SCROLL ANIMATION
+   ============================================ */
+(function () {
+  var shapes = document.querySelectorAll('.section-shape');
+  if (!shapes.length) return;
+
+  var observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('shape-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.3,
+      rootMargin: '0px 0px -60px 0px',
+    }
+  );
+
+  shapes.forEach(function (shape) {
+    observer.observe(shape);
+  });
+})();
+
 // ── COOKIE CONSENT ──────────────────────────────────────────
 (function() {
   var COOKIE_KEY = 'vs_cookie_consent';
