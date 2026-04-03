@@ -263,7 +263,11 @@
           <p class="tcard-body">{{ t.comment }}</p>
           <div class="tcard-footer">
             <div class="tcard-avatar">
-              <img src="{% if t.cust_photo %}{{ t.cust_photo }}{% else %}{% static 'img/user_profile_blank.jpg' %}{% endif %}" alt="{{ t.customer_name }}">
+              {% if t.cust_photo %}
+              <img src="{{ t.cust_photo }}" alt="{{ t.customer_name }}">
+              {% else %}
+              <span>{{ t.customer_name|first|upper }}</span>
+              {% endif %}
             </div>
             <div class="tcard-meta">
               <strong class="tcard-name">{{ t.customer_name }}</strong>
