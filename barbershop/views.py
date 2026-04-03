@@ -56,6 +56,14 @@ def about(request):
     }
     return render(request, 'about/index.html', context)
 
+def privacy_policy(request):
+    return render(request, 'home/privacy.html')
+
+
+def terms_of_service(request):
+    return render(request, 'home/terms.html')
+
+
 def services(request):
     from reservations.models import ServicesPage
     svc_page = ServicesPage.objects().first()

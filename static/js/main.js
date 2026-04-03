@@ -538,5 +538,38 @@ if (serviceSelectEl && servicePreview) {
   window.addEventListener('resize', function() { stopTimer(); layout(); startTimer(); });
 })();
 
+// ── COOKIE CONSENT ──────────────────────────────────────────
+(function() {
+  var COOKIE_KEY = 'vs_cookie_consent';
+  var banner = document.getElementById('cookieBanner');
+  if (!banner) return;
+
+  function getCookie(name) {
+    var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : null;
+  }
+  function setCookie(name, value, days) {
+    var expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/; SameSite=Lax';
+  }
+  function dismiss() {
+    banner.classList.add('cookie-banner-hide');
+    setTimeout(function() { banner.style.display = 'none'; }, 380);
+  }
+  if (!getCookie(COOKIE_KEY)) {
+    banner.style.display = 'flex';
+  }
+
+  document.getElementById('cookieAccept').addEventListener('click', function() {
+    setCookie(COOKIE_KEY, 'accepted', 365);
+    dismiss();
+  });
+
+  document.getElementById('cookieDecline').addEventListener('click', function() {
+    setCookie(COOKIE_KEY, 'necessary', 365);
+    dismiss();
+  });
+})();
+
 console.log('%c✂ Velvet Steel Barbershop', 'color:#c8a03c;font-size:18px;font-weight:bold;');
 console.log('%cPremium grooming. Deliberate craft.', 'color:#8a8070;font-size:11px;');

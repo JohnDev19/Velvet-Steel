@@ -1,0 +1,155 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}Terms of Service | Velvet Steel Barbershop{% endblock %}
+{% block meta_description %}Read the Terms of Service for Velvet Steel Barbershop. Understand the rules and conditions that apply when using our website and online booking platform.{% endblock %}
+{% block content %}
+
+<section class="legal-hero">
+    <div class="container">
+        <div class="legal-hero-inner">
+            <div class="section-badge">LEGAL</div>
+            <h1>Terms of Service</h1>
+            <p class="legal-hero-sub">Last updated: <strong>January 1, 2025</strong></p>
+        </div>
+    </div>
+</section>
+
+<section class="legal-section">
+    <div class="container">
+        <div class="legal-layout">
+
+            <!-- Table of Contents -->
+            <aside class="legal-toc">
+                <div class="legal-toc-inner">
+                    <h4>Contents</h4>
+                    <ul>
+                        <li><a href="#acceptance">1. Acceptance of Terms</a></li>
+                        <li><a href="#services">2. Our Services</a></li>
+                        <li><a href="#accounts">3. User Accounts</a></li>
+                        <li><a href="#bookings">4. Bookings &amp; Cancellations</a></li>
+                        <li><a href="#conduct">5. Acceptable Use</a></li>
+                        <li><a href="#intellectual-property">6. Intellectual Property</a></li>
+                        <li><a href="#disclaimers">7. Disclaimers</a></li>
+                        <li><a href="#liability">8. Limitation of Liability</a></li>
+                        <li><a href="#governing-law">9. Governing Law</a></li>
+                        <li><a href="#changes">10. Changes to Terms</a></li>
+                        <li><a href="#contact">11. Contact Us</a></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <article class="legal-body">
+
+                <div class="legal-intro">
+                    <p>Welcome to Velvet Steel Barbershop. These Terms of Service ("Terms") govern your access to and use of our website located at this domain (the "Site") and our online appointment booking platform (the "Service"). Please read these Terms carefully before using our Site. By accessing or using the Site, you agree to be bound by these Terms and our <a href="{% url 'privacy_policy' %}">Privacy Policy</a>.</p>
+                </div>
+
+                <div class="legal-block" id="acceptance">
+                    <h2><span class="legal-num">01</span>Acceptance of Terms</h2>
+                    <p>By creating an account, making a booking, or simply browsing this website, you confirm that you are at least 13 years of age and have the legal capacity to enter into these Terms. If you are using the Site on behalf of an organisation, you represent that you have the authority to bind that organisation to these Terms.</p>
+                    <p>If you do not agree with any part of these Terms, please do not use our Site or Services.</p>
+                </div>
+
+                <div class="legal-block" id="services">
+                    <h2><span class="legal-num">02</span>Our Services</h2>
+                    <p>Velvet Steel Barbershop provides:</p>
+                    <ul>
+                        <li>An informational website describing our barbershop services, team, and location.</li>
+                        <li>An online appointment booking platform allowing registered users to schedule, view, and manage their reservations.</li>
+                        <li>A customer account system for tracking booking history and loyalty points.</li>
+                    </ul>
+                    <p>We reserve the right to modify, suspend, or discontinue any aspect of the Service at any time, with or without notice, for maintenance, updates, or business reasons.</p>
+                </div>
+
+                <div class="legal-block" id="accounts">
+                    <h2><span class="legal-num">03</span>User Accounts</h2>
+                    <p>To make a booking, you must create an account. You agree to:</p>
+                    <ul>
+                        <li>Provide accurate, current, and complete information during registration.</li>
+                        <li>Maintain the security of your password and accept responsibility for all activity under your account.</li>
+                        <li>Notify us immediately at <a href="mailto:{{ site_settings.footer_email|default:'info@velvetsteel.ph' }}">{{ site_settings.footer_email|default:"info@velvetsteel.ph" }}</a> if you suspect unauthorised access to your account.</li>
+                        <li>Not create multiple accounts, share your account, or use another person's account without permission.</li>
+                    </ul>
+                    <p>We reserve the right to suspend or terminate accounts that violate these Terms or are used for fraudulent purposes.</p>
+                </div>
+
+                <div class="legal-block" id="bookings">
+                    <h2><span class="legal-num">04</span>Bookings &amp; Cancellations</h2>
+                    <h3>Making a Booking</h3>
+                    <p>When you submit a reservation through our platform, you are requesting an appointment slot. Your booking is confirmed when you receive a confirmation from us. Availability is not guaranteed until confirmation is received.</p>
+                    <h3>Cancellations &amp; No-Shows</h3>
+                    <ul>
+                        <li>We ask that you cancel or reschedule at least <strong>24 hours</strong> before your appointment to allow us to offer the slot to other clients.</li>
+                        <li>Repeated no-shows without notice may result in restrictions on future bookings.</li>
+                        <li>We reserve the right to cancel or reschedule bookings due to barber unavailability, public holidays, or emergencies. We will notify you as soon as possible if this occurs.</li>
+                    </ul>
+                    <h3>Pricing</h3>
+                    <p>Service prices displayed on the website are indicative and may change without prior notice. The final price for your service will be confirmed at the time of your appointment. We are not currently processing online payments; all fees are collected in person at the shop.</p>
+                </div>
+
+                <div class="legal-block" id="conduct">
+                    <h2><span class="legal-num">05</span>Acceptable Use</h2>
+                    <p>You agree not to use our Site or Service to:</p>
+                    <ul>
+                        <li>Upload or transmit any content that is unlawful, harmful, defamatory, obscene, or otherwise objectionable.</li>
+                        <li>Impersonate any person or entity or misrepresent your affiliation with any person or entity.</li>
+                        <li>Attempt to gain unauthorised access to our systems, databases, or other users' accounts.</li>
+                        <li>Use automated tools, bots, or scrapers to access or extract data from the Site without our written consent.</li>
+                        <li>Submit false, misleading, or spam reviews or bookings.</li>
+                        <li>Engage in any activity that disrupts or interferes with the normal operation of the Site.</li>
+                    </ul>
+                    <p>Violation of these rules may result in immediate termination of your account and, where applicable, referral to the appropriate authorities.</p>
+                </div>
+
+                <div class="legal-block" id="intellectual-property">
+                    <h2><span class="legal-num">06</span>Intellectual Property</h2>
+                    <p>All content on this website — including text, images, logos, graphics, icons, and software — is the property of Velvet Steel Barbershop or its content suppliers and is protected by applicable Philippine and international intellectual property laws.</p>
+                    <p>You may not reproduce, distribute, modify, or create derivative works from any content on this Site without our prior written consent. Personal, non-commercial use (such as saving a page for reference) is permitted provided you do not modify the content or remove any copyright notices.</p>
+                    <p>By submitting a review or testimonial through our Site, you grant us a non-exclusive, royalty-free, perpetual licence to display that content on our website and marketing materials.</p>
+                </div>
+
+                <div class="legal-block" id="disclaimers">
+                    <h2><span class="legal-num">07</span>Disclaimers</h2>
+                    <p>The Site and Service are provided on an <strong>"as is" and "as available"</strong> basis without warranties of any kind, either express or implied. To the fullest extent permitted by law, we disclaim all warranties, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
+                    <p>We do not warrant that the Site will be uninterrupted, error-free, or free of viruses or other harmful components. We are not responsible for the accuracy or completeness of any information on the Site, which may be subject to change at any time.</p>
+                </div>
+
+                <div class="legal-block" id="liability">
+                    <h2><span class="legal-num">08</span>Limitation of Liability</h2>
+                    <p>To the maximum extent permitted by Philippine law, Velvet Steel Barbershop and its owners, employees, and affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or related to your use of the Site or Service, even if we have been advised of the possibility of such damages.</p>
+                    <p>Our total liability to you for any claim arising from these Terms or your use of the Site shall not exceed the amount you paid us for services in the three (3) months preceding the claim, or ₱1,000.00, whichever is greater.</p>
+                </div>
+
+                <div class="legal-block" id="governing-law">
+                    <h2><span class="legal-num">09</span>Governing Law</h2>
+                    <p>These Terms are governed by and construed in accordance with the laws of the Republic of the Philippines. Any disputes arising under or in connection with these Terms shall be subject to the exclusive jurisdiction of the courts of Quezon City, Metro Manila, Philippines.</p>
+                </div>
+
+                <div class="legal-block" id="changes">
+                    <h2><span class="legal-num">10</span>Changes to Terms</h2>
+                    <p>We reserve the right to update or modify these Terms at any time. Changes will take effect immediately upon posting to this page, and the "Last updated" date will be revised accordingly. Your continued use of the Site after any changes constitutes your acceptance of the revised Terms. We encourage you to review this page periodically.</p>
+                </div>
+
+                <div class="legal-block" id="contact">
+                    <h2><span class="legal-num">11</span>Contact Us</h2>
+                    <p>If you have any questions about these Terms of Service, please contact us:</p>
+                    <div class="legal-contact-card">
+                        <div class="lcc-item"><i class="fas fa-store"></i> <span>{{ site_settings.shop_name|default:"Velvet Steel Barbershop" }}</span></div>
+                        <div class="lcc-item"><i class="fas fa-map-marker-alt"></i> <span>{{ site_settings.footer_address|default:"123 Rizal Avenue, Quezon City, Metro Manila" }}</span></div>
+                        <div class="lcc-item"><i class="fas fa-envelope"></i> <a href="mailto:{{ site_settings.footer_email|default:'info@velvetsteel.ph' }}">{{ site_settings.footer_email|default:"info@velvetsteel.ph" }}</a></div>
+                        <div class="lcc-item"><i class="fas fa-phone"></i> <span>{{ site_settings.footer_phone|default:"+63 912 345 6789" }}</span></div>
+                    </div>
+                </div>
+
+                <div class="legal-footer-nav">
+                    <a href="{% url 'privacy_policy' %}" class="btn-outline-sm"><i class="fas fa-shield-alt"></i> View Privacy Policy</a>
+                    <a href="{% url 'home' %}" class="btn-outline-sm"><i class="fas fa-home"></i> Back to Home</a>
+                </div>
+
+            </article>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

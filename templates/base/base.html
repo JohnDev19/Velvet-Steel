@@ -52,7 +52,7 @@
 <!-- MOBILE NAV OVERLAY -->
 <div class="mob-nav-overlay" id="mobNavOverlay"></div>
 
-<!-- MOBILE SIDEBAR — must live outside <nav> so position:fixed isn't trapped by backdrop-filter -->
+<!-- MOBILE SIDEBAR -->
 <div class="mob-sidebar" id="navLinks">
 
     <!-- Sidebar header -->
@@ -277,8 +277,30 @@
     </div>
     <div class="footer-bottom">
         <p>{{ site_settings.footer_copyright|default:"© 2025 Velvet Steel Barbershop. All rights reserved. Quezon City, Philippines." }}</p>
+        <div class="footer-legal-links">
+            <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+            <span class="footer-legal-sep">·</span>
+            <a href="{% url 'terms_of_service' %}">Terms of Service</a>
+        </div>
     </div>
 </footer>
+
+<!-- COOKIE CONSENT BANNER -->
+<div class="cookie-banner" id="cookieBanner" role="alertdialog" aria-label="Cookie consent" aria-live="polite" style="display:none;">
+    <div class="cookie-banner-icon"><i class="fas fa-cookie-bite"></i></div>
+    <div class="cookie-banner-text">
+        <p><strong>We use cookies</strong> — only the necessary ones to keep the site running smoothly: keeping you logged in and protecting your forms. No tracking, no ads.</p>
+        <p class="cookie-banner-links">
+            <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+            <span>·</span>
+            <a href="{% url 'terms_of_service' %}">Terms of Service</a>
+        </p>
+    </div>
+    <div class="cookie-banner-actions">
+        <button class="cookie-btn-accept" id="cookieAccept">Accept All</button>
+        <button class="cookie-btn-decline" id="cookieDecline">Necessary Only</button>
+    </div>
+</div>
 
 <div id="vsConfirmModal" class="vs-confirm-overlay">
   <div class="vs-confirm-box">
