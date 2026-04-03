@@ -576,7 +576,6 @@ def admin_site_settings_edit(request):
             if val:
                 setattr(settings, f, val)
 
-        # Social links — rebuild from posted arrays
         icons   = request.POST.getlist('social_icon')
         labels  = request.POST.getlist('social_label')
         urls    = request.POST.getlist('social_url')

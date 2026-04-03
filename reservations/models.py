@@ -342,7 +342,7 @@ class SiteSettings(Document):
     footer_hours_sun = StringField(default='Sunday: 9:00 AM \u2013 6:00 PM')
     footer_copyright = StringField(default='\u00a9 2025 Velvet Steel Barbershop. Quezon City, Philippines.')
 
-    # Social links (label|url pairs stored as JSON string)
+    # Social links
     social_links     = StringField(default='[{"icon":"fab fa-facebook-f","label":"Facebook","url":"#"},{"icon":"fab fa-instagram","label":"Instagram","url":"#"},{"icon":"fab fa-tiktok","label":"TikTok","url":"#"}]')
 
     updated_at       = DateTimeField(default=timezone.now)

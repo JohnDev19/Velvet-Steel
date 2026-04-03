@@ -3,10 +3,6 @@ from django.utils import timezone
 
 
 class UserProfile(Document):
-    """
-    Stores extended profile data for Django auth users.
-    Links via user_id (Django User pk).
-    """
     user_id        = IntField(required=True, unique=True)
     phone          = StringField(max_length=15)
     address        = StringField(max_length=200)
