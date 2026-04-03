@@ -659,14 +659,15 @@ def admin_home_page_edit(request):
         if not page:
             page = HomePage()
         fields = [
-            'hero_location', 'hero_small_title', 'hero_large_title', 'hero_subtitle',
-            'feat1_title', 'feat1_desc', 'feat2_title', 'feat2_desc',
-            'feat3_title', 'feat3_desc', 'feat4_title', 'feat4_desc',
-            'services_subtitle', 'barbers_subtitle', 'testimonials_subtitle',
-            'cta_subtitle',
-            'loc_address', 'loc_hours_weekday', 'loc_hours_sunday',
-            'loc_phone', 'loc_email', 'loc_map_city', 'loc_map_country',
-        ]
+    'hero_location', 'hero_small_title', 'hero_large_title', 'hero_subtitle',
+    'feat1_title', 'feat1_desc', 'feat2_title', 'feat2_desc',
+    'feat3_title', 'feat3_desc', 'feat4_title', 'feat4_desc',
+    'services_subtitle', 'barbers_subtitle', 'testimonials_subtitle',
+    'cta_subtitle',
+    'loc_address', 'loc_hours_weekday', 'loc_hours_sunday',
+    'loc_phone', 'loc_email', 'loc_map_city', 'loc_map_country',
+    'loc_map_embed',
+    ]
         for f in fields:
             val = request.POST.get(f, '').strip()
             if val:

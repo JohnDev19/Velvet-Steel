@@ -163,11 +163,20 @@
                 <input type="text" name="loc_map_city" class="form-control"
                        value="{{ page.loc_map_city|default:'Quezon City, Metro Manila' }}">
             </div>
-            <div class="form-group" style="margin:0;">
-                <label class="form-label">Map Country Label</label>
-                <input type="text" name="loc_map_country" class="form-control"
-                       value="{{ page.loc_map_country|default:'Philippines' }}">
-            </div>
+            <div class="form-group" style="margin:0;margin-top:20px;">
+          <label class="form-label">
+              Google Maps Embed URL
+              <small style="text-transform:none;letter-spacing:0;color:#6a6050;margin-left:6px;">
+                  Google Maps → Share → Embed a map → copy the <code style="background:#1c1c1c;padding:1px 5px;border-radius:3px;color:#c8a03c;">src</code> value only
+              </small>
+          </label>
+          <input type="text" name="loc_map_embed" class="form-control"
+                 value="{{ page.loc_map_embed|default:'' }}"
+                 placeholder="https://www.google.com/maps/embed?pb=...">
+          <small style="display:block;margin-top:6px;font-size:0.7rem;color:#4a4a3a;line-height:1.5;">
+              On Google Maps: Search your location → Click <strong style="color:#8a8070;">Share</strong> → <strong style="color:#8a8070;">Embed a map</strong> → copy only the URL inside <code style="background:#1c1c1c;padding:1px 5px;border-radius:3px;color:#c8a03c;">src="..."</code>
+          </small>
+      </div>
         </div>
     </div>
 </div>
