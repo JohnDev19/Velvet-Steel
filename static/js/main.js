@@ -542,26 +542,28 @@ if (serviceSelectEl && servicePreview) {
    SECTION SHAPE SCROLL ANIMATION
    ============================================ */
 (function () {
-  var shapes = document.querySelectorAll('.section-shape');
-  if (!shapes.length) return;
+  var wraps = document.querySelectorAll('.section-shape-wrap');
+  if (!wraps.length) return;
 
-  var observer = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('shape-visible');
-          observer.unobserve(entry.target);
+  function onEntry(entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var shape = entry.target.querySelector('.section-shape');
+        if (shape) {
+          shape.classList.add('shape-visible');
         }
-      });
-    },
-    {
-      threshold: 0.3,
-      rootMargin: '0px 0px -60px 0px',
-    }
-  );
+        observer.unobserve(entry.target);
+      }
+    });
+  }
 
-  shapes.forEach(function (shape) {
-    observer.observe(shape);
+  var observer = new IntersectionObserver(onEntry, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -40px 0px',
+  });
+
+  wraps.forEach(function (wrap) {
+    observer.observe(wrap);
   });
 })();
 
