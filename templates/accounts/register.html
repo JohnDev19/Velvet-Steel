@@ -15,7 +15,9 @@
     <div class="auth-container auth-container-wide">
         <div class="auth-card">
             <div class="auth-header">
-                <div class="auth-logo"><i class="fas fa-cut"></i></div>
+                <div class="auth-logo">
+                    {% if site_logo %}<img src="{{ site_logo }}" alt="{{ site_settings.shop_name|default:'Velvet Steel' }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">{% else %}<i class="fas fa-cut"></i>{% endif %}
+                </div>
                 <h2>Create Account</h2>
                 <p>Join Velvet Steel and start booking</p>
             </div>
