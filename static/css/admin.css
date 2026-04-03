@@ -54,7 +54,7 @@
 }
 .sidebar-name {
   display: block;
-  font-family: 'Playfair Display', serif;
+  font-family: 'Schibsted Grotesk', sans-serif;
   font-size: 1rem; font-weight: 700;
   color: #f0ebe0; line-height: 1;
 }
@@ -200,7 +200,7 @@
   margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
 }
 .admin-page-header h2 {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Schibsted Grotesk', sans-serif;
   font-size: 1.8rem; color: #f0ebe0;
 }
 .admin-page-header .subtext { font-size: 0.85rem; color: #7a7060; margin-top: 4px; }
@@ -234,7 +234,7 @@
 .stat-orange .stat-card-icon { background: rgba(220,140,60,0.15);  color: #dc8c3c; }
 
 .stat-card-num {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Schibsted Grotesk', sans-serif;
   font-size: 1.8rem; font-weight: 700;
   color: #f0ebe0; line-height: 1;
 }
@@ -496,7 +496,7 @@ input[type="date"].form-control-sm { color-scheme: dark; }
   display: flex; align-items: center; justify-content: center;
   font-size: 1.8rem; color: #5a5040;
 }
-.bac-info h4 { font-family: 'Playfair Display', serif; font-size: 1rem; color: #f0ebe0; margin-bottom: 4px; }
+.bac-info h4 { font-family: 'Schibsted Grotesk', sans-serif; font-size: 1rem; color: #f0ebe0; margin-bottom: 4px; }
 .bac-info p { font-size: 0.78rem; color: #c8a03c; margin-bottom: 8px; }
 .bac-meta {
   display: flex; gap: 10px; justify-content: center;
@@ -538,7 +538,7 @@ input[type="date"].form-control-sm { color-scheme: dark; }
 }
 .style-name { font-size: 0.9rem; font-weight: 700; color: #f0ebe0; margin: 4px 0 6px; }
 .style-meta { display: flex; align-items: center; justify-content: space-between; }
-.style-price { color: #c8a03c; font-family: 'Playfair Display', serif; font-weight: 700; }
+.style-price { color: #c8a03c; font-family: 'Schibsted Grotesk', sans-serif; font-weight: 700; }
 .style-desc-small { font-size: 0.72rem; color: #6a6050; margin-top: 6px; line-height: 1.4; }
 .style-status {
     display: inline-flex; align-items: center; gap: 5px;
@@ -648,7 +648,7 @@ input[type="date"].form-control-sm { color-scheme: dark; }
 }
 .avail-summary-card i { font-size: 1.1rem; color: #c8a03c; width: 20px; text-align: center; flex-shrink: 0; }
 .avail-summary-num {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Schibsted Grotesk', sans-serif;
   font-size: 1.4rem; font-weight: 700; color: #f0ebe0; line-height: 1;
 }
 .avail-summary-lbl {
@@ -799,7 +799,7 @@ select.form-control-tier {
 .tier-preview[data-tier="fade"]    { background: rgba(210,140,60,0.09);  border-color: #d28c3c; color: #d28c3c; }
 .tier-preview[data-tier="premium"] { background: rgba(200,160,60,0.11);  border-color: #c8a03c; color: #c8a03c; }
 .tier-preview i { font-size: 0.95rem; flex-shrink: 0; }
-.tier-preview-range { font-family: 'Playfair Display', serif; font-size: 0.95rem; }
+.tier-preview-range { font-family: 'Schibsted Grotesk', sans-serif; font-size: 0.95rem; }
 .tier-preview-label { opacity: 0.75; font-weight: 400; font-size: 0.74rem; margin-left: 4px; }
 
 /* ============================================================
