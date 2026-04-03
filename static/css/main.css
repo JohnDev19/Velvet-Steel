@@ -28,9 +28,9 @@
   --shadow: 0 8px 40px rgba(0,0,0,0.5);
   --shadow-gold: 0 4px 24px rgba(200,160,60,0.2);
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --font-display: 'Schibsted Grotesk', sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
   --font-sans: 'Josefin Sans', sans-serif;
-  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-serif: 'Schibsted Grotesk', sans-serif;
 }
 
 /* RESET & BASE */
