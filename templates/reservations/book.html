@@ -278,6 +278,18 @@
 .time-display-value { color: var(--gold); font-weight: 700; font-size: 0.9rem; flex: 1; }
 .time-display-clear { color: var(--text-muted); cursor: pointer; font-size: 0.78rem; flex-shrink: 0; transition: color 0.2s; }
 .time-display-clear:hover { color: var(--red); }
+
+.style-picker-trigger { overflow: hidden; }
+.style-picker-selected { min-width: 0; overflow: hidden; }
+.style-picker-selected-name { min-width: 0; max-width: 55%; }
+.style-picker-selected-right { min-width: 0; flex-shrink: 1; max-width: 45%; }
+.style-picker-selected-price { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80px; }
+.cs-trigger { overflow: hidden; }
+.cs-trigger-text { min-width: 0; }
+@media (max-width: 360px) {
+  .style-picker-selected-name { max-width: 50%; }
+  .style-picker-selected-cat { display: none !important; }
+}
 </style>
 {% endblock %}
 
