@@ -1,0 +1,70 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}{{ action }} Gallery Image{% endblock %}
+{% block page_title %}{{ action }} Gallery Image{% endblock %}
+{% block og_image %}{% load static %}{% static 'img/logo.png' %}{% endblock %}
+{% block twitter_image %}{% load static %}{% static 'img/logo.png' %}{% endblock %}
+
+{% block content %}
+<div class="panel-header-row">
+  <div>
+    <h2 class="panel-title">{{ action }} Gallery Image</h2>
+    <p class="panel-subtitle">Images are stored in the database. JPEG or PNG recommended.</p>
+  </div>
+  <a href="{% url 'admin_gallery' %}" class="btn-outline">
+    <i class="fas fa-arrow-left"></i> Back to Gallery
+  </a>
+</div>
+
+<div class="form-card">
+  <form method="post" enctype="multipart/form-data" class="admin-form">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label class="form-label">Image <span class="required">*</span></label>
+      {% if action == 'Edit' and img and img.image %}
+      <div class="current-image-preview">
+        <img src="{{ img.image }}" alt="Current image" style="max-height:180px; border-radius:8px; object-fit:cover; max-width:100%;">
+        <p class="preview-note">Upload a new file to replace this image.</p>
+      </div>
+      {% endif %}
+      <input type="file" name="image" accept="image/*" class="form-control" {% if action == 'Add' %}required{% endif %}>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Title</label>
+      <input type="text" name="title" value="{{ img.title|default:'' }}" maxlength="100" class="form-control" placeholder="e.g. Low Skin Fade">
+      <p class="form-help">Shown on hover over the image on the home page.</p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Barber (optional)</label>
+      <select name="barber" class="form-control">
+        <option value="">— No barber linked —</option>
+        {% for barber in barbers %}
+        <option value="{{ barber.id }}" {% if img and img.barber and img.barber.id == barber.id %}selected{% endif %}>{{ barber.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox" name="is_featured" {% if img and img.is_featured %}checked{% endif %}>
+        <span>Mark as Featured</span>
+      </label>
+      <p class="form-help">Featured images are shown first in the gallery.</p>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-gold">
+        <i class="fas fa-save"></i> {{ action }} Image
+      </button>
+      <a href="{% url 'admin_gallery' %}" class="btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<style>
+.current-image-preview { margin-bottom: 12px; }
+.preview-note { font-size: 0.8rem; color: var(--text-secondary); margin: 6px 0 0; }
+</style>
+{% endblock %}

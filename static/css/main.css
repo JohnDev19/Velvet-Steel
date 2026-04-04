@@ -1598,7 +1598,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .barbers-section .container,
 .contact-section .container,
 .haircut-styles-section .container,
-.testimonials-section .container {
+.testimonials-section .container,
+.gallery-mosaic-section .container {
   position: relative;
   z-index: 1;
 }
@@ -1607,7 +1608,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .barbers-section .section-header,
 .contact-section .section-header,
 .haircut-styles-section .section-header,
-.testimonials-section .section-header {
+.testimonials-section .section-header,
+.gallery-mosaic-section .section-header {
   padding-top: 180px;
 }
 
@@ -1617,7 +1619,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .barbers-section .section-header,
   .contact-section .section-header,
   .haircut-styles-section .section-header,
-  .testimonials-section .section-header { padding-top: 160px; }
+  .testimonials-section .section-header,
+  .gallery-mosaic-section .section-header { padding-top: 160px; }
 }
 @media (max-width: 900px) {
   .section-shape { width: 120px; height: 120px; }
@@ -1625,7 +1628,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .barbers-section .section-header,
   .contact-section .section-header,
   .haircut-styles-section .section-header,
-  .testimonials-section .section-header { padding-top: 140px; }
+  .testimonials-section .section-header,
+  .gallery-mosaic-section .section-header { padding-top: 140px; }
 }
 @media (max-width: 640px) {
   .section-shape { width: 96px; height: 96px; }
@@ -1633,7 +1637,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .barbers-section .section-header,
   .contact-section .section-header,
   .haircut-styles-section .section-header,
-  .testimonials-section .section-header { padding-top: 120px; }
+  .testimonials-section .section-header,
+  .gallery-mosaic-section .section-header { padding-top: 120px; }
 }
 @media (max-width: 480px) {
   .section-shape { width: 80px; height: 80px; }
@@ -1641,5 +1646,154 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .barbers-section .section-header,
   .contact-section .section-header,
   .haircut-styles-section .section-header,
-  .testimonials-section .section-header { padding-top: 104px; }
+  .testimonials-section .section-header,
+  .gallery-mosaic-section .section-header { padding-top: 104px; }
+}
+
+/* ============================================ GALLERY MOSAIC */
+.gallery-mosaic-section { background: var(--dark); position: relative; overflow: hidden; }
+
+.gallery-mosaic {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 260px 200px 240px;
+  grid-template-areas:
+    "a a b c"
+    "a a d e"
+    "f g g h";
+  gap: 10px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.gm-cell--1 { grid-area: a; }
+.gm-cell--2 { grid-area: b; }
+.gm-cell--3 { grid-area: c; }
+.gm-cell--4 { grid-area: d; }
+.gm-cell--5 { grid-area: e; }
+.gm-cell--6 { grid-area: f; }
+.gm-cell--7 { grid-area: g; }
+.gm-cell--8 { grid-area: h; }
+
+.gm-cell {
+  overflow: hidden;
+  position: relative;
+  opacity: 0;
+  transform: translateY(28px) scale(0.97);
+  transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+.gm-cell.gm-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.gm-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.gm-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.gm-cell:hover .gm-img { transform: scale(1.07); }
+
+.gm-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(14,11,8,0.85) 0%, rgba(14,11,8,0.1) 60%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 20px 18px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.gm-cell:hover .gm-overlay { opacity: 1; }
+.gm-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  transform: translateY(6px);
+  transition: transform 0.35s ease;
+}
+.gm-cell:hover .gm-title { transform: translateY(0); }
+.gm-line {
+  display: block;
+  width: 28px;
+  height: 2px;
+  background: var(--gold);
+  margin-top: 6px;
+  opacity: 0.7;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease 0.08s;
+}
+.gm-cell:hover .gm-line { transform: scaleX(1); }
+
+.gallery-empty-state {
+  text-align: center;
+  padding: 80px 24px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  background: rgba(255,255,255,0.02);
+}
+.ges-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(200,160,60,0.08);
+  border: 1px solid rgba(200,160,60,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 1.8rem;
+  color: var(--gold);
+}
+.ges-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  color: var(--text-primary);
+  margin: 0 0 8px;
+}
+.ges-sub {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .gallery-mosaic {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 220px 180px 220px 180px;
+    grid-template-areas:
+      "a a"
+      "b c"
+      "f g"
+      "d e"
+      "h h";
+  }
+  .gm-cell--7 { grid-area: g; }
+  .gm-cell--8 { grid-area: h; }
+}
+@media (max-width: 560px) {
+  .gallery-mosaic {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(5, 160px);
+    grid-template-areas:
+      "a a"
+      "b c"
+      "d e"
+      "f g"
+      "h h";
+  }
 }

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.conf import settings
-from reservations.models import Barber, HaircutStyle, Service, Testimonial
+from reservations.models import Barber, HaircutStyle, Service, Testimonial, GalleryImage
 from accounts.models import UserProfile
 from django.contrib.auth.models import User
 from collections import defaultdict
@@ -30,14 +30,17 @@ def home(request):
     photos = _testimonial_photos(testimonials)
     for t in testimonials:
         t.cust_photo = photos.get(t.customer_username, '')
+    gallery_images = list(GalleryImage.objects().order_by('-is_featured', '-created_at')[:8])
     context = {
-        'barbers':      barbers,
-        'services':     services,
-        'testimonials': testimonials,
-        'home_page':    home_page,
-        'shop_name':    settings.BARBERSHOP_NAME,
-        'shop_phone':   settings.BARBERSHOP_PHONE,
-        'shop_address': settings.BARBERSHOP_ADDRESS,
+        'barbers':        barbers,
+        'services':       services,
+        'testimonials':   testimonials,
+        'home_page':      home_page,
+        'gallery_images': gallery_images,
+        'gallery_ready':  len(gallery_images) >= 8,
+        'shop_name':      settings.BARBERSHOP_NAME,
+        'shop_phone':     settings.BARBERSHOP_PHONE,
+        'shop_address':   settings.BARBERSHOP_ADDRESS,
     }
     return render(request, 'home/index.html', context)
 

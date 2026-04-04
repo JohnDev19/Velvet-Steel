@@ -584,6 +584,29 @@ if (serviceSelectEl && servicePreview) {
   });
 })();
 
+/* ============================================
+   GALLERY MOSAIC — STAGGERED SCROLL REVEAL
+   ============================================ */
+(function () {
+  var cells = document.querySelectorAll('.gm-cell');
+  if (!cells.length) return;
+  var delays = [0, 80, 140, 200, 260, 120, 180, 300];
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var cell = entry.target;
+        var idx = parseInt(cell.getAttribute('data-gm-index') || '1', 10) - 1;
+        var delay = delays[idx] || idx * 60;
+        setTimeout(function () {
+          cell.classList.add('gm-visible');
+        }, delay);
+        observer.unobserve(cell);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  cells.forEach(function (cell) { observer.observe(cell); });
+})();
+
 // ── COOKIE CONSENT ──────────────────────────────────────────
 (function() {
   var COOKIE_KEY = 'vs_cookie_consent';
@@ -616,6 +639,3 @@ if (serviceSelectEl && servicePreview) {
     dismiss();
   });
 })();
-
-console.log('%c✂ Velvet Steel Barbershop', 'color:#c8a03c;font-size:18px;font-weight:bold;');
-console.log('%cPremium grooming. Deliberate craft.', 'color:#8a8070;font-size:11px;');

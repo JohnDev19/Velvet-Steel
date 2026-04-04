@@ -301,6 +301,42 @@
 </section>
 {% endif %}
 
+<section class="section gallery-mosaic-section">
+  <div class="section-shape-wrap">
+    <img src="{% static 'img/shape_gallery_home.svg' %}" alt="" class="section-shape" aria-hidden="true">
+  </div>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">THE CRAFT</div>
+      <h2 class="section-title">Work That <em>Speaks</em></h2>
+      <p class="section-subtitle">Every cut is a statement. A curated look at what precision, patience, and craft looks like at Velvet Steel.</p>
+    </div>
+    {% if gallery_ready %}
+    <div class="gallery-mosaic">
+      {% for img in gallery_images %}
+      <div class="gm-cell gm-cell--{{ forloop.counter }}" data-gm-index="{{ forloop.counter }}">
+        <div class="gm-inner">
+          <img src="{{ img.image }}" alt="{{ img.title|default:'Gallery' }}" class="gm-img" loading="lazy">
+          {% if img.title %}
+          <div class="gm-overlay">
+            <span class="gm-title">{{ img.title }}</span>
+            <span class="gm-line"></span>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="gallery-empty-state">
+      <div class="ges-icon"><i class="fas fa-images"></i></div>
+      <p class="ges-title">Gallery Coming Soon</p>
+      <p class="ges-sub">Our work gallery is being curated. Check back soon — precision takes time.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
 <section class="cta-banner">
   <div class="cta-banner-bg">
     <img src="{% static 'img/cta-image.jpg' %}" alt="" class="cta-banner-img">

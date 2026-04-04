@@ -502,6 +502,106 @@ def admin_service_delete(request, pk):
     return redirect('admin_services') 
 
 @admin_required
+def admin_gallery(request):
+    images = list(GalleryImage.objects().order_by('-is_featured', '-created_at'))
+    count = len(images)
+    slots_filled = min(count, 8)
+    remaining = max(0, 8 - count)
+    pct = int(slots_filled / 8 * 100)
+    return render(request, 'admin_panel/gallery.html', {
+        'images': images,
+        'count': count,
+        'slots_filled': slots_filled,
+        'remaining': remaining,
+        'pct': pct,
+        'ready': count >= 8,
+    })
+
+
+@admin_required
+def admin_gallery_add(request):
+    if request.method == 'POST':
+        image_file = request.FILES.get('image')
+        title = request.POST.get('title', '').strip()
+        is_featured = request.POST.get('is_featured') == 'on'
+        barber_id = request.POST.get('barber', '').strip()
+        if not image_file:
+            messages.error(request, 'Please select an image to upload.')
+            return render(request, 'admin_panel/gallery_form.html', {
+                'action': 'Add',
+                'barbers': Barber.objects(is_active=True),
+            })
+        img = GalleryImage()
+        img.image = _image_to_data_uri(image_file)
+        img.title = title
+        img.is_featured = is_featured
+        if barber_id:
+            try:
+                img.barber = Barber.objects(id=barber_id).first()
+            except Exception:
+                pass
+        try:
+            img.save()
+            messages.success(request, 'Gallery image added.')
+            return redirect('admin_gallery')
+        except Exception as e:
+            messages.error(request, f'Could not save: {e}')
+    return render(request, 'admin_panel/gallery_form.html', {
+        'action': 'Add',
+        'barbers': Barber.objects(is_active=True),
+    })
+
+
+@admin_required
+def admin_gallery_edit(request, pk):
+    try:
+        img = GalleryImage.objects(id=pk).first()
+    except Exception:
+        img = None
+    if not img:
+        messages.error(request, 'Image not found.')
+        return redirect('admin_gallery')
+    if request.method == 'POST':
+        image_file = request.FILES.get('image')
+        title = request.POST.get('title', '').strip()
+        is_featured = request.POST.get('is_featured') == 'on'
+        barber_id = request.POST.get('barber', '').strip()
+        if image_file:
+            img.image = _image_to_data_uri(image_file)
+        img.title = title
+        img.is_featured = is_featured
+        img.barber = None
+        if barber_id:
+            try:
+                img.barber = Barber.objects(id=barber_id).first()
+            except Exception:
+                pass
+        try:
+            img.save()
+            messages.success(request, 'Gallery image updated.')
+            return redirect('admin_gallery')
+        except Exception as e:
+            messages.error(request, f'Could not save: {e}')
+    return render(request, 'admin_panel/gallery_form.html', {
+        'action': 'Edit',
+        'img': img,
+        'barbers': Barber.objects(is_active=True),
+    })
+
+
+@admin_required
+def admin_gallery_delete(request, pk):
+    try:
+        img = GalleryImage.objects(id=pk).first()
+    except Exception:
+        img = None
+    if img and request.method == 'POST':
+        img.delete()
+        messages.success(request, 'Gallery image deleted.')
+    return redirect('admin_gallery')
+
+
+@admin_required
 def admin_about_edit(request):
     from .models import AboutPage
     about = AboutPage.objects().first()
