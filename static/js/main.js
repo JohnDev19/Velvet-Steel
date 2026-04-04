@@ -539,31 +539,48 @@ if (serviceSelectEl && servicePreview) {
 })();
 
 /* ============================================
-   SECTION SHAPE SCROLL ANIMATION
+   SECTION SHAPE — FADE-IN + SCROLL ROTATION
    ============================================ */
 (function () {
   var wraps = document.querySelectorAll('.section-shape-wrap');
   if (!wraps.length) return;
 
-  function onEntry(entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        var shape = entry.target.querySelector('.section-shape');
-        if (shape) {
-          shape.classList.add('shape-visible');
-        }
-        observer.unobserve(entry.target);
-      }
-    });
-  }
-
-  var observer = new IntersectionObserver(onEntry, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -40px 0px',
-  });
-
   wraps.forEach(function (wrap) {
+    var shape = wrap.querySelector('.section-shape');
+    if (!shape) return;
+    var section = wrap.closest('section');
+    var visible = false;
+    var rafId = null;
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !visible) {
+          visible = true;
+          shape.classList.add('shape-visible');
+          observer.unobserve(wrap);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
     observer.observe(wrap);
+
+    function updateRotation() {
+      if (!section) return;
+      var rect = section.getBoundingClientRect();
+      var sectionH = section.offsetHeight;
+      var viewH = window.innerHeight;
+      var progress = (viewH - rect.top) / (sectionH + viewH);
+      progress = Math.max(0, Math.min(1, progress));
+      var angle = progress * 360;
+      shape.style.transform = 'rotate(' + angle.toFixed(2) + 'deg) scale(1)';
+    }
+
+    window.addEventListener('scroll', function () {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(updateRotation);
+    }, { passive: true });
+
+    updateRotation();
   });
 })();
 

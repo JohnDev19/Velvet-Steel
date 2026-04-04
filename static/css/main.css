@@ -398,7 +398,7 @@ em { font-style: italic; color: var(--gold); }
 .section-cta { text-align: center; margin-top: 48px; }
 
 /* ============================================ SERVICES */
-.services-section { background: var(--dark); position: relative; }
+.services-section { background: var(--dark); position: relative; overflow: hidden; }
 .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .service-card {
   background: var(--dark-3); border: 1px solid var(--border);
@@ -442,7 +442,7 @@ em { font-style: italic; color: var(--gold); }
 .service-book-btn:hover { background: var(--gold); color: var(--dark); border-color: var(--gold); }
 
 /* ============================================ BARBERS */
-.barbers-section { background: var(--dark-2); }
+.barbers-section { background: var(--dark-2); position: relative; overflow: hidden; }
 .barbers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
 .barbers-grid-full { grid-template-columns: repeat(4, 1fr); }
 .barber-card {
@@ -535,6 +535,12 @@ em { font-style: italic; color: var(--gold); }
 
 /* ============================================ LOCATION */
 .location-section { background: var(--dark-2); }
+
+/* ============================================ CONTACT */
+.contact-section { position: relative; overflow: hidden; }
+
+/* ============================================ HAIRCUT STYLES */
+.haircut-styles-section { background: var(--dark-2); position: relative; overflow: hidden; }
 .location-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
 .location-details { margin: 32px 0; display: flex; flex-direction: column; gap: 24px; }
 .loc-item { display: flex; gap: 16px; align-items: flex-start; }
@@ -1185,7 +1191,6 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 /* ============================================
    HAIRCUT STYLES SECTION
    ============================================ */
-.haircut-styles-section { background: var(--dark-2); }
 
 .haircut-category-block { margin-bottom: 60px; }
 .haircut-category-header { margin-bottom: 24px; }
@@ -1563,46 +1568,13 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 }
 .cs-dropdown::-webkit-scrollbar-thumb { background: rgba(200,160,60,0.3); border-radius: 2px; }
 
-/* ============================================ SCISSOR DIVIDER */
-.scissor-divider {
-  position: relative;
-  z-index: 10;
-  margin-top: -110px;
-  margin-bottom: -110px;
-  pointer-events: none;
-  line-height: 0;
-  height: 220px;
-}
-
-.scissor-deco {
-  display: block;
-  position: absolute;
-  left: 60px;
-  top: 65%;
-  transform: translateY(-50%) rotate(25deg);
-  width: 280px;
-  height: auto;
-} @media (min-width: 1400px) {
-  .scissor-divider { margin-top: -130px; margin-bottom: -130px; height: 260px; }
-  .scissor-deco    { width: 290px; left: 90px; top: 68%; }
-} @media (max-width: 1100px) {
-  .scissor-divider { margin-top: -100px; margin-bottom: -100px; height: 200px; }
-  .scissor-deco    { width: 185px; left: 44px; top: 66%; }
-} @media (max-width: 900px) {
-  .scissor-divider { margin-top: -85px; margin-bottom: -85px; height: 170px; }
-  .scissor-deco    { width: 155px; left: 32px; top: 68%; }
-} @media (max-width: 640px) {
-  .scissor-divider { margin-top: -70px; margin-bottom: -70px; height: 140px; }
-  .scissor-deco    { width: 140px; left: 20px; top: 70%; }
-} @media (max-width: 480px) {
-  .scissor-divider { margin-top: -55px; margin-bottom: -55px; height: 110px; } .scissor-deco    { width: 98px; left: 14px; top: 72%; } }
 /* ============================================ SECTION SHAPE DECORATOR */
 .section-shape-wrap {
   position: absolute;
-  top: 0;
+  top: 40px;
   left: 50%;
-  transform: translateX(-50%) translateY(-50%);
-  z-index: 5;
+  transform: translateX(-50%);
+  z-index: 0;
   pointer-events: none;
   display: flex;
   align-items: center;
@@ -1611,30 +1583,57 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 
 .section-shape {
   opacity: 0;
-  transform: rotate(-30deg) scale(0.65);
-  transition:
-    opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: rotate(0deg) scale(1);
   will-change: transform, opacity;
-  filter: drop-shadow(0 0 32px rgba(200, 160, 60, 0.18));
+  transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 160px;
+  height: 160px;
 }
 
 .section-shape.shape-visible {
   opacity: 1;
-  transform: rotate(120deg) scale(1);
 }
-@media (min-width: 1400px) {
-  .section-shape { width: 220px; height: 220px; }
+
+.services-section .container,
+.barbers-section .container,
+.contact-section .container,
+.haircut-styles-section .container {
+  position: relative;
+  z-index: 1;
 }
+
+.services-section .section-header,
+.barbers-section .section-header,
+.contact-section .section-header,
+.haircut-styles-section .section-header {
+  padding-top: 180px;
+}
+
 @media (max-width: 1100px) {
-  .section-shape { width: 150px; height: 150px; }
+  .section-shape { width: 140px; height: 140px; }
+  .services-section .section-header,
+  .barbers-section .section-header,
+  .contact-section .section-header,
+  .haircut-styles-section .section-header { padding-top: 160px; }
 }
 @media (max-width: 900px) {
   .section-shape { width: 120px; height: 120px; }
+  .services-section .section-header,
+  .barbers-section .section-header,
+  .contact-section .section-header,
+  .haircut-styles-section .section-header { padding-top: 140px; }
 }
 @media (max-width: 640px) {
-  .section-shape { width: 90px; height: 90px; }
+  .section-shape { width: 96px; height: 96px; }
+  .services-section .section-header,
+  .barbers-section .section-header,
+  .contact-section .section-header,
+  .haircut-styles-section .section-header { padding-top: 120px; }
 }
 @media (max-width: 480px) {
-  .section-shape { width: 70px; height: 70px; }
+  .section-shape { width: 80px; height: 80px; }
+  .services-section .section-header,
+  .barbers-section .section-header,
+  .contact-section .section-header,
+  .haircut-styles-section .section-header { padding-top: 104px; }
 }
