@@ -144,7 +144,7 @@ python manage.py runserver
 
 After `seed_data`, the admin account is:
 - **Username**: `admin`
-- **Password**: printed once to the console when seed runs
+- **Password**
 
 To set a custom password before seeding, add this to `.env`:
 ```
