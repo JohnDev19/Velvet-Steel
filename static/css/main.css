@@ -508,7 +508,7 @@ em { font-style: italic; color: var(--gold); }
 .cta-actions { display: flex; gap: 16px; flex-wrap: wrap; }
 
 /* ============================================ TESTIMONIALS */
-.testimonials-section { background: var(--dark); }
+.testimonials-section { background: var(--dark); position: relative; overflow: hidden; }
 .testimonials-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
 .testimonial-card {
   background: var(--dark-3); border: 1px solid var(--border);
@@ -1597,7 +1597,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .services-section .container,
 .barbers-section .container,
 .contact-section .container,
-.haircut-styles-section .container, .testimonials-section .container {
+.haircut-styles-section .container,
+.testimonials-section .container {
   position: relative;
   z-index: 1;
 }
@@ -1605,7 +1606,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .services-section .section-header,
 .barbers-section .section-header,
 .contact-section .section-header,
-.haircut-styles-section .section-header, .testimonials-section .section-header {
+.haircut-styles-section .section-header,
+.testimonials-section .section-header {
   padding-top: 180px;
 }
 
@@ -1614,26 +1616,30 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .services-section .section-header,
   .barbers-section .section-header,
   .contact-section .section-header,
-  .haircut-styles-section .section-header, .testimonials-section .section-header { padding-top: 160px; }
+  .haircut-styles-section .section-header,
+  .testimonials-section .section-header { padding-top: 160px; }
 }
 @media (max-width: 900px) {
   .section-shape { width: 120px; height: 120px; }
   .services-section .section-header,
   .barbers-section .section-header,
   .contact-section .section-header,
-  .haircut-styles-section .section-header, .testimonials-section .section-header { padding-top: 140px; }
+  .haircut-styles-section .section-header,
+  .testimonials-section .section-header { padding-top: 140px; }
 }
 @media (max-width: 640px) {
   .section-shape { width: 96px; height: 96px; }
   .services-section .section-header,
   .barbers-section .section-header,
   .contact-section .section-header,
-  .haircut-styles-section .section-header, .testimonials-section .section-header { padding-top: 120px; }
+  .haircut-styles-section .section-header,
+  .testimonials-section .section-header { padding-top: 120px; }
 }
 @media (max-width: 480px) {
   .section-shape { width: 80px; height: 80px; }
   .services-section .section-header,
   .barbers-section .section-header,
   .contact-section .section-header,
-  .haircut-styles-section .section-header, .testimonials-section .section-header { padding-top: 104px; }
+  .haircut-styles-section .section-header,
+  .testimonials-section .section-header { padding-top: 104px; }
 }
