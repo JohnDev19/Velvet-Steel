@@ -585,6 +585,67 @@ if (serviceSelectEl && servicePreview) {
 })();
 
 /* ============================================
+   UPLOAD ZONE — DRAG/DROP IMAGE PREVIEW
+   ============================================ */
+(function () {
+  var fileInput   = document.getElementById('id_image');
+  var zone        = document.getElementById('uploadZone');
+  var previewWrap = document.getElementById('uploadPreviewWrap');
+  var previewImg  = document.getElementById('uploadPreviewImg');
+  var previewName = document.getElementById('uploadPreviewName');
+  var clearBtn    = document.getElementById('uploadPreviewClear');
+  if (!zone || !fileInput) return;
+
+  zone.addEventListener('click', function (e) {
+    if (e.target !== fileInput) fileInput.click();
+  });
+
+  ['dragover', 'dragenter'].forEach(function (evt) {
+    zone.addEventListener(evt, function (e) {
+      e.preventDefault();
+      zone.classList.add('upload-zone-drag');
+    });
+  });
+  ['dragleave', 'drop'].forEach(function (evt) {
+    zone.addEventListener(evt, function (e) {
+      e.preventDefault();
+      zone.classList.remove('upload-zone-drag');
+      if (e.type === 'drop' && e.dataTransfer.files.length) {
+        var dt = new DataTransfer();
+        dt.items.add(e.dataTransfer.files[0]);
+        fileInput.files = dt.files;
+        showUploadPreview(e.dataTransfer.files[0]);
+      }
+    });
+  });
+
+  fileInput.addEventListener('change', function () {
+    if (fileInput.files && fileInput.files[0]) showUploadPreview(fileInput.files[0]);
+  });
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function () {
+      fileInput.value = '';
+      if (previewWrap) previewWrap.style.display = 'none';
+      if (previewImg)  previewImg.src = '';
+      if (previewName) previewName.textContent = '';
+      zone.classList.remove('upload-zone-active');
+    });
+  }
+
+  function showUploadPreview(file) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      if (previewImg)  previewImg.src = e.target.result;
+      if (previewName) previewName.textContent = file.name;
+      if (previewWrap) previewWrap.style.display = 'block';
+      zone.classList.add('upload-zone-active');
+    };
+    reader.readAsDataURL(file);
+  }
+})();
+
+/* ============================================
    GALLERY MOSAIC — STAGGERED SCROLL REVEAL
    ============================================ */
 (function () {

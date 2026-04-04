@@ -997,3 +997,201 @@ select.form-control-tier {
   .form-card  { padding: 16px 12px !important; }
   .upload-preview-clear { right: calc(50% - 100px); }
 }
+/* ============================================================
+   PANEL HEADER ROW (Gallery + reusable)
+   ============================================================ */
+.panel-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.panel-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f0ebe0;
+  margin: 0 0 4px;
+  font-family: 'Playfair Display', serif;
+}
+.panel-subtitle {
+  font-size: 0.82rem;
+  color: #6a6050;
+  margin: 0;
+}
+.form-help { display: block; font-size: 0.7rem; color: #4a4a3a; margin-top: 5px; line-height: 1.4; }
+.required { color: #c8a03c; }
+
+@media (max-width: 540px) {
+  .panel-header-row { gap: 10px; }
+  .panel-header-row > a,
+  .panel-header-row > button { align-self: flex-start; flex-shrink: 0; }
+}
+
+/* ============================================================
+   CUSTOM CHECKBOX
+   ============================================================ */
+.vs-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.vs-checkbox-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.vs-checkbox-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(200,160,60,0.4);
+  background: rgba(255,255,255,0.04);
+  flex-shrink: 0;
+  position: relative;
+  transition: border-color 0.2s, background 0.2s;
+}
+.vs-checkbox-input:checked + .vs-checkbox-box {
+  background: rgba(200,160,60,0.2);
+  border-color: #c8a03c;
+}
+.vs-checkbox-box::after {
+  content: '';
+  position: absolute;
+  display: none;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  border: 2px solid #c8a03c;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+.vs-checkbox-input:checked + .vs-checkbox-box::after { display: block; }
+.vs-checkbox-text {
+  font-size: 0.85rem;
+  color: #f0ebe0;
+  font-weight: 600;
+}
+
+/* ============================================================
+   GALLERY ADMIN — STATUS BAR + GRID
+   ============================================================ */
+.gallery-admin-status {
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(200,160,60,0.25);
+  background: rgba(200,160,60,0.04);
+}
+.gas-ready { border-color: rgba(56,193,114,0.4); background: rgba(56,193,114,0.05); }
+.gas-pending { border-color: rgba(200,160,60,0.3); background: rgba(200,160,60,0.04); }
+.gas-bar-wrap {
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.gas-bar {
+  height: 100%;
+  background: #c8a03c;
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+.gas-ready .gas-bar { background: #38c172; }
+.gas-info { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.gas-count { font-size: 0.82rem; color: #8a8070; font-weight: 600; }
+.gas-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  letter-spacing: 0.02em;
+}
+.gas-badge--live { background: rgba(56,193,114,0.12); color: #38c172; }
+.gas-badge--draft { background: rgba(200,160,60,0.1); color: #c8a03c; }
+
+.gallery-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+.gag-card {
+  background: #141414;
+  border: 1px solid rgba(200,160,60,0.12);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.gag-card:hover { border-color: rgba(200,160,60,0.4); }
+.gag-thumb {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+.gag-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gag-featured-badge {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  background: rgba(200,160,60,0.9);
+  color: #0e0b08;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  letter-spacing: 0.03em;
+}
+.gag-slot-badge {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  background: rgba(14,11,8,0.75);
+  color: #8a8070;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+.gag-body { padding: 10px 12px 12px; }
+.gag-title {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #f0ebe0;
+  margin: 0 0 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gag-barber { font-size: 0.74rem; color: #6a6050; margin: 0 0 8px; }
+.gag-actions { display: flex; gap: 6px; align-items: stretch; }
+.gag-btn {
+  flex: 1;
+  justify-content: center;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 10px;
+  font-size: 0.72rem;
+  box-sizing: border-box;
+}
+.gag-btn-form { flex: 1; display: flex; }
+.gag-btn-form .gag-btn { width: 100%; }
+
+@media (max-width: 540px) {
+  .gallery-admin-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+}
+@media (max-width: 340px) {
+  .gallery-admin-grid { grid-template-columns: 1fr; }
+}

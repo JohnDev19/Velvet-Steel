@@ -1,8 +1,6 @@
 {% extends 'admin_panel/base_admin.html' %}
 {% block title %}{{ action }} Gallery Image{% endblock %}
 {% block page_title %}{{ action }} Gallery Image{% endblock %}
-{% block og_image %}{% load static %}{% static 'img/logo.png' %}{% endblock %}
-{% block twitter_image %}{% load static %}{% static 'img/logo.png' %}{% endblock %}
 
 {% block content %}
 <div class="panel-header-row">
@@ -10,7 +8,7 @@
     <h2 class="panel-title">{{ action }} Gallery Image</h2>
     <p class="panel-subtitle">Images are stored in the database. JPEG or PNG recommended.</p>
   </div>
-  <a href="{% url 'admin_gallery' %}" class="btn-outline">
+  <a href="{% url 'admin_gallery' %}" class="btn-outline btn-sm">
     <i class="fas fa-arrow-left"></i> Back to Gallery
   </a>
 </div>
@@ -20,14 +18,32 @@
     {% csrf_token %}
 
     <div class="form-group">
-      <label class="form-label">Image <span class="required">*</span></label>
+      <label class="form-label">Image {% if action == 'Add' %}<span class="required">*</span>{% endif %}</label>
+
       {% if action == 'Edit' and img and img.image %}
-      <div class="current-image-preview">
-        <img src="{{ img.image }}" alt="Current image" style="max-height:180px; border-radius:8px; object-fit:cover; max-width:100%;">
-        <p class="preview-note">Upload a new file to replace this image.</p>
+      <div class="current-photo-row" id="currentPhotoRow">
+        <img src="{{ img.image }}" alt="Current photo">
+        <div class="current-photo-meta">
+          <strong>Current Photo</strong>
+          <span>Upload a new image below to replace it.</span>
+        </div>
       </div>
       {% endif %}
-      <input type="file" name="image" accept="image/*" class="form-control" {% if action == 'Add' %}required{% endif %}>
+
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" name="image" id="id_image" accept="image/*" {% if action == 'Add' %}required{% endif %}>
+        <div class="upload-zone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+        <span class="upload-zone-title">Click or drag to upload</span>
+        <span class="upload-zone-hint">JPG, PNG or WebP — max 5 MB</span>
+      </div>
+
+      <div class="upload-preview-wrap" id="uploadPreviewWrap">
+        <img class="upload-preview-img" id="uploadPreviewImg" src="" alt="Preview">
+        <button type="button" class="upload-preview-clear" id="uploadPreviewClear" title="Remove">
+          <i class="fas fa-times"></i>
+        </button>
+        <span class="upload-preview-name" id="uploadPreviewName"></span>
+      </div>
     </div>
 
     <div class="form-group">
@@ -47,9 +63,10 @@
     </div>
 
     <div class="form-group">
-      <label class="checkbox-label">
-        <input type="checkbox" name="is_featured" {% if img and img.is_featured %}checked{% endif %}>
-        <span>Mark as Featured</span>
+      <label class="vs-checkbox-label">
+        <input type="checkbox" class="vs-checkbox-input" name="is_featured" {% if img and img.is_featured %}checked{% endif %}>
+        <span class="vs-checkbox-box"></span>
+        <span class="vs-checkbox-text">Mark as Featured</span>
       </label>
       <p class="form-help">Featured images are shown first in the gallery.</p>
     </div>
@@ -62,9 +79,4 @@
     </div>
   </form>
 </div>
-
-<style>
-.current-image-preview { margin-bottom: 12px; }
-.preview-note { font-size: 0.8rem; color: var(--text-secondary); margin: 6px 0 0; }
-</style>
 {% endblock %}
