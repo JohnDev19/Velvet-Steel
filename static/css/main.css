@@ -32,8 +32,6 @@
   --font-sans: 'Atkinson Hyperlegible Next', sans-serif;
   --font-serif: 'Cormorant Garamond', Georgia, serif;
 }
-
-/* RESET & BASE */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; font-size: 16px; }
 body {
@@ -48,8 +46,6 @@ a:hover { color: var(--gold-light); }
 img { max-width: 100%; display: block; }
 ul { list-style: none; }
 button { cursor: pointer; border: none; background: none; font-family: var(--font-sans); }
-
-/* CONTAINER */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 .container-sm { max-width: 720px; }
 
@@ -136,7 +132,6 @@ em { font-style: italic; color: var(--gold); }
   font-size: 0.6rem; letter-spacing: 0.2em;
   color: var(--gold); font-weight: 600;
 }
-/* Desktop nav links row */
 .nav-links-desktop { display: flex; align-items: center; gap: 4px; list-style: none; }
 
 .nav-link {
@@ -156,7 +151,7 @@ em { font-style: italic; color: var(--gold); }
   padding: 7px 16px;
 }
 
-/* ── MOBILE NAV OVERLAY ──────────────────────────────── */
+/* ============================================ MOBILE NAV OVERLAY */
 .mob-nav-overlay {
   display: none;
   position: fixed; inset: 0;
@@ -167,7 +162,7 @@ em { font-style: italic; color: var(--gold); }
 }
 .mob-nav-overlay.active { opacity: 1; }
 
-/* ── MOBILE SIDEBAR ──────────────────────────────────── */
+/* ============================================ MOBILE SIDEBAR */
 .mob-sidebar {
   position: fixed;
   top: 0; right: -300px; bottom: 0;
@@ -181,8 +176,6 @@ em { font-style: italic; color: var(--gold); }
   box-shadow: -8px 0 32px rgba(0,0,0,0.5);
 }
 .mob-sidebar.open { right: 0; }
-
-/* Sidebar header */
 .nav-sidebar-header {
   display: flex; flex-direction: row; align-items: center; gap: 12px;
   padding: 18px 16px;
@@ -219,8 +212,6 @@ em { font-style: italic; color: var(--gold); }
   flex-shrink: 0; transition: var(--transition);
 }
 .nav-sidebar-close:hover { background: var(--gold-faint); color: var(--gold); }
-
-/* Sidebar links body */
 .nav-sidebar-links-body {
   display: flex; flex-direction: column; align-items: stretch;
   gap: 2px; padding: 14px 12px; flex: 1;
@@ -234,14 +225,10 @@ em { font-style: italic; color: var(--gold); }
 .nav-sidebar-links-body .nav-link:hover,
 .nav-sidebar-links-body .nav-link.active { color: var(--gold); background: var(--gold-faint); }
 .nav-sidebar-sep { height: 1px; background: var(--border); margin: 6px 0; }
-
-/* Hide hamburger on desktop, hide desktop nav on mobile */
 @media (max-width: 900px) {
   .nav-toggle { display: flex; }
   .nav-links-desktop { display: none; }
 }
-
-/* Dropdown */
 .nav-dropdown { position: relative; }
 .nav-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
 .dropdown-menu {
@@ -261,14 +248,11 @@ em { font-style: italic; color: var(--gold); }
 .dropdown-menu a:hover { background: var(--gold-faint); color: var(--gold); }
 .dropdown-menu .admin-link { color: var(--gold-light); }
 .dropdown-divider { height: 1px; background: var(--border); margin: 6px 0; }
-
-/* Mobile toggle */
 .nav-toggle {
   display: none; flex-direction: column; gap: 5px;
   background: none; border: none; cursor: pointer; padding: 4px;
 }
 .nav-toggle span { display: block; width: 24px; height: 2px; background: var(--gold); border-radius: 2px; transition: var(--transition); }
-
 /* ============================================ MESSAGES */
 .messages-container {
   position: fixed; top: 80px; right: 24px; z-index: 999;
@@ -641,8 +625,6 @@ em { font-style: italic; color: var(--gold); }
 .form-card-header { background: linear-gradient(135deg, rgba(200,160,60,0.15), rgba(200,160,60,0.05)); padding: 24px 32px; border-bottom: 1px solid var(--border); }
 .form-card-header h3 { font-family: var(--font-sans); font-size: 1rem; font-weight: 700; letter-spacing: 0.05em; color: var(--gold); display: flex; align-items: center; gap: 10px; }
 .booking-form { padding: 32px; display: flex; flex-direction: column; gap: 24px; }
-
-/* Forms */
 .form-group { display: flex; flex-direction: column; gap: 8px; }
 .form-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
 .form-label i { color: var(--gold); }
@@ -673,8 +655,6 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .form-control-icon { padding-left: 40px; }
 .form-control-sm { padding: 8px 12px; font-size: 0.83rem; }
 .form-error-msg { background: rgba(224,85,85,0.1); border: 1px solid rgba(224,85,85,0.3); border-radius: var(--radius); padding: 12px 16px; font-size: 0.85rem; color: var(--red); display: flex; align-items: center; gap: 8px; }
-
-/* Booking summary */
 .booking-summary {
   background: var(--gold-faint); border: 1px solid var(--gold);
   border-radius: var(--radius-lg); padding: 20px;
@@ -686,8 +666,6 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .summary-row span:last-child { color: var(--text-primary); font-weight: 600; }
 .summary-total span { color: var(--gold) !important; font-family: var(--font-display); font-size: 1.1rem !important; }
 .login-note { text-align: center; font-size: 0.83rem; color: var(--text-muted); }
-
-/* Booking sidebar */
 .booking-sidebar { display: flex; flex-direction: column; gap: 20px; }
 .sidebar-card { background: var(--dark-3); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
 .sidebar-card h4 { font-family: var(--font-sans); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
@@ -721,8 +699,6 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .res-code { font-size: 0.75rem; color: var(--text-muted); }
 .res-code strong { color: var(--gold); }
 .res-card-actions { padding: 20px 24px; display: flex; flex-direction: column; gap: 8px; justify-content: center; border-left: 1px solid var(--border); min-width: 120px; align-items: center; }
-
-/* STATUS BADGES */
 .status-badge-pending { background: rgba(200,160,60,0.15); color: var(--gold); padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
 .status-badge-confirmed { background: rgba(76,175,125,0.15); color: var(--green); padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
 .status-badge-completed { background: rgba(74,144,200,0.15); color: var(--blue); padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
@@ -892,7 +868,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .footer-container { grid-template-columns: 1fr 1fr; gap: 32px; }
 }
 
-/* ── MOBILE NAV OVERLAY ──────────────────────────────────────── */
+/* ============================================ MOBILE NAV OVERLAY */
 .mob-nav-overlay {
   display: none;
   position: fixed;
@@ -919,33 +895,13 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .booking-layout { grid-template-columns: 1fr; }
   .auth-container { grid-template-columns: 1fr; }
   .auth-side { display: none; }
-
-  /* ── V ──────────────────────────────────────────── */
-  .nav-links {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 280px;
-    max-width: 85vw;
-    background: #0e0e0e;
-    border-right: 1px solid rgba(200,160,60,0.18);
-    padding: 0;
-    gap: 0;
-    z-index: 9999;
-    overflow-x: hidden;
-    transform: translateX(-100%);
-    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-    box-shadow: none;
-  }
+  .nav-links { display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; width: 280px; max-width: 85vw; background: #0e0e0e; border-right: 1px solid rgba(200,160,60,0.18); padding: 0; gap: 0; z-index: 9999; overflow-x: hidden; transform: translateX(-100%);.transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); box-shadow: none; }
   .nav-links.open {
     transform: translateX(0);
     box-shadow: 8px 0 40px rgba(0,0,0,0.6);
   }
 
-  /* ── SIDEBAR HEADER (profile / branding) ─────────────────── */
+/* ============================================ SIDEBAR HEADER (profile / branding) */
   .nav-sidebar-header {
     display: flex;
     align-items: center;
@@ -1002,8 +958,6 @@ textarea.form-control { resize: vertical; min-height: 100px; }
     flex-shrink: 0;
   }
   .nav-sidebar-close:hover { color: var(--gold); background: var(--gold-faint); }
-
-  /* ── SIDEBAR LINKS BODY ───────────────────────────────────── */
   .nav-sidebar-links-body {
     flex: 1;
     display: flex;
@@ -1013,7 +967,6 @@ textarea.form-control { resize: vertical; min-height: 100px; }
     gap: 2px;
     overflow-y: auto;
   }
-
   .nav-link {
     width: 100%;
     display: flex;
@@ -1053,8 +1006,6 @@ textarea.form-control { resize: vertical; min-height: 100px; }
     background: rgba(200,160,60,0.12);
     margin: 6px 0;
   }
-
-  /* ── DROPDOWN inside sidebar ──────────────────────────────── */
   .nav-toggle { display: flex; }
   .nav-dropdown { width: 100%; }
   .nav-dropdown .dropdown-menu {
@@ -1315,7 +1266,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   }
 }
 
-/* ── DROPDOWN USER HEADER ────────────────────────────────── */
+/* ============================================ DROPDOWN USER HEADER*/
 .nav-user-icon { font-size: 1.5rem; color: var(--text-secondary); }
 .nav-user:hover .nav-user-icon { color: var(--gold); }
 .dropdown-user-header {
@@ -1344,7 +1295,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   max-width: 130px;
 }
 
-/* ── TESTIMONIALS SLIDER ─────────────────────────────────── */
+/* ============================================ TESTIMONIALS SLIDER */
 .testimonials-section { background: var(--dark); }
 .tslider-wrap {
   overflow: hidden; border-radius: var(--radius-lg);
@@ -1431,7 +1382,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .tcard { margin: 0 6px; padding: 28px 22px 22px; }
 }
 
-/* ── ADMIN REVIEW CUSTOMER AVATAR ────────────────────────── */
+/* ============================================ ADMIN REVIEW CUSTOMER AVATAR */
 .rac-customer-avatar {
   width: 38px; height: 38px; border-radius: 50%;
   overflow: hidden; flex-shrink: 0;

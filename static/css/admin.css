@@ -2,7 +2,7 @@
    VELVET STEEL - ADMIN PANEL CSS
    ============================================ */
 
-/* ── LAYOUT ─────────────────────────────────────────────────── */
+/* ============================================ LAYOUT */
 .admin-body {
   background: #0a0a0a;
   color: #f0ebe0;
@@ -16,7 +16,7 @@
   overflow-x: hidden;
 }
 
-/* ── SIDEBAR ─────────────────────────────────────────────────── */
+/* ============================================ SIDEBAR*/
 .admin-sidebar {
   width: 260px;
   background: #0e0e0e;
@@ -97,7 +97,7 @@
   border-radius: 10px; font-weight: 700; margin-left: auto;
 }
 
-/* ── SIDEBAR CLOSE BUTTON ────────────────────────────────────── */
+/* ============================================ SIDEBAR CLOSE BUTTON*/
 .sidebar-close-btn {
   display: none;
   margin-left: auto;
@@ -112,7 +112,7 @@
   transform: scale(1.1);
 }
 
-/* ── SIDEBAR OVERLAY (mobile) ────────────────────────────────── */
+/* ============================================ SIDEBAR OVERLAY (mobile)*/
 .sidebar-overlay {
   display: none;
   position: fixed;
@@ -128,7 +128,7 @@
   opacity: 1;
 }
 
-/* ── MAIN ────────────────────────────────────────────────────── */
+/* ============================================ MAIN */
 .admin-main {
   margin-left: 260px;
   flex: 1;
@@ -138,7 +138,7 @@
   overflow-x: hidden;
 }
 
-/* ── TOPBAR ──────────────────────────────────────────────────── */
+/* ============================================ TOPBAR */
 .admin-topbar {
   background: #0e0e0e;
   border-bottom: 1px solid rgba(200,160,60,0.15);
@@ -166,7 +166,7 @@
 }
 .topbar-user i { color: #c8a03c; flex-shrink: 0; }
 
-/* ── ALERT / MESSAGES ────────────────────────────────────────── */
+/* ============================================ ALERT / MESSAGES*/
 .admin-messages { padding: 16px 28px 0; display: flex; flex-direction: column; gap: 8px; }
 
 .alert {
@@ -192,7 +192,7 @@
 }
 .alert-close:hover { opacity: 1; }
 
-/* ── CONTENT ─────────────────────────────────────────────────── */
+/* ============================================ CONTENT*/
 .admin-content { padding: 28px; flex: 1; min-width: 0; }
 .admin-page-header {
   display: flex; align-items: flex-start;
@@ -205,7 +205,7 @@
 }
 .admin-page-header .subtext { font-size: 0.85rem; color: #7a7060; margin-top: 4px; }
 
-/* ── STATS GRID ──────────────────────────────────────────────── */
+/* ============================================ STATS GRID*/
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -243,7 +243,7 @@
   letter-spacing: 0.08em; color: #7a7060; margin-top: 4px;
 }
 
-/* ── QUICK STATUS ────────────────────────────────────────────── */
+/* ============================================ QUICK STATUS*/
 .quick-status { display: flex; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
 .qs-item { display: flex; align-items: center; gap: 8px; font-size: 0.83rem; color: #8a8070; }
 .qs-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
@@ -252,7 +252,7 @@
 .dot-completed { background: #4a90c8; }
 .dot-cancelled { background: #e05555; }
 
-/* ── STATUS BADGES ───────────────────────────────────────────── */
+/* ============================================ STATUS BADGES*/
 .status-badge-pending,
 .status-badge-confirmed,
 .status-badge-completed,
@@ -270,7 +270,7 @@
 .status-badge-cancelled { background: rgba(224,85,85,0.15);  color: #e05555; }
 .status-badge-no_show   { background: rgba(120,100,60,0.15); color: #7a7060; }
 
-/* ── ADMIN SECTION ───────────────────────────────────────────── */
+/* ============================================ ADMIN SECTION*/
 .admin-section {
   background: #111;
   border: 1px solid rgba(200,160,60,0.15);
@@ -291,7 +291,7 @@
   white-space: nowrap;
 }
 
-/* ── TABLE ───────────────────────────────────────────────────── */
+/* ============================================ TABLE*/
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .admin-table { width: 100%; border-collapse: collapse; min-width: 480px; }
 .admin-table thead tr { border-bottom: 1px solid rgba(200,160,60,0.2); }
@@ -321,7 +321,7 @@
 }
 .empty-row { text-align: center; color: #5a5040; padding: 40px !important; }
 
-/* ── BADGES ──────────────────────────────────────────────────── */
+/* ============================================ BADGES*/
 .code-badge {
   background: rgba(200,160,60,0.12); color: #c8a03c;
   border: 1px solid rgba(200,160,60,0.25);
@@ -335,7 +335,7 @@
   font-size: 0.72rem; font-weight: 700;
 }
 
-/* ── STATUS SELECT ───────────────────────────────────────────── */
+/* ============================================ STATUS SELECT*/
 .status-select {
   background: #1c1c1c;
   border: 1px solid rgba(200,160,60,0.2);
@@ -360,7 +360,7 @@
 .status-select-no_show   { border-color: rgba(120,100,60,0.4); }
 .inline-form { display: inline; }
 
-/* ── FORM CONTROLS (admin context) ──────────────────────────── */
+/* ============================================ FORM CONTROLS (admin context*/
 .form-control {
   display: block; width: 100%;
   background: #1c1c1c;
@@ -391,7 +391,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 input[type="date"].form-control,
 input[type="date"].form-control-sm { color-scheme: dark; }
 
-/* ── FILTER BAR ──────────────────────────────────────────────── */
+/* ============================================ FILTER BAR*/
 .filter-bar {
   display: flex; align-items: center; gap: 12px;
   margin-bottom: 20px; flex-wrap: wrap;
@@ -425,13 +425,13 @@ input[type="date"].form-control-sm { color-scheme: dark; }
   font-size: 0.8rem; color: #6a6050; margin-left: auto; white-space: nowrap;
 }
 
-/* ── FILTER ROW (inside section) ────────────────────────────── */
+/* ============================================ FILTER ROW (inside section*/
 .filter-row {
   padding: 16px 20px;
   border-bottom: 1px solid rgba(200,160,60,0.1);
 }
 
-/* ── PENDING ALERT ───────────────────────────────────────────── */
+/* ============================================ PENDING ALERT*/
 .pending-alert {
   display: flex; align-items: center; gap: 16px;
   background: rgba(200,160,60,0.08);
@@ -443,7 +443,7 @@ input[type="date"].form-control-sm { color-scheme: dark; }
 .pending-alert p { font-size: 0.83rem; color: #8a8070; }
 .pending-alert .btn-gold { margin-left: auto; flex-shrink: 0; }
 
-/* ── ANALYTICS ───────────────────────────────────────────────── */
+/* ============================================ ANALYTICS*/
 .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
 .analytics-grid-2 { grid-template-columns: 1fr 1fr; }
 .analytics-card {
@@ -458,7 +458,7 @@ input[type="date"].form-control-sm { color-scheme: dark; }
   display: flex; align-items: center; gap: 8px;
 }
 
-/* ── REVIEWS ─────────────────────────────────────────────────── */
+/* ============================================ REVIEWS*/
 .reviews-admin-list { display: flex; flex-direction: column; padding: 16px; gap: 12px; }
 .review-admin-card {
   background: #161616;
@@ -476,7 +476,7 @@ input[type="date"].form-control-sm { color-scheme: dark; }
 .rac-footer span { color: #6a6050; }
 .ml-auto { margin-left: auto; }
 
-/* ── BARBER ADMIN GRID ───────────────────────────────────────── */
+/* ============================================ BARBER ADMIN GRID*/
 .barbers-admin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .barber-admin-card {
   background: #141414;
@@ -503,7 +503,7 @@ input[type="date"].form-control-sm { color-scheme: dark; }
   font-size: 0.75rem; color: #6a6050; flex-wrap: wrap; align-items: center;
 }
 
-/* ── HAIRCUT STYLES ADMIN ────────────────────────────────────── */
+/* ============================================ HAIRCUT STYLES ADMIN*/
 .haircut-styles-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -557,7 +557,7 @@ input[type="date"].form-control-sm { color-scheme: dark; }
 .empty-state-admin h3 { font-size: 1.2rem; margin-bottom: 8px; color: #f0ebe0; }
 .empty-state-admin p { color: #6a6050; margin-bottom: 20px; }
 
-/* ── FORM CARD ───────────────────────────────────────────────── */
+/* ============================================ FORM CARD*/
 .form-card {
   background: #141414;
   border: 1px solid rgba(200,160,60,0.15);
@@ -582,7 +582,7 @@ input[type="date"].form-control-sm { color-scheme: dark; }
 }
 .current-img-preview small { display: block; font-size: 0.7rem; color: #4a4a3a; margin-top: 4px; }
 
-/* ── BUTTONS ─────────────────────────────────────────────────── */
+/* ============================================ BUTTONS*/
 .btn-danger {
   background: rgba(224,85,85,0.15); color: #e05555;
   border: 1px solid rgba(224,85,85,0.3);
@@ -634,8 +634,6 @@ input[type="date"].form-control-sm { color-scheme: dark; }
   font-size: 0.85rem; color: #c8a03c; font-weight: 600;
   margin-left: 4px; white-space: nowrap;
 }
-
-/* Availability summary strip */
 .avail-summary-strip {
   display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
 }
@@ -656,7 +654,6 @@ input[type="date"].form-control-sm { color-scheme: dark; }
   letter-spacing: 0.1em; color: #5a5040; margin-top: 2px;
 }
 
-/* Availability legend */
 .avail-legend {
   display: flex; align-items: center; gap: 16px;
   margin-bottom: 16px; flex-wrap: wrap;
@@ -665,8 +662,6 @@ input[type="date"].form-control-sm { color-scheme: dark; }
 .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 .legend-free   { background: rgba(76,175,125,0.4); }
 .legend-booked { background: rgba(224,85,85,0.4); }
-
-/* Availability barber grid */
 .avail-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -715,8 +710,6 @@ input[type="date"].form-control-sm { color-scheme: dark; }
 }
 .avail-count-free  { background: rgba(76,175,125,0.15); color: #4caf7d; border: 1px solid rgba(76,175,125,0.25); }
 .avail-count-busy  { background: rgba(224,85,85,0.15);  color: #e05555; border: 1px solid rgba(224,85,85,0.25); }
-
-/* Slot table */
 .avail-slot-body { padding: 14px 18px 18px; }
 .avail-periods { display: flex; flex-direction: column; gap: 12px; }
 .avail-period-label {
@@ -752,8 +745,6 @@ input[type="date"].form-control-sm { color-scheme: dark; }
   white-space: nowrap; z-index: 10; pointer-events: none;
 }
 .avail-slot-booked:hover .slot-name-tooltip { display: block; }
-
-/* Loading skeleton */
 .avail-skeleton { padding: 14px 18px 18px; display: flex; flex-direction: column; gap: 10px; }
 .skel-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
 .skel-cell {
@@ -767,8 +758,6 @@ input[type="date"].form-control-sm { color-scheme: dark; }
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
-
-/* Availability empty state */
 .avail-empty {
   grid-column: 1 / -1; text-align: center;
   padding: 60px 24px; color: #5a5040;
@@ -974,8 +963,6 @@ select.form-control-tier {
 
   .form-row-2 { grid-template-columns: 1fr; }
   .form-card { padding: 16px 12px; }
-
-  /* Availability */
   .avail-controls { flex-direction: column; align-items: stretch; gap: 10px; }
   .avail-date-input { width: 100%; }
   .avail-date-nav { justify-content: center; }
