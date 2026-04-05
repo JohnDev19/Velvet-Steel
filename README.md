@@ -14,7 +14,7 @@ Good starting point for people learning Django + MongoDB, or students wanting a 
 ![](imgs/6.jpg)
 ![](imgs/7.jpg)
 ![](imgs/8.jpg)
-![](imgs/9.jpgV
+![](imgs/9.jpg)
 
 ---
 
@@ -133,7 +133,6 @@ pip install -r requirements.txt
 **3. Configure environment**
 ```bash
 cp .env.example .env
-# Edit .env with your values (see Environment Variables below)
 ```
 
 **4. Run migrations**
@@ -171,8 +170,6 @@ python manage.py runserver 0.0.0.0:5000
 | `ALLOWED_HOSTS` | No | Comma-separated extra hostnames (vercel domains auto-detected) |
 | `CSRF_TRUSTED_ORIGINS` | No | Extra HTTPS origins for CSRF |
 
-> Barbershop name, phone, address, and email are managed through the admin panel under **Site Settings** — no environment variables needed.
-
 ### Generating a Gmail App Password
 
 1. Enable 2-Step Verification on your Google account
@@ -196,7 +193,7 @@ The app is configured to run on Vercel out of the box.
 
 After running `seed_data`, the admin account is:
 - **Username**: `admin`
-- **Password**: printed to console on first run
+- **Password**
 
 To set a custom password before seeding:
 ```
