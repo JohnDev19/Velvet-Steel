@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.conf import settings
 from reservations.models import Barber, HaircutStyle, Service, Testimonial, GalleryImage
 from accounts.models import UserProfile
 from django.contrib.auth.models import User
@@ -21,6 +20,25 @@ def _testimonial_photos(testimonials):
     return photos
 
 
+def _site_info():
+    from reservations.models import SiteSettings
+    try:
+        s = SiteSettings.get()
+        return {
+            'shop_name':    s.shop_name,
+            'shop_phone':   s.footer_phone,
+            'shop_address': s.footer_address,
+            'shop_email':   s.footer_email,
+        }
+    except Exception:
+        return {
+            'shop_name':    'Velvet Steel Barbershop',
+            'shop_phone':   '',
+            'shop_address': '',
+            'shop_email':   '',
+        }
+
+
 def home(request):
     from reservations.models import HomePage
     home_page = HomePage.objects().first()
@@ -38,9 +56,7 @@ def home(request):
         'home_page':      home_page,
         'gallery_images': gallery_images,
         'gallery_ready':  len(gallery_images) >= 8,
-        'shop_name':      settings.BARBERSHOP_NAME,
-        'shop_phone':     settings.BARBERSHOP_PHONE,
-        'shop_address':   settings.BARBERSHOP_ADDRESS,
+        **_site_info(),
     }
     return render(request, 'home/index.html', context)
 
@@ -48,14 +64,11 @@ def home(request):
 def about(request):
     from reservations.models import AboutPage
     barbers = Barber.objects(is_active=True)
-    about   = AboutPage.objects().first()  # none until admin saves
+    about   = AboutPage.objects().first()
     context = {
-        'barbers':      barbers,
-        'about':        about,
-        'shop_name':    settings.BARBERSHOP_NAME,
-        'shop_phone':   settings.BARBERSHOP_PHONE,
-        'shop_address': settings.BARBERSHOP_ADDRESS,
-        'shop_email':   settings.BARBERSHOP_EMAIL,
+        'barbers': barbers,
+        'about':   about,
+        **_site_info(),
     }
     return render(request, 'about/index.html', context)
 
@@ -88,7 +101,7 @@ def services(request):
         'has_styles':         all_styles.count() > 0,
         'all_services':       all_services,
         'has_services':       all_services.count() > 0,
-        'shop_name':          settings.BARBERSHOP_NAME,
         'svc_page':           svc_page,
+        **_site_info(),
     }
     return render(request, 'home/services.html', context)

@@ -178,6 +178,21 @@
         </div>
 
     </div>
+
+    {% if not request.user.is_staff %}
+    <div style="max-width:720px;margin:32px auto 0;padding:0 24px;">
+        <div style="background:rgba(200,60,60,0.05);border:1px solid rgba(200,60,60,0.2);border-radius:12px;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+            <div>
+                <div style="font-size:14px;font-weight:700;color:#c83c3c;margin-bottom:4px;">Delete Account</div>
+                <div style="font-size:13px;color:#6a6050;line-height:1.6;">Permanently delete your account and all associated data. This action cannot be undone.</div>
+            </div>
+            <a href="{% url 'delete_account_request' %}" style="background:rgba(200,60,60,0.12);border:1px solid rgba(200,60,60,0.35);color:#c83c3c;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;">
+                <i class="fas fa-user-times"></i> Delete Account
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}
 

@@ -9,4 +9,9 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.user_dashboard, name='user_dashboard'),
     path('profile/', views.profile_view, name='profile'),
+    path('password-reset/', views.password_reset_request_view, name='password_reset_request'),
+    path('password-reset/verify/', views.password_reset_verify_view, name='password_reset_verify'),
+    path('password-reset/confirm/', views.password_reset_confirm_view, name='password_reset_confirm'),
+    path('delete-account/', views.delete_account_request_view, name='delete_account_request'),
+    path('delete-account/confirm/', views.delete_account_confirm_view, name='delete_account_confirm'),
 ]

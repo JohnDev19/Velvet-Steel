@@ -1,5 +1,4 @@
 import os
-import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -93,7 +92,6 @@ try:
             alias='default',
             serverSelectionTimeoutMS=5000,
         )
-        print("INFO: MongoDB connected.", file=sys.stderr)
     elif DEBUG:
         mongoengine.connect(
             'velvetsteel_dev',
@@ -102,15 +100,8 @@ try:
             alias='default',
             serverSelectionTimeoutMS=1000,
         )
-        print("INFO: MongoDB connected to localhost (dev).", file=sys.stderr)
-    else:
-        print(
-            "WARNING: MONGODB_URI is not set. "
-            "Add in Environment Variables.",
-            file=sys.stderr,
-        )
-except Exception as e:
-    print(f"WARNING: MongoDB connection error: {e}", file=sys.stderr)
+except Exception:
+    pass
 
 # ── SESSIONS ─────────────────────────────────────────────────
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
@@ -157,8 +148,3 @@ EMAIL_HOST_USER     = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL  = os.environ.get('DEFAULT_FROM_EMAIL', os.environ.get('EMAIL_HOST_USER', 'noreply@velvetsteel.ph'))
 
-# ── BARBERSHOP INFO ──────────────────────────────────────────
-BARBERSHOP_NAME    = os.environ.get('BARBERSHOP_NAME',    'Velvet Steel Barbershop')
-BARBERSHOP_PHONE   = os.environ.get('BARBERSHOP_PHONE',   '+63 912 345 6789')
-BARBERSHOP_ADDRESS = os.environ.get('BARBERSHOP_ADDRESS', '123 Rizal Avenue, Quezon City, Metro Manila')
-BARBERSHOP_EMAIL   = os.environ.get('BARBERSHOP_EMAIL',   'info@velvetsteel.ph')

@@ -58,3 +58,33 @@ class EmailVerification(Document):
 
     def __str__(self):
         return f"EmailVerification({self.email})"
+
+
+class PasswordResetRequest(Document):
+    email      = StringField(required=True)
+    code       = StringField(required=True)
+    attempts   = IntField(default=0)
+    expires_at = DateTimeField(required=True)
+
+    meta = {
+        'collection': 'password_reset_requests',
+        'indexes': ['email'],
+    }
+
+    def __str__(self):
+        return f"PasswordResetRequest({self.email})"
+
+
+class AccountDeletionRequest(Document):
+    user_id    = IntField(required=True)
+    code       = StringField(required=True)
+    attempts   = IntField(default=0)
+    expires_at = DateTimeField(required=True)
+
+    meta = {
+        'collection': 'account_deletion_requests',
+        'indexes': ['user_id'],
+    }
+
+    def __str__(self):
+        return f"AccountDeletionRequest(user_id={self.user_id})"

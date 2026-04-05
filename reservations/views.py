@@ -3,6 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.utils import timezone
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 from .models import Reservation, Service, Barber, Testimonial, HaircutStyle
 import datetime
 import random
@@ -11,6 +14,26 @@ import string
 
 def _generate_code():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
+
+def _send_booking_confirmation_email(request, reservation):
+    try:
+        from django.contrib.auth.models import User
+        user = User.objects.filter(pk=reservation.customer_id).first()
+        if not user or not user.email:
+            return
+        html_body = render_to_string('reservations/email_booking_confirmation.html', {
+            'reservation': reservation,
+            'first_name': user.first_name or user.username,
+        })
+        subject = f'Booking Confirmed – {reservation.confirmation_code}'
+        host_user = getattr(settings, 'EMAIL_HOST_USER', '')
+        from_email = f'Velvet Steel Barbershop <{host_user or settings.DEFAULT_FROM_EMAIL}>'
+        msg = EmailMultiAlternatives(subject, f'Your booking is confirmed. Code: {reservation.confirmation_code}', from_email, [user.email])
+        msg.attach_alternative(html_body, 'text/html')
+        msg.send(fail_silently=False)
+    except Exception:
+        pass
 
 
 def book_reservation(request):
@@ -125,6 +148,7 @@ def book_reservation(request):
                 'styles': styles, 'barbers': barbers, 'services': services,
             })
 
+        _send_booking_confirmation_email(request, reservation)
         messages.success(
             request,
             f'Reservation confirmed! Your booking code is: {reservation.confirmation_code}'

@@ -1,0 +1,50 @@
+{% extends 'base/base.html' %}
+{% block title %}Delete Account | Velvet Steel Barbershop{% endblock %}
+{% block content %}
+<section class="auth-section">
+    <div class="auth-bg"></div>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo" style="background:rgba(200,60,60,0.15);border-color:rgba(200,60,60,0.3);">
+                    <i class="fas fa-user-times" style="color:#c83c3c;"></i>
+                </div>
+                <h2>Delete Account</h2>
+                <p>This action is permanent and cannot be undone</p>
+            </div>
+            {% if messages %}
+            {% for message in messages %}
+            <div class="form-error-msg"><i class="fas fa-exclamation-circle"></i> {{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            <div style="background:rgba(200,60,60,0.08);border:1px solid rgba(200,60,60,0.25);border-radius:8px;padding:16px 20px;margin-bottom:24px;">
+                <p style="margin:0;font-size:14px;color:#c83c3c;line-height:1.7;">
+                    <i class="fas fa-exclamation-triangle"></i>&nbsp;
+                    Deleting your account will permanently remove your profile, booking history, and all associated data. This cannot be reversed.
+                </p>
+            </div>
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <p style="font-size:14px;color:#9a9080;margin-bottom:20px;">
+                    A 6-digit confirmation code will be sent to <strong style="color:#f0ebe0;">{{ request.user.email }}</strong>. You must enter it to confirm deletion.
+                </p>
+                <button type="submit" class="btn-block" style="background:#c83c3c;color:#fff;border:none;padding:14px;border-radius:8px;font-weight:700;cursor:pointer;letter-spacing:0.05em;">
+                    Send Deletion Code
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p><a href="{% url 'profile' %}">Cancel — keep my account</a></p>
+            </div>
+        </div>
+        <div class="auth-side">
+            <h3>Before You Go</h3>
+            <p>Deleting your account removes everything permanently. If you're having an issue, consider contacting us instead.</p>
+            <div class="auth-features">
+                <div class="af-item"><i class="fas fa-trash-alt" style="color:#c83c3c;"></i> All data permanently deleted</div>
+                <div class="af-item"><i class="fas fa-calendar-times" style="color:#c83c3c;"></i> Booking history removed</div>
+                <div class="af-item"><i class="fas fa-undo-alt"></i> This cannot be undone</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

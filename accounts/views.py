@@ -14,7 +14,7 @@ from django.utils import timezone
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django import forms
-from .models import UserProfile, EmailVerification
+from .models import UserProfile, EmailVerification, PasswordResetRequest, AccountDeletionRequest
 
 
 # ── helpers ─────────────────────────────────────────────────────────────────
@@ -376,3 +376,185 @@ def profile_view(request):
         messages.success(request, 'Profile updated successfully!')
         return redirect('profile')
     return render(request, 'accounts/profile.html', {'profile': profile})
+
+
+# ── password reset ────────────────────────────────────────────────────────────
+
+def _send_password_reset_email(to_email, first_name, code):
+    html_body = render_to_string('accounts/email_password_reset.html', {
+        'first_name': first_name,
+        'code': code,
+    })
+    subject = 'Reset Your Velvet Steel Password'
+    host_user = getattr(settings, 'EMAIL_HOST_USER', '')
+    from_email = f'Velvet Steel Barbershop <{host_user or settings.DEFAULT_FROM_EMAIL}>'
+    msg = EmailMultiAlternatives(subject, f'Your password reset code is: {code}', from_email, [to_email])
+    msg.attach_alternative(html_body, 'text/html')
+    msg.send(fail_silently=False)
+
+
+def password_reset_request_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip().lower()
+        try:
+            user = User.objects.get(email__iexact=email)
+        except User.DoesNotExist:
+            messages.info(request, 'If that email is registered, a reset code has been sent.')
+            return redirect('password_reset_request')
+        PasswordResetRequest.objects(email=email).delete()
+        code = ''.join(random.choices(string.digits, k=6))
+        expires = datetime.utcnow() + timedelta(minutes=15)
+        PasswordResetRequest(email=email, code=code, expires_at=expires).save()
+        request.session['password_reset_email'] = email
+        try:
+            _send_password_reset_email(email, user.first_name or user.username, code)
+        except Exception:
+            messages.error(request, 'Could not send reset email. Please try again later.')
+            return redirect('password_reset_request')
+        messages.info(request, 'A 6-digit reset code has been sent to your email.')
+        return redirect('password_reset_verify')
+    return render(request, 'accounts/password_reset_request.html')
+
+
+def password_reset_verify_view(request):
+    email = request.session.get('password_reset_email')
+    if not email:
+        return redirect('password_reset_request')
+    try:
+        pr = PasswordResetRequest.objects(email=email).order_by('-id').first()
+    except Exception:
+        pr = None
+    if not pr:
+        messages.error(request, 'No reset request found. Please start again.')
+        return redirect('password_reset_request')
+    if request.method == 'POST':
+        entered = request.POST.get('code', '').strip()
+        if datetime.utcnow() > pr.expires_at:
+            pr.delete()
+            request.session.pop('password_reset_email', None)
+            messages.error(request, 'The code has expired. Please request a new one.')
+            return redirect('password_reset_request')
+        pr.attempts += 1
+        pr.save()
+        if pr.attempts > 10:
+            pr.delete()
+            request.session.pop('password_reset_email', None)
+            messages.error(request, 'Too many incorrect attempts. Please start again.')
+            return redirect('password_reset_request')
+        if entered != pr.code:
+            remaining = max(0, 10 - pr.attempts)
+            messages.error(request, f'Incorrect code. {remaining} attempt(s) remaining.')
+            return render(request, 'accounts/password_reset_verify.html', {'email': email, 'remaining': remaining})
+        request.session['password_reset_verified'] = True
+        return redirect('password_reset_confirm')
+    return render(request, 'accounts/password_reset_verify.html', {'email': email, 'remaining': 10})
+
+
+def password_reset_confirm_view(request):
+    email = request.session.get('password_reset_email')
+    verified = request.session.get('password_reset_verified')
+    if not email or not verified:
+        return redirect('password_reset_request')
+    if request.method == 'POST':
+        password1 = request.POST.get('password1', '')
+        password2 = request.POST.get('password2', '')
+        if len(password1) < 8:
+            messages.error(request, 'Password must be at least 8 characters.')
+            return render(request, 'accounts/password_reset_confirm.html')
+        if password1 != password2:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'accounts/password_reset_confirm.html')
+        try:
+            user = User.objects.get(email__iexact=email)
+            user.set_password(password1)
+            user.save()
+            _persist_user_to_mongo(user)
+        except Exception:
+            messages.error(request, 'Could not update password. Please try again.')
+            return render(request, 'accounts/password_reset_confirm.html')
+        PasswordResetRequest.objects(email=email).delete()
+        request.session.pop('password_reset_email', None)
+        request.session.pop('password_reset_verified', None)
+        messages.success(request, 'Your password has been reset. Please log in.')
+        return redirect('login')
+    return render(request, 'accounts/password_reset_confirm.html')
+
+
+# ── account deletion ──────────────────────────────────────────────────────────
+
+def _send_delete_account_email(to_email, first_name, code):
+    html_body = render_to_string('accounts/email_delete_account.html', {
+        'first_name': first_name,
+        'code': code,
+    })
+    subject = 'Confirm Your Account Deletion – Velvet Steel'
+    host_user = getattr(settings, 'EMAIL_HOST_USER', '')
+    from_email = f'Velvet Steel Barbershop <{host_user or settings.DEFAULT_FROM_EMAIL}>'
+    msg = EmailMultiAlternatives(subject, f'Your account deletion code is: {code}', from_email, [to_email])
+    msg.attach_alternative(html_body, 'text/html')
+    msg.send(fail_silently=False)
+
+
+@login_required
+def delete_account_request_view(request):
+    if request.method == 'POST':
+        AccountDeletionRequest.objects(user_id=request.user.pk).delete()
+        code = ''.join(random.choices(string.digits, k=6))
+        expires = datetime.utcnow() + timedelta(minutes=15)
+        AccountDeletionRequest(user_id=request.user.pk, code=code, expires_at=expires).save()
+        try:
+            _send_delete_account_email(request.user.email, request.user.first_name or request.user.username, code)
+        except Exception:
+            messages.error(request, 'Could not send confirmation email. Please try again.')
+            return redirect('profile')
+        messages.info(request, 'A 6-digit confirmation code has been sent to your email.')
+        return redirect('delete_account_confirm')
+    return render(request, 'accounts/delete_account_request.html')
+
+
+@login_required
+def delete_account_confirm_view(request):
+    try:
+        dr = AccountDeletionRequest.objects(user_id=request.user.pk).order_by('-id').first()
+    except Exception:
+        dr = None
+    if not dr:
+        messages.error(request, 'No deletion request found. Please start again.')
+        return redirect('delete_account_request')
+    if request.method == 'POST':
+        entered = request.POST.get('code', '').strip()
+        if datetime.utcnow() > dr.expires_at:
+            dr.delete()
+            messages.error(request, 'The code has expired. Please request a new one.')
+            return redirect('delete_account_request')
+        dr.attempts += 1
+        dr.save()
+        if dr.attempts > 5:
+            dr.delete()
+            messages.error(request, 'Too many incorrect attempts. Please start again.')
+            return redirect('delete_account_request')
+        if entered != dr.code:
+            remaining = max(0, 5 - dr.attempts)
+            messages.error(request, f'Incorrect code. {remaining} attempt(s) remaining.')
+            return render(request, 'accounts/delete_account_confirm.html', {'remaining': remaining})
+        user = request.user
+        try:
+            from .models import MongoUser
+            MongoUser.objects(username=user.username).delete()
+        except Exception:
+            pass
+        try:
+            UserProfile.objects(user_id=user.pk).delete()
+        except Exception:
+            pass
+        try:
+            AccountDeletionRequest.objects(user_id=user.pk).delete()
+        except Exception:
+            pass
+        logout(request)
+        user.delete()
+        messages.success(request, 'Your account has been permanently deleted.')
+        return redirect('home')
+    return render(request, 'accounts/delete_account_confirm.html', {'remaining': 5})
