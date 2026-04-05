@@ -19,12 +19,15 @@ def _generate_code():
 def _send_booking_confirmation_email(request, reservation):
     try:
         from django.contrib.auth.models import User
+        from django.templatetags.static import static as static_url
         user = User.objects.filter(pk=reservation.customer_id).first()
         if not user or not user.email:
             return
+        logo_src = request.build_absolute_uri(static_url('img/logo.png'))
         html_body = render_to_string('reservations/email_booking_confirmation.html', {
             'reservation': reservation,
             'first_name': user.first_name or user.username,
+            'logo_src': logo_src,
         })
         subject = f'Booking Confirmed – {reservation.confirmation_code}'
         host_user = getattr(settings, 'EMAIL_HOST_USER', '')

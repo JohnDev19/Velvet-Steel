@@ -380,10 +380,11 @@ def profile_view(request):
 
 # ── password reset ────────────────────────────────────────────────────────────
 
-def _send_password_reset_email(to_email, first_name, code):
+def _send_password_reset_email(to_email, first_name, code, logo_src=''):
     html_body = render_to_string('accounts/email_password_reset.html', {
         'first_name': first_name,
         'code': code,
+        'logo_src': logo_src,
     })
     subject = 'Reset Your Velvet Steel Password'
     host_user = getattr(settings, 'EMAIL_HOST_USER', '')
@@ -409,7 +410,9 @@ def password_reset_request_view(request):
         PasswordResetRequest(email=email, code=code, expires_at=expires).save()
         request.session['password_reset_email'] = email
         try:
-            _send_password_reset_email(email, user.first_name or user.username, code)
+            from django.templatetags.static import static as static_url
+            logo = request.build_absolute_uri(static_url('img/logo.png'))
+            _send_password_reset_email(email, user.first_name or user.username, code, logo)
         except Exception:
             messages.error(request, 'Could not send reset email. Please try again later.')
             return redirect('password_reset_request')
@@ -484,10 +487,11 @@ def password_reset_confirm_view(request):
 
 # ── account deletion ──────────────────────────────────────────────────────────
 
-def _send_delete_account_email(to_email, first_name, code):
+def _send_delete_account_email(to_email, first_name, code, logo_src=''):
     html_body = render_to_string('accounts/email_delete_account.html', {
         'first_name': first_name,
         'code': code,
+        'logo_src': logo_src,
     })
     subject = 'Confirm Your Account Deletion – Velvet Steel'
     host_user = getattr(settings, 'EMAIL_HOST_USER', '')
@@ -505,7 +509,9 @@ def delete_account_request_view(request):
         expires = datetime.utcnow() + timedelta(minutes=15)
         AccountDeletionRequest(user_id=request.user.pk, code=code, expires_at=expires).save()
         try:
-            _send_delete_account_email(request.user.email, request.user.first_name or request.user.username, code)
+            from django.templatetags.static import static as static_url
+            logo = request.build_absolute_uri(static_url('img/logo.png'))
+            _send_delete_account_email(request.user.email, request.user.first_name or request.user.username, code, logo)
         except Exception:
             messages.error(request, 'Could not send confirmation email. Please try again.')
             return redirect('profile')
