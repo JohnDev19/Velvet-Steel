@@ -14,7 +14,7 @@ Good starting point for people learning Django + MongoDB, or students wanting a 
 ![](imgs/6.jpg)
 ![](imgs/7.jpg)
 ![](imgs/8.jpg)
-![](imgs/9.jpg)
+![](imgs/9.jpgV
 
 ---
 
@@ -122,7 +122,7 @@ velvet-steel-barbershop/
 **1. Clone**
 ```bash
 git clone <your-repo-url>
-cd velvet-steel-barbershop
+cd Velvet-Steel
 ```
 
 **2. Install packages**
