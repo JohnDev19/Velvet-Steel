@@ -482,12 +482,13 @@ if (serviceSelectEl && servicePreview) {
     perPage = getPerPage();
     totalGroups = Math.ceil(total / perPage);
     if (current >= totalGroups) current = totalGroups - 1;
-    var cardW = wrap.offsetWidth / perPage;
-    cards.forEach(function(c) { c.style.flexShrink = '0'; c.style.width = cardW + 'px'; });
+    var cardW  = wrap.offsetWidth / perPage;
+    var innerW = cardW - 20;
+    cards.forEach(function(c) { c.style.flexShrink = '0'; c.style.width = innerW + 'px'; });
     track.style.width = (cardW * total) + 'px';
     slide(false);
     buildDots();
-  }
+}
 
   function slide(animate) {
     var cardW = wrap.offsetWidth / perPage;
